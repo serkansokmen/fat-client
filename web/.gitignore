@@ -1,0 +1,9 @@
+*.pyc
+*.sqlite3
+cache/
+.DS_Store
+static/
+!static/base/
+media/
+*.log
+schema.json
