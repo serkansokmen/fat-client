@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 from django.forms import URLField
 from django.forms.widgets import Widget
 from django.utils.html import format_html
@@ -14,8 +15,9 @@ widget_template = '''
     <div class="media_widget_row">
         <!-- <img id="media_widget_image" src="{value}" {image_width}/> -->
         <input id="media_widget_image_hidden" type="hidden" name="{name}"></input>
-        <input id="media_widget_is_approved" type="hidden" name="is_approved">
-        <input id="media_widget_is_discarded" type="hidden" name="is_discarded">
+        <input id="media_widget_flickr_image_id" type="hidden" name="flickr_image_id"></input>
+        <input id="media_widget_is_approved" type="hidden" name="is_approved"></input>
+        <input id="media_widget_is_discarded" type="hidden" name="is_discarded"></input>
     </div>
     <div class="media_widget_row">
         <div class="media_widget_inputs" {image_width}>
@@ -32,12 +34,14 @@ widget_template = '''
 
 
 class MediaFieldWidget(Widget):
+
     class Media:
         css = {
             'all': ('/static/media_field/media_field.css',)
         }
         js = (
             '//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js',
             '/static/media_field/media_field.js',
         )
 
@@ -65,7 +69,7 @@ class MediaFieldWidget(Widget):
                            attrs=str(attrs_string),
                            width=str(width),
                            image_width=str(image_width),
-                           value=str(val),
+                           value=urlparse(val).geturl(),
                            name=str(name),
                            flickr_api=str(FLICKR_API_KEY))
 

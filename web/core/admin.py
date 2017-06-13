@@ -14,13 +14,15 @@ from .models import FlickrSearch
 
 
 class FlickrSearchAdmin(admin.ModelAdmin):
-    list_display = ('image', 'thumb', 'is_discarded',)
+    list_display = ('thumb',)
     list_display_links = ('thumb', )
-    list_filter = ('is_discarded', 'created_at', 'updated_at',)
+    list_filter = ('is_approved', 'is_discarded',
+                   'is_processed', 'created_at', 'updated_at',)
     formfield_overrides = {
         MediaField: {'widget': MediaFieldWidget},
     }
-    exclude = ('is_approved', 'is_processed', 'is_discarded')
+    # readonly_fields = ('flickr_image_id',)
+    exclude = ('is_approved', 'is_processed', 'is_discarded',)
     # list_per_page = 1
 
     def thumb(self, obj):
@@ -36,7 +38,6 @@ class FlickrSearchAdmin(admin.ModelAdmin):
         return redirect('/admin/core/flickrsearch/add')
 
 admin.site.register(FlickrSearch, FlickrSearchAdmin)
-
 # admin.site.register(Permission)
 
 

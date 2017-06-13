@@ -21,7 +21,7 @@ class MediaField(ImageField):
         # all changes to the field are made through input.hidden. The latter
         # is not initialized when the form is rendered for already existing
         # model.
-        if data is not None and data is not u'':
+        if data is not None and data is not '':
             # This value will be converted to unicode and stored in the
             # database, so leaving False as-is is not acceptable.
             if not data:

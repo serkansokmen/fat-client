@@ -6,5 +6,4 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlickrSearch
-        fields = ('image', 'is_approved', 'is_discarded',)
-        read_only_fields = ('url', 'image',)
+        fields = ('flickr_image_id', 'image', 'is_approved', 'is_discarded',)

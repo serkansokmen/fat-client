@@ -10,6 +10,7 @@ from media_field.db import MediaField
 
 class FlickrSearch(models.Model):
     image = MediaField(blank=True, max_length=255)
+    flickr_image_id = models.CharField(max_length=255)
     is_approved = models.BooleanField(default=False)
     is_processed = models.BooleanField(default=False)
     is_discarded = models.BooleanField(default=False)
@@ -23,11 +24,7 @@ class FlickrSearch(models.Model):
         ordering = ['-created_at', '-updated_at',]
 
     def __str__(self):
-        return '{}'.format(self.image.name)
-
-    def save(self, *args, **kwargs):
-        self.url = self.image.name
-        super(FlickrSearch, self).save(*args, **kwargs)
+        return '{}'.format(self.flickr_image_id, self.image)
 
 
 @receiver(pre_delete, sender=FlickrSearch)
