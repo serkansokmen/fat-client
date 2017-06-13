@@ -40,9 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
 
-    'rest_framework',
-    'rest_framework_jwt',
     'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
 
     'media_field',
 
@@ -189,6 +190,8 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     )
 }
+
+REST_USE_JWT = True
 
 if DEBUG == True:
     EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'

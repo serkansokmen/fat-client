@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AppService } from './app.service';
+import { FlickrService } from './flickr.service';
 
 @Component({
   selector: 'app-root',
@@ -8,14 +8,8 @@ import { AppService } from './app.service';
 })
 export class AppComponent  implements OnInit {
 
-  constructor(private service: AppService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.service.login('root', 'lost4god8').then((result) => {
-      console.log(result);
-      this.service.getExistingSearchs().then((results) => {
-        console.log(results);
-      });
-    })
   }
 }
