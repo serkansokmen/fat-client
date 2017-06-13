@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from rest_framework import routers
+from rest_framework_jwt.views import obtain_jwt_token
 import core.api as core_api
 
 
@@ -17,8 +18,8 @@ urlpatterns = [
 
 urlpatterns += [
     url(r'^admin/', admin.site.urls),
+    url(r'^api-token-auth/', obtain_jwt_token),
     url(r'^api/v1/media-field/', include('media_field.api')),
-    url(r'^api/v1/auth/', include('djoser.urls')),
     url(r'^core/', include('core.urls')),
 ]
 

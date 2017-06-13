@@ -1,13 +1,14 @@
 Django==1.11.2
 Pillow==4.1.1
 djangorestframework==3.6.3
+djangorestframework-jwt
+django-cors-headers
 django-crispy-forms==1.6.1
 django-extensions==1.7.9
 django-filter
 gunicorn==19.7.1
 psycopg2==2.7.1
 redis==2.10.5
-djoser==0.5.4
 # django-rest-framework-social-oauth2==1.0.5
 sorl-thumbnail==12.4a1
 sorl-thumbnail-serializer-field==0.1
