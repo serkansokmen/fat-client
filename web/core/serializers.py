@@ -1,7 +1,10 @@
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from .models import FlickrSearch
 
-class UserSerializer(serializers.ModelSerializer):
+
+class FlickrSearchSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = get_user_model()
-        exclude = ('password', 'is_admin', 'is_active', 'last_login',)
+        model = FlickrSearch
+        fields = ('image', 'is_approved', 'is_discarded',)
+        read_only_fields = ('url', 'image',)

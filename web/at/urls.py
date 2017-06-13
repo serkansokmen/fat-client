@@ -4,10 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from rest_framework import routers
+import core.api as core_api
 
 
 router = routers.DefaultRouter()
-# router.register(r'categories', portfolio_api.CategoryViewSet)
+router.register(r'flickrsearch', core_api.FlickrSearchViewSet)
 
 
 urlpatterns = [
@@ -16,7 +17,6 @@ urlpatterns = [
 
 urlpatterns += [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/v1/image-api', include('media_field.api')),
     url(r'^api/v1/auth/', include('djoser.urls')),
 
     url(r'^core/', include('core.urls')),

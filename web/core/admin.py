@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.template.loader import render_to_string
+from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from media_field.db import MediaField
 from media_field.forms import MediaFieldWidget
@@ -13,20 +14,26 @@ from .models import FlickrSearch
 
 
 class FlickrSearchAdmin(admin.ModelAdmin):
-    list_display = ('thumb', 'is_discarded',)
+    list_display = ('image', 'thumb', 'is_discarded',)
     list_display_links = ('thumb', )
     list_filter = ('is_discarded', 'created_at', 'updated_at',)
     formfield_overrides = {
         MediaField: {'widget': MediaFieldWidget},
     }
-    exclude = ('url', 'is_approved', 'is_processed', 'is_discarded')
-    list_per_page = 1
+    exclude = ('is_approved', 'is_processed', 'is_discarded')
+    # list_per_page = 1
 
     def thumb(self, obj):
         return render_to_string('admin/thumb.html', {
             'image': obj.image
         })
     thumb.allow_tags = True
+
+    def response_add(self, request, obj, post_url_continue=None):
+        return redirect('/admin/core/flickrsearch/add')
+
+    def response_change(request, obj):
+        return redirect('/admin/core/flickrsearch/add')
 
 admin.site.register(FlickrSearch, FlickrSearchAdmin)
 
