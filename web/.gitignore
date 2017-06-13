@@ -2,8 +2,6 @@
 *.sqlite3
 cache/
 .DS_Store
-static/
-!static/base/
+staticfiles/
 media/
 *.log
-schema.json

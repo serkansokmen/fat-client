@@ -3,32 +3,31 @@ from django.contrib import admin
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
-from sorl.thumbnail.admin import AdminImageMixin
-from .models import FlickrSearch, FlickrSearchImage
+from media_field.db import MediaField
+from media_field.forms import MediaFieldWidget
+from .models import FlickrSearch
 
 # from .models import User
 
-class ModelAdmin(AdminImageMixin, admin.ModelAdmin):
-    pass
-
-class TabularInline(AdminImageMixin, admin.TabularInline):
-    pass
-
-class StackedInline(AdminImageMixin, admin.StackedInline):
-    pass
-
-
-class FlickrSearchImageInline(TabularInline):
-    model = FlickrSearchImage
-    extra = 0
-
 
 class FlickrSearchAdmin(admin.ModelAdmin):
-    inlines = [FlickrSearchImageInline]
-    list_display = ('query', 'image_count',)
-    list_display_links = ('query', )
-    list_filter = ('query', 'created_at', 'updated_at',)
+    list_display = ('thumb', 'is_discarded',)
+    list_display_links = ('thumb', )
+    list_filter = ('is_discarded', 'created_at', 'updated_at',)
+    formfield_overrides = {
+        MediaField: {'widget': MediaFieldWidget},
+    }
+    exclude = ('url', 'is_approved', 'is_processed', 'is_discarded')
+    list_per_page = 1
+
+    def thumb(self, obj):
+        return render_to_string('admin/thumb.html', {
+            'image': obj.image
+        })
+    thumb.allow_tags = True
+
 admin.site.register(FlickrSearch, FlickrSearchAdmin)
 
 # admin.site.register(Permission)

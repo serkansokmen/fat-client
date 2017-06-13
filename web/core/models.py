@@ -2,41 +2,39 @@ from django.db import models
 from django_extensions.db.fields import AutoSlugField
 # from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils.translation import ugettext as _
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
 from sorl.thumbnail import ImageField
+from media_field.db import MediaField
 
 
 class FlickrSearch(models.Model):
-    query = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from='query', blank=True)
+    image = MediaField(blank=True, max_length=255)
+    url = models.URLField(max_length=255)
+    is_approved = models.BooleanField(default=False)
+    is_processed = models.BooleanField(default=False)
+    is_discarded = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     class Meta:
-        verbose_name = _('Search')
-        verbose_name_plural = _('Search')
+        verbose_name = _('Flickr search')
+        verbose_name_plural = _('Flickr searches')
         get_latest_by = 'updated_at'
         ordering = ['-created_at', '-updated_at',]
 
     def __str__(self):
-        return '{}'.format(self.query)
+        return '{}'.format(self.url)
 
-    def image_count(self):
-        return len(self.images.all())
-    image_count.short_description = _('Images')
+    def save(self, *args, **kwargs):
+        self.url = self.image.name
+        super(FlickrSearch, self).save(*args, **kwargs)
 
 
-class FlickrSearchImage(models.Model):
-    query = models.ForeignKey(FlickrSearch, on_delete=models.CASCADE, related_name='images')
-    image = ImageField(upload_to='images')
-    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
-
-    class Meta:
-        ordering = ['-created_at', '-updated_at']
-
-    def __str__(self):
-        return '{} - {}'.format(self.query, self.image.url)
-
+@receiver(pre_delete, sender=FlickrSearch)
+def flickr_search_delete(sender, instance, **kwargs):
+    # Pass false so ModelField doesn't save the model.
+    instance.image.delete(False)
 
 
 # class UserManager(BaseUserManager):
