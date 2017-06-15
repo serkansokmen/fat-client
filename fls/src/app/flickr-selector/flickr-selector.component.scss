@@ -1,0 +1,36 @@
+.thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  button {
+    border: none;
+    background: none;
+    box-shadow: none;
+    cursor: pointer;
+    position: relative;
+    min-width: 200px;
+
+    img {
+      width: 100%;
+    }
+    .fa {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      font-size: 48px;
+      color: red;
+    }
+    &.deselected {
+      .fa {
+        display: block;
+      }
+      img {
+        opacity: 0.5;
+      }
+    }
+  }
+}

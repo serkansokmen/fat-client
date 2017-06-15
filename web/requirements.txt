@@ -1,9 +1,7 @@
 Django==1.11.2
 Pillow==4.1.1
 djangorestframework==3.6.3
-djangorestframework-jwt
 django-cors-headers
-django-rest-auth
 django-crispy-forms==1.6.1
 django-extensions==1.7.9
 django-filter

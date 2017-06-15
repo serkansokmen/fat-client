@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@angular/animations@^4.0.0":
+"@angular/animations@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-4.2.2.tgz#4b00dd3414d55cf7a486686c548680c2fc93425e"
   dependencies:
@@ -72,13 +72,13 @@
   optionalDependencies:
     node-sass "^4.3.0"
 
-"@angular/common@^4.0.0":
+"@angular/common@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-4.2.2.tgz#7c07c46897d5854271240790130077dc83a0a775"
   dependencies:
     tslib "^1.7.1"
 
-"@angular/compiler-cli@^4.0.0":
+"@angular/compiler-cli@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-4.2.2.tgz#bc5fa52e34000b678a3c8189ffe2da5fc0017501"
   dependencies:
@@ -86,49 +86,49 @@
     minimist "^1.2.0"
     reflect-metadata "^0.1.2"
 
-"@angular/compiler@^4.0.0":
+"@angular/compiler@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-4.2.2.tgz#10c168f8a156397f07ae6ef83a0911e01ed264f8"
   dependencies:
     tslib "^1.7.1"
 
-"@angular/core@^4.0.0":
+"@angular/core@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/core/-/core-4.2.2.tgz#af5587dda275935868709d8c186e2dc2a1d70a00"
   dependencies:
     tslib "^1.7.1"
 
-"@angular/forms@^4.0.0":
+"@angular/forms@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-4.2.2.tgz#5c960ad2960a0ae2999fc474560d73e910d118a0"
   dependencies:
     tslib "^1.7.1"
 
-"@angular/http@^4.0.0":
+"@angular/http@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/http/-/http-4.2.2.tgz#e9f977f7b0ecec4d58ecdfc56d5706d8295848b2"
   dependencies:
     tslib "^1.7.1"
 
-"@angular/language-service@^4.0.0":
+"@angular/language-service@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-4.2.2.tgz#6a35e2c7f69d3e2771d79e7838c55170cc508e1b"
   dependencies:
     tslib "^1.7.1"
 
-"@angular/platform-browser-dynamic@^4.0.0":
+"@angular/platform-browser-dynamic@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-4.2.2.tgz#00f4b8d1ce415f432bcc5ab2bb90b0b069036287"
   dependencies:
     tslib "^1.7.1"
 
-"@angular/platform-browser@^4.0.0":
+"@angular/platform-browser@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-4.2.2.tgz#e7e1ea32d1069ff960429076f3f0882965b620f3"
   dependencies:
     tslib "^1.7.1"
 
-"@angular/router@^4.0.0":
+"@angular/router@^4.2.2":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-4.2.2.tgz#2f2d202c92dbe3828d5a3d2fd2c3737c0cb6a587"
   dependencies:
@@ -5338,6 +5338,10 @@ underscore.string@~3.3.4:
   dependencies:
     sprintf-js "^1.0.3"
     util-deprecate "^1.0.2"
+
+underscore@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
 
 uniq@^1.0.1:
   version "1.0.1"

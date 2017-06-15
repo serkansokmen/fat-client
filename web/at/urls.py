@@ -17,7 +17,6 @@ urlpatterns = [
 
 urlpatterns += [
     url(r'^admin/', admin.site.urls),
-    url(r'^auth/', include('rest_auth.urls')),
     url(r'^api/v1/media-field/', include('media_field.api')),
     url(r'^core/', include('core.urls')),
 ]

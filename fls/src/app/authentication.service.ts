@@ -24,7 +24,7 @@ export class AuthenticationService {
     return this.http.post(this.loginURL, body, options)
       .map((response: Response) => {
         // login successful if there's a jwt token in the response
-        let token = response.json() && response.json().token;
+        let token = response.json() && response.json().key;
         if (token) {
           // set token property
           this.token = token;

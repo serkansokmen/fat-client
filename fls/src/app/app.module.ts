@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
@@ -9,7 +9,6 @@ import { AuthGuard } from './auth.guard';
 import { AuthenticationService } from './authentication.service';
 import { FlickrService } from './flickr.service';
 import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
 import { FlickrSelectorComponent } from './flickr-selector/flickr-selector.component';
 
 
@@ -17,12 +16,12 @@ import { FlickrSelectorComponent } from './flickr-selector/flickr-selector.compo
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent,
     FlickrSelectorComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     routing,
   ],

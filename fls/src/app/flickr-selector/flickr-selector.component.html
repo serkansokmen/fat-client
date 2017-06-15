@@ -1,3 +1,29 @@
 <div class="col-md-6 col-md-offset-3">
+  <form [formGroup]="searchForm" (ngSubmit)="search($event)">
+    <input formControlName="query" type="text" placeholder="Search for keywords">
+    <input formControlName="exclude" type="text" placeholder="Exclude keywords">
+    <input formControlName="userID" type="text" placeholder="User ID (Optional)">
+    <select formControlName="tagMode">
+      <option value="any">OR</option>
+      <option value="all">AND</option>
+    </select>
+    <input formControlName="perPage" type="number" placeholder="How many per page?">
+    <pre *ngIf="totalPages">
+      <div>Page: {{ currentPage }} / {{ totalPages }}</div>
+      <button *ngIf="currentPage > 1" (click)="prevPage($event)">Prev</button>
+      <button *ngIf="currentPage < totalPages" (click)="nextPage($event)">Next</button>
+    </pre>
+    <button type="submit">Search</button>
+  </form>
+  <div class="thumbnails">
+    <button *ngFor="let result of results" (click)="toggle(result)" [class.deselected]="!result.isSelected">
+      <img [src]="result.url" [alt]="result.id">
+      <span class="fa fa-remove"></span>
+      <div class="meta">
+        License: {{ result.license }} <br>
+        Tags: {{ result.tags }}
+      </div>
+    </button>
+  </div>
   <p><button (click)="logout()">Logout</button></p>
 </div>
