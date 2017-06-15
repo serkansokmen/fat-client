@@ -8,7 +8,8 @@ import core.api as core_api
 
 
 router = routers.DefaultRouter()
-router.register(r'flickrsearch', core_api.FlickrSearchViewSet)
+router.register(r'search', core_api.FlickrSearchViewSet)
+router.register(r'images', core_api.FlickrImageViewSet)
 
 
 urlpatterns = [
