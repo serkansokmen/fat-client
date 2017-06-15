@@ -7,4 +7,4 @@ class FlickrSearchViewSet(viewsets.ModelViewSet):
 
     serializer_class = FlickrSearchSerializer
     parser_classes = [parsers.FileUploadParser,]
-    queryset = FlickrSearch.objects.filter(is_approved=False)
+    queryset = FlickrSearch.objects.all()

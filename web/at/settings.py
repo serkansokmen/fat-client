@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
 
-    'media_field',
-
     'sorl.thumbnail',
     'sorl_thumbnail_serializer',
     'crispy_forms',

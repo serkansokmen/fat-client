@@ -1,21 +1,59 @@
+import urllib.request
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
-# from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils.translation import ugettext as _
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 from sorl.thumbnail import ImageField
-from media_field.db import MediaField
 
 
-class FlickrSearch(models.Model):
-    image = MediaField(blank=True, max_length=255)
+class FlickrImage(models.Model):
+
+    image = ImageField(upload_to='flickr_images')
     flickr_image_id = models.CharField(max_length=255)
+    flickr_image_url = models.URLField()
     is_approved = models.BooleanField(default=False)
     is_processed = models.BooleanField(default=False)
     is_discarded = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    class Meta:
+        verbose_name = _('Flickr image')
+        verbose_name_plural = _('Flickr images')
+        get_latest_by = 'updated_at'
+        ordering = ['-created_at', '-updated_at',]
+
+    def get_remote_image(self):
+        if self.flickr_image_url and not self.image:
+            result = request.urlretrieve(self.flickr_image_url)
+            self.image.save(
+                os.path.basename(self.flickr_image_url), File(open(result[0])))
+            self.save()
+
+    def save(self, *args, **kwargs):
+        get_remote_image()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return '{}'.format(self.flickr_image_url)
+
+
+class FlickrSearch(models.Model):
+
+    TAG_MODES = (
+        ('all', 'AND'),
+        ('any', 'OR'),
+    )
+
+    query = models.CharField(max_length=255)
+    exclude = models.CharField(max_length=255, default='')
+    tag_mode = models.CharField(max_length=3, choices=TAG_MODES, default='all')
+    user_id = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
+    images = models.ManyToManyField(FlickrImage, related_name='flickr_searches')
+
 
     class Meta:
         verbose_name = _('Flickr search')
@@ -24,100 +62,12 @@ class FlickrSearch(models.Model):
         ordering = ['-created_at', '-updated_at',]
 
     def __str__(self):
-        return '{}'.format(self.flickr_image_id, self.image)
+        return '{}: {}'.format(self.query, len(self.images))
 
 
-@receiver(pre_delete, sender=FlickrSearch)
-def flickr_search_delete(sender, instance, **kwargs):
-    # Pass false so ModelField doesn't save the model.
-    instance.image.delete(False)
+# @receiver(pre_delete, sender=FlickrImage)
+# def flickr_image_delete(sender, instance, **kwargs):
+#     # Pass false so ModelField doesn't save the model.
+#     instance.image.delete(False)
 
 
-# class UserManager(BaseUserManager):
-
-#     def create_user(self, email, date_of_birth, password=None):
-#         """
-#         Creates and saves a User with the given email, date of
-#         birth and password.
-#         """
-#         if not email:
-#             raise ValueError('Users must have an email address')
-
-#         user = self.model(
-#             email=self.normalize_email(email),
-#             date_of_birth=date_of_birth,
-#         )
-
-#         user.set_password(password)
-#         user.save(using=self._db)
-#         return user
-
-#     def create_superuser(self, email, date_of_birth, password):
-#         """
-#         Creates and saves a superuser with the given email, date of
-#         birth and password.
-#         """
-#         user = self.create_user(
-#             email,
-#             password=password,
-#             date_of_birth=date_of_birth,
-#         )
-#         user.is_admin = True
-#         user.save(using=self._db)
-#         return user
-
-
-# class User(AbstractBaseUser):
-#     email = models.EmailField(verbose_name=_(
-#         'email address'), max_length=255, unique=True)
-#     date_of_birth = models.DateField()
-#     is_active = models.BooleanField(default=True)
-#     is_admin = models.BooleanField(default=False)
-
-#     objects = UserManager()
-
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = ['date_of_birth', ]
-
-#     class Meta:
-#         permissions = (
-#             ('can_upload_video', _('Can upload video')),
-#             # ('can_create_team', _('Can create team')),
-#             ('can_create_shop', _('Can create shop')),
-#             ('can_create_portfolio', _('Can create portfolio')),
-#             ('can_hire_artist', _('Can hire artist')),
-#             ('can_invite_users', _('Can invite users')),
-#         )
-
-#     def get_full_name(self):
-#         # The user is identified by their email address
-#         return self.email
-
-#     def get_short_name(self):
-#         # The user is identified by their email address
-#         return self.email
-
-#     def __str__(self):
-#         return self.email
-
-#     def has_perm(self, perm, obj=None):
-#         "Does the user have a specific permission?"
-#         # Simplest possible answer: Yes, always
-#         return True
-
-#     def has_module_perms(self, app_label):
-#         "Does the user have permissions to view the app `app_label`?"
-#         # Simplest possible answer: Yes, always
-#         return True
-
-#     @property
-#     def is_staff(self):
-#         "Is the user a member of staff?"
-#         # Simplest possible answer: All admins are staff
-#         return self.is_admin
-
-#     @property
-#     def is_superuser(self):
-#         "Is the user a superuser?"
-#         # Simplest possible answer: All admins are superusers
-#         return self.is_admin

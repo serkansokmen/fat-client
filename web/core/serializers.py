@@ -6,5 +6,4 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlickrSearch
-        # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-        fields = ('flickr_image_id', 'image', 'is_approved', 'is_discarded',)
+        fields = ('query', 'exclude', 'tag_mode', 'user_id', 'images')
