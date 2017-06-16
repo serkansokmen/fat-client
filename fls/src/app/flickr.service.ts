@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { AuthenticationService } from './authentication.service';
-import { FlickrSearch, FlickrResult, FlickrQuery } from './models/flickr.models';
+import { FlickrSearch, FlickrResult, FlickrImage } from './models/flickr.models';
 import { map, filter } from 'underscore';
 import { Observable } from 'rxjs/Observable';
 
@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
 export class FlickrService {
 
   private baseURL = 'http://192.168.99.100/';
-  private apiURL = `${this.baseURL}api/v1/flickrsearch/?format=json`;
+  private apiURL = `${this.baseURL}api/v1/search/?format=json`;
   private authURL = `${this.baseURL}ap(token-au/`;
   private apiKey = '6b989cc3f4f8a9cffc10e0a7a2d0ab2c';
 
@@ -23,9 +23,9 @@ export class FlickrService {
       .map((response: Response) => response.json());
   }
 
-  search(query: FlickrQuery): Observable<any> {
-    let queryStr = query.query;
-    let excludeStr = query.exclude.split(',').map(str => ` -${str}`).join(',');
+  search(search: FlickrSearch): Observable<any> {
+    let queryStr = search.query;
+    let excludeStr = search.exclude.split(',').map(str => ` -${str.trim()}`).join(',');
     var searchQuery = queryStr;
     if (excludeStr != '-') {
       searchQuery += `,${excludeStr}`;
@@ -40,10 +40,10 @@ export class FlickrService {
       '&content_type=7' +
       '&media=photos' +
       '&extras=license,tags' +
-      `&per_page=${query.perPage}` +
+      `&per_page=${search.perPage}` +
       // `&page=${page}` +
       `&tags=${searchQuery}` +
-      `&tag_mode=${query.tagMode}`;
+      `&tag_mode=${search.tagMode}`;
 
     return this.http.get(url)
       .map((response: Response) => response.json())

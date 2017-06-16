@@ -8,11 +8,6 @@
       <option value="all">AND</option>
     </select>
     <input formControlName="perPage" type="number" placeholder="How many per page?">
-    <pre *ngIf="totalPages">
-      <div>Page: {{ currentPage }} / {{ totalPages }}</div>
-      <button *ngIf="currentPage > 1" (click)="prevPage($event)">Prev</button>
-      <button *ngIf="currentPage < totalPages" (click)="nextPage($event)">Next</button>
-    </pre>
     <button type="submit">Search</button>
   </form>
   <div class="thumbnails">
