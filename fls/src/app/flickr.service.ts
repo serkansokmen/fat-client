@@ -4,6 +4,7 @@ import { AuthenticationService } from './authentication.service';
 import { FlickrSearch, FlickrResult, FlickrImage } from './models/flickr.models';
 import { map, filter } from 'underscore';
 import { Observable } from 'rxjs/Observable';
+import { WindowRef } from './window.service';
 
 import 'rxjs/add/operator/mergeMap';
 
@@ -16,8 +17,13 @@ export class FlickrService {
 
   constructor(
     private http: Http,
-    private authenticationService: AuthenticationService
-  ) { }
+    private authenticationService: AuthenticationService,
+    private winRef: WindowRef
+  ) {
+    if (winRef.nativeWindow.isDjango && winRef.nativeWindow.isDjango == true) {
+      this.baseURL = '/';
+    }
+  }
 
   getExistingFlickrImages(): Observable<any[]> {
     return this.http.get(this.apiURL, this.jwt())
@@ -42,7 +48,7 @@ export class FlickrService {
       '&content_type=7' +
       '&media=photos' +
       '&extras=license,tags' +
-      `&per_page=${search.perPage}` +
+      `&per_page=${search.perPage + 1}` +
       // `&page=${page}` +
       `&tags=${searchQuery}` +
       `&tag_mode=${search.tagMode}`;
@@ -70,6 +76,28 @@ export class FlickrService {
         };
       });
   };
+
+  saveSearch(search: FlickrSearch) {
+    let body = JSON.stringify({
+      query: search.query,
+      exclude: search.exclude,
+      user_id: search.userID,
+      tag_mode: search.tagMode,
+      images: search.images.map(image => {
+        return {
+          flickr_image_id: image.flickr_image_id,
+          flickr_image_url: image.flickr_image_url
+        };
+      })
+    });
+    let headers = new Headers({
+      'Content-Type': 'application/json; charset=utf-8',
+      'X-CSRFToken': this.authenticationService.getCSRFToken()
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post(this.apiURL, body, options)
+      .map((response: Response) => response.json());
+  }
 
   private jwt() {
     // create authorization header with jwt token

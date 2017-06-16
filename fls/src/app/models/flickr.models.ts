@@ -8,8 +8,9 @@ export class FlickrSearch {
 }
 
 export class FlickrImage {
-  flickr_image_id: string;
-  flickr_image_url: string;
+  constructor(
+    public flickr_image_id: number,
+    public flickr_image_url: string) {}
 }
 
 export class FlickrResult {

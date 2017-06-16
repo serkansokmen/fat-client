@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Flickr Search Tool{% endblock title %}
+
+{% block head %}
+<base href="/">
+{% endblock head %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<link rel="stylesheet" href="{% static 'dist/styles.bundle.css' %}" />
+{% endblock css %}
+
+{% block content %}
+<app-root></app-root>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'dist/inline.bundle.js' %}"></script>
+<script type="text/javascript" src="{% static 'dist/polyfills.bundle.js' %}"></script>
+<script type="text/javascript" src="{% static 'dist/vendor.bundle.js' %}"></script>
+<script type="text/javascript" src="{% static 'dist/main.bundle.js' %}"></script>
+{% endblock js %}

@@ -7,7 +7,10 @@
       <option *ngFor="let mode of tagModes" [value]="mode.value">{{ mode.label }}</option>
     </select>
     <input formControlName="perPage" type="number" placeholder="How many per page?">
-    <button type="submit">Search</button>
+    <div class="form-controls">
+      <button type="submit">Search</button>
+      <button type="button" (click)="onSave($event)">Save</button>
+    </div>
   </form>
   <div class="thumbnails">
     <button *ngFor="let result of results" (click)="toggle(result)" [class.deselected]="!result.isSelected">
@@ -20,5 +23,7 @@
       </div>
     </button>
   </div>
-  <p><button (click)="logout()" [disabled]="form.invalid">Logout</button></p>
+  <p>
+    <button (click)="logout()" [disabled]="form.invalid">Logout</button>
+  </p>
 </div>

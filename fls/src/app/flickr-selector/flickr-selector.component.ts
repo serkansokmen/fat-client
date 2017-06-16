@@ -44,16 +44,12 @@ export class FlickrSelectorComponent implements OnInit {
     this.flickrService.getExistingFlickrImages()
       .subscribe(results => {
         this.existingFlickrImageIDs = results.map(result => result.flickr_image_id);
-        this.onSubmit(null);
+        this.getFlickrResults();
       });
   }
 
   onSubmit(event) {
-    let search = this.getFlickrSearch();
-    this.flickrService.search(search)
-      .subscribe(result => {
-        this.results = result.results.filter(result => this.existingFlickrImageIDs.indexOf(result.id) == -1);
-      });
+    this.getFlickrResults();
   }
 
   toggle(result: FlickrResult) {
@@ -67,6 +63,22 @@ export class FlickrSelectorComponent implements OnInit {
       });
   }
 
+  onSave(event) {
+    let search = this.getFlickrSearch();
+    this.flickrService.saveSearch(search)
+      .subscribe(result => {
+        console.log(result);
+      });
+  }
+
+  private getFlickrResults() {
+    let search = this.getFlickrSearch();
+    this.flickrService.search(search)
+      .subscribe(result => {
+        this.results = result.results.filter(result => this.existingFlickrImageIDs.indexOf(result.id) == -1);
+      });
+  }
+
   private getFlickrSearch(): FlickrSearch {
     let value = this.form.value;
     var search = new FlickrSearch();
@@ -75,7 +87,9 @@ export class FlickrSelectorComponent implements OnInit {
     search.exclude = value.exclude;
     search.tagMode = value.tagMode;
     search.perPage = value.perPage;
-    // search.images = this.results.map();
+    search.images = this.results && this.results
+      .filter(result => result.isSelected)
+      .map(result => new FlickrImage(result.id, result.url));
     return search;
   }
 

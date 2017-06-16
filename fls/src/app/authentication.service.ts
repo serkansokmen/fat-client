@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
+import { WindowRef } from './window.service';
+
 import 'rxjs/add/operator/map'
 
 @Injectable()
@@ -11,15 +13,26 @@ export class AuthenticationService {
   private loginURL = `${this.baseURL}auth/login/`;
   private logoutURL = `${this.baseURL}auth/logout/`;
 
-  constructor(private http: Http) {
-    // set token if saved in local storage
+  constructor(
+    private http: Http,
+    private winRef: WindowRef
+  ) {
+
+    if (winRef.nativeWindow.isDjango && winRef.nativeWindow.isDjango == true) {
+      debugger
+      this.baseURL = '/';
+    }
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
   }
 
+
   login(username: string, password: string): Observable<boolean> {
     let body = JSON.stringify({ username: username, password: password });
-    let headers = new Headers({ 'Content-Type': 'application/json; charset=utf-8' });
+    let headers = new Headers({
+      'Content-Type': 'application/json; charset=utf-8',
+      'X-CSRFToken': this.getCSRFToken()
+    });
     let options = new RequestOptions({ headers: headers });
     return this.http.post(this.loginURL, body, options)
       .map((response: Response) => {
@@ -40,17 +53,29 @@ export class AuthenticationService {
           return false;
         }
       });
-    }
+  }
 
-    logout(): Observable<boolean> {
-      let headers = new Headers({ 'Content-Type': 'application/json; charset=utf-8' });
-      let options = new RequestOptions({ headers: headers });
-      return this.http.post(this.logoutURL, options)
-        .map((response: Response) => {
-          // clear token remove user from local storage to log user out
-          this.token = null;
-          localStorage.removeItem('currentUser');
-          return true;
-        });
+  logout(): Observable<boolean> {
+    let headers = new Headers({ 'Content-Type': 'application/json; charset=utf-8' });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post(this.logoutURL, options)
+      .map((response: Response) => {
+        // clear token remove user from local storage to log user out
+        this.token = null;
+        localStorage.removeItem('currentUser');
+        return true;
+      });
+  }
+
+  getCSRFToken(): string {
+    return this.getCookie('csrftoken');
+  }
+
+  private getCookie(name) {
+    let value = `; ${document.cookie}`;
+    let parts = value.split(`; ${name}=`);
+    if (parts.length == 2) {
+      return parts.pop().split(';').shift();
     }
+  }
 }
