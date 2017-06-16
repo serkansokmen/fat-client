@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'sorl_thumbnail_serializer',
     'crispy_forms',
 
-    'core.apps.CoreConfig',
+    'flickr_search.apps.FlickrSearchConfig',
 ]
 
 MIDDLEWARE = [
@@ -111,7 +111,7 @@ DATABASES = {
 }
 
 # Subsrtitute User
-# AUTH_USER_MODEL = 'core.User'
+# AUTH_USER_MODEL = 'flickr_search.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

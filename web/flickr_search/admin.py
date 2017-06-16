@@ -15,15 +15,15 @@ class FlickrImagesInline(AdminImageMixin, admin.TabularInline):
     extra = 0
 
 
-# class FlickrImageAdmin(admin.ModelAdmin):
-#     list_display = ('thumb',)
+class FlickrImageAdmin(admin.ModelAdmin):
+    list_display = ('thumb',)
 
-#     def thumb(self, obj):
-#         return render_to_string('admin/thumb.html', {
-#             'image': obj.image
-#         })
-#     thumb.allow_tags = True
-# admin.site.register(FlickrImage, FlickrImageAdmin)
+    def thumb(self, obj):
+        return render_to_string('admin/thumb.html', {
+            'image': obj.image
+        })
+    thumb.allow_tags = True
+admin.site.register(FlickrImage, FlickrImageAdmin)
 
 
 class FlickrSearchAdmin(admin.ModelAdmin):

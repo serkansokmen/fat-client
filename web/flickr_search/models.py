@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.db.models.signals import pre_delete
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch.dispatcher import receiver
 from sorl.thumbnail import ImageField
 
@@ -26,6 +26,13 @@ class FlickrImage(models.Model):
         return '{}'.format(self.flickr_image_url)
 
 
+@receiver(pre_delete, sender=FlickrImage)
+def pre_delete_flickr_image(sender, instance, **kwargs):
+    for search in instance.flickr_searches.all():
+        if search.images.count() == 1 and instance in search.images.all():
+            search.delete()
+
+
 class FlickrSearch(models.Model):
 
     TAG_MODES = (
@@ -35,7 +42,7 @@ class FlickrSearch(models.Model):
 
     query = models.CharField(max_length=255)
     exclude = models.CharField(max_length=255, default='')
-    tag_mode = models.CharField(max_length=3, choices=TAG_MODES, default='all')
+    tag_mode = models.CharField(max_length=3, choices=TAG_MODES, default=TAG_MODES[0])
     user_id = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
@@ -49,8 +56,7 @@ class FlickrSearch(models.Model):
         ordering = ['-created_at', '-updated_at', ]
 
     def __str__(self):
-        return '{}: {}'.format(self.query, len(self.images))
-
+        return '{}'.format(self.query)
 
 # @receiver(pre_delete, sender=FlickrImage)
 # def flickr_image_delete(sender, instance, **kwargs):

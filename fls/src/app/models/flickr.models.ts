@@ -1,4 +1,4 @@
-export class FlickrQuery {
+export class FlickrSearch {
   userID: string;
   query: string;
   exclude: string;
@@ -6,9 +6,9 @@ export class FlickrQuery {
   perPage: number;
 }
 
-export class FlickrSearch {
-  image: string;
+export class FlickrImage {
   flickr_image_id: string;
+  flickr_image_url: string;
 }
 
 export class FlickrResult {
