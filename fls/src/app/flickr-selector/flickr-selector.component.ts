@@ -21,7 +21,7 @@ export class FlickrSelectorComponent implements OnInit {
     tagMode: ['all', Validators.required],
     perPage: [10, Validators.required]
   });
-  existing: FlickrSearch[];
+  existingFlickrImageIDs: string[];
   results: FlickrResult[];
 
   constructor(
@@ -32,11 +32,11 @@ export class FlickrSelectorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.flickrService.getExistingSearchs()
-      .subscribe(result => {
-        this.existing = result;
+    this.flickrService.getExistingFlickrImages()
+      .subscribe(results => {
+        this.existingFlickrImageIDs = results.map(result => result.flickr_image_id);
+        this.search(null);
       });
-    this.search(null);
   }
 
   search(event) {
@@ -50,7 +50,7 @@ export class FlickrSelectorComponent implements OnInit {
 
     this.flickrService.search(search)
       .subscribe(result => {
-        this.results = result.results;
+        this.results = result.results.filter(result => this.existingFlickrImageIDs.indexOf(result.id) == -1);
       });
   }
 

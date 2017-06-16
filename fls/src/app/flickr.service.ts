@@ -5,12 +5,13 @@ import { FlickrSearch, FlickrResult, FlickrImage } from './models/flickr.models'
 import { map, filter } from 'underscore';
 import { Observable } from 'rxjs/Observable';
 
+import 'rxjs/add/operator/mergeMap';
+
 @Injectable()
 export class FlickrService {
 
   private baseURL = 'http://192.168.99.100/';
   private apiURL = `${this.baseURL}api/v1/search/?format=json`;
-  private authURL = `${this.baseURL}ap(token-au/`;
   private apiKey = '6b989cc3f4f8a9cffc10e0a7a2d0ab2c';
 
   constructor(
@@ -18,9 +19,10 @@ export class FlickrService {
     private authenticationService: AuthenticationService
   ) { }
 
-  getExistingSearchs(): Observable<FlickrSearch[]> {
+  getExistingFlickrImages(): Observable<any[]> {
     return this.http.get(this.apiURL, this.jwt())
-      .map((response: Response) => response.json());
+      .map((response: Response) => response.json())
+      .map(values => [].concat.apply([], values.map(value => value.images)));
   }
 
   search(search: FlickrSearch): Observable<any> {
