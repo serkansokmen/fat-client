@@ -4,7 +4,6 @@ import { AuthenticationService } from './authentication.service';
 import { FlickrSearch, FlickrResult, FlickrImage } from './models/flickr.models';
 import { map, filter } from 'underscore';
 import { Observable } from 'rxjs/Observable';
-import { WindowRef } from './window.service';
 
 import 'rxjs/add/operator/mergeMap';
 
@@ -17,13 +16,7 @@ export class FlickrService {
 
   constructor(
     private http: Http,
-    private authenticationService: AuthenticationService,
-    private winRef: WindowRef
-  ) {
-    if (winRef.nativeWindow.isDjango && winRef.nativeWindow.isDjango == true) {
-      this.baseURL = '/';
-    }
-  }
+    private authenticationService: AuthenticationService) { }
 
   getExistingFlickrImages(): Observable<any[]> {
     return this.http.get(this.apiURL, this.jwt())

@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { WindowRef } from './window.service';
 import { AppComponent } from './app.component';
 import { routing } from './app.routing';
 import { AuthGuard } from './auth.guard';
@@ -27,7 +26,6 @@ import { FlickrSelectorComponent } from './flickr-selector/flickr-selector.compo
     routing,
   ],
   providers: [
-    WindowRef,
     AuthGuard,
     AuthenticationService,
     FlickrService,

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
-import { WindowRef } from './window.service';
 
 import 'rxjs/add/operator/map'
 
@@ -13,15 +12,8 @@ export class AuthenticationService {
   private loginURL = `${this.baseURL}auth/login/`;
   private logoutURL = `${this.baseURL}auth/logout/`;
 
-  constructor(
-    private http: Http,
-    private winRef: WindowRef
-  ) {
+  constructor(private http: Http) {
 
-    if (winRef.nativeWindow.isDjango && winRef.nativeWindow.isDjango == true) {
-      debugger
-      this.baseURL = '/';
-    }
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
   }
@@ -56,7 +48,10 @@ export class AuthenticationService {
   }
 
   logout(): Observable<boolean> {
-    let headers = new Headers({ 'Content-Type': 'application/json; charset=utf-8' });
+    let headers = new Headers({
+      'Content-Type': 'application/json; charset=utf-8',
+      'X-CSRFToken': this.getCSRFToken()
+    });
     let options = new RequestOptions({ headers: headers });
     return this.http.post(this.logoutURL, options)
       .map((response: Response) => {
