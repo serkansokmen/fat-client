@@ -6,13 +6,8 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.template.loader import render_to_string
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
-from .models import FlickrSearch, FlickrImage
+from .models import FlickrSearch, FlickrImage, FlickrSearchImage
 from sorl.thumbnail.admin import AdminImageMixin
-
-
-class FlickrImagesInline(AdminImageMixin, admin.TabularInline):
-    model = FlickrSearch.images.through
-    extra = 0
 
 
 class FlickrImageAdmin(admin.ModelAdmin):
@@ -30,8 +25,11 @@ class FlickrSearchAdmin(admin.ModelAdmin):
     list_display = ('query', 'exclude', 'tag_mode', 'user_id')
     list_display_links = ('query',)
     list_filter = ('tag_mode', 'user_id', 'created_at', 'updated_at',)
-    inlines = [FlickrImagesInline,]
     exclude = ('images',)
 admin.site.register(FlickrSearch, FlickrSearchAdmin)
 
 
+class FlickrSearchImageAdmin(AdminImageMixin, admin.ModelAdmin):
+    list_display = ('search', 'image',)
+    list_filter = ('is_approved', 'is_processed', 'is_discarded')
+admin.site.register(FlickrSearchImage, FlickrSearchImageAdmin)
