@@ -4,6 +4,7 @@ export class FlickrSearch {
   exclude: string;
   tagMode: string = 'any';
   perPage: number;
+  images: FlickrImage[];
 }
 
 export class FlickrImage {

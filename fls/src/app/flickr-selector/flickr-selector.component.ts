@@ -14,13 +14,22 @@ import { Observable } from 'rxjs/Observable';
 })
 export class FlickrSelectorComponent implements OnInit {
 
-  searchForm = this.fb.group({
-    userID: [''],
+  tagModes: any[] = [{
+    label: 'AND',
+    value: 'all'
+  }, {
+    label: 'OR',
+    value: 'any'
+  }];
+
+  form = this.formBuilder.group({
     query: ['nude', Validators.required],
     exclude: ['drawing, sketch'],
+    userID: [this.tagModes[0].value],
     tagMode: ['all', Validators.required],
     perPage: [10, Validators.required]
   });
+
   existingFlickrImageIDs: string[];
   results: FlickrResult[];
 
@@ -28,26 +37,19 @@ export class FlickrSelectorComponent implements OnInit {
     private flickrService: FlickrService,
     private authenticationService: AuthenticationService,
     private router: Router,
-    private fb: FormBuilder
+    private formBuilder: FormBuilder
   ) { }
 
   ngOnInit() {
     this.flickrService.getExistingFlickrImages()
       .subscribe(results => {
         this.existingFlickrImageIDs = results.map(result => result.flickr_image_id);
-        this.search(null);
+        this.onSubmit(null);
       });
   }
 
-  search(event) {
-    let value = this.searchForm.value;
-    var search = new FlickrSearch();
-    search.userID = value.userID;
-    search.query = value.query;
-    search.exclude = value.exclude;
-    search.tagMode = value.tagMode;
-    search.perPage = value.perPage;
-
+  onSubmit(event) {
+    let search = this.getFlickrSearch();
     this.flickrService.search(search)
       .subscribe(result => {
         this.results = result.results.filter(result => this.existingFlickrImageIDs.indexOf(result.id) == -1);
@@ -63,6 +65,18 @@ export class FlickrSelectorComponent implements OnInit {
       .subscribe(result => {
         this.router.navigate(['/login']);
       });
-    }
+  }
+
+  private getFlickrSearch(): FlickrSearch {
+    let value = this.form.value;
+    var search = new FlickrSearch();
+    search.userID = value.userID;
+    search.query = value.query;
+    search.exclude = value.exclude;
+    search.tagMode = value.tagMode;
+    search.perPage = value.perPage;
+    // search.images = this.results.map();
+    return search;
+  }
 
 }
