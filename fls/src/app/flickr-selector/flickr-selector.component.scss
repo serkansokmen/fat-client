@@ -7,7 +7,7 @@
   }
 
   md-sidenav {
-    min-width: 400px;
+    min-width: 240px;
 
     form {
       display: flex;
@@ -25,17 +25,6 @@
   md-card {
     width: 240px;
     padding: 5px;
-    md-card-content {
-      img {
-        width: 100%;
-      }
-    }
-  }
-
-  .thumbnail {
-    border: none;
-    background: none;
-    box-shadow: none;
     cursor: pointer;
     position: relative;
     min-width: 200px;
@@ -43,6 +32,21 @@
     height: 240px;
     overflow: auto;
 
+    md-card-content {
+      img {
+        width: 100%;
+      }
+
+      &.is-selected {
+        opacity: 1.0;
+        .fa {
+          display: block;
+        }
+      }
+      &.is-discarded {
+        opacity: 0.5;
+      }
+    }
     &:focus {
       cursor: pointer;
       outline: none;
@@ -61,14 +65,6 @@
       transform: translateX(-50%) translateY(-50%);
       font-size: 48px;
       color: red;
-    }
-    &.deselected {
-      .fa {
-        display: block;
-      }
-      img {
-        opacity: 0.5;
-      }
     }
   }
 

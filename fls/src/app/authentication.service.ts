@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
+import { CookieService } from 'ngx-cookie';
 import { environment } from '../environments/environment';
 
 import 'rxjs/add/operator/map'
@@ -12,7 +13,9 @@ export class AuthenticationService {
 
   private authURL: string;
 
-  constructor(private http: Http) {
+  constructor(
+    private http: Http,
+    private cookieService: CookieService) {
 
     this.authURL = `${environment.authURL}`;
 
@@ -24,14 +27,12 @@ export class AuthenticationService {
   login(username: string, password: string): Observable<boolean> {
     let body = JSON.stringify({ username: username, password: password });
     let headers = new Headers({
-      'Content-Type': 'application/json; charset=utf-8',
-      'X-CSRFToken': this.getCSRFToken()
+      'Content-Type': 'application/json; charset=utf-8'
     });
     let options = new RequestOptions({ headers: headers });
 
     return this.http.post(`${this.authURL}/login/`, body, options)
       .map((response: Response) => {
-        // login successful if there's a jwt token in the response
         let token = response.json() && response.json().key;
         if (token) {
           // set token property
@@ -52,8 +53,7 @@ export class AuthenticationService {
 
   logout(): Observable<boolean> {
     let headers = new Headers({
-      'Content-Type': 'application/json; charset=utf-8',
-      'X-CSRFToken': this.getCSRFToken()
+      'Content-Type': 'application/json; charset=utf-8'
     });
     let options = new RequestOptions({ headers: headers });
     return this.http.post(`${this.authURL}/logout/`, options)
@@ -63,17 +63,5 @@ export class AuthenticationService {
         localStorage.removeItem('currentUser');
         return true;
       });
-  }
-
-  getCSRFToken(): string {
-    return this.getCookie('csrftoken');
-  }
-
-  private getCookie(name) {
-    let value = `; ${document.cookie}`;
-    let parts = value.split(`; ${name}=`);
-    if (parts.length == 2) {
-      return parts.pop().split(';').shift();
-    }
   }
 }

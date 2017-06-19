@@ -6,6 +6,7 @@ django-rest-auth
 django-crispy-forms==1.6.1
 django-extensions==1.7.9
 django-filter
+django-tagging
 dj-database-url
 gunicorn==19.7.1
 psycopg2==2.7.1

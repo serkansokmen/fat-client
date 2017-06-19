@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthenticationService } from '../authentication.service';
 import { FlickrService } from '../flickr.service';
-import { FlickrSearch, FlickrResult, FlickrImage } from '../models/flickr.models';
+import { FlickrSearch, FlickrImage } from '../models/flickr.models';
 import { Observable } from 'rxjs/Observable';
 
 @Component({
@@ -14,8 +14,8 @@ import { Observable } from 'rxjs/Observable';
 })
 export class FlickrSelectorComponent implements OnInit {
 
-  @Input('query') query: string = 'train';
-  @Input('exclude') exclude: string = 'cow';
+  @Input('query') query: string = 'box';
+  @Input('exclude') exclude: string = 'ring';
 
   tagModes: any[] = [{
     label: 'AND',
@@ -26,9 +26,7 @@ export class FlickrSelectorComponent implements OnInit {
   }];
 
   form: FormGroup;
-
-  existingFlickrImageIDs: string[];
-  results: FlickrResult[];
+  images: FlickrImage[];
 
   constructor(
     private flickrService: FlickrService,
@@ -41,60 +39,58 @@ export class FlickrSelectorComponent implements OnInit {
     this.form = this.formBuilder.group({
       query: [this.query, Validators.required],
       exclude: [this.exclude],
-      userID: [this.tagModes[0].value],
-      tagMode: ['all', Validators.required],
+      userID: [''],
+      tagMode: [this.tagModes[0].value, Validators.required],
       perPage: [10, Validators.required]
     });
     this.flickrService.getExistingFlickrImages()
       .subscribe(results => {
-        this.existingFlickrImageIDs = results.map(result => result.flickr_image_id);
-        this.getFlickrResults();
+        this.images = results;
+        this.handleSearch(null);
       });
   }
 
-  onSubmit(event) {
-    this.getFlickrResults();
-  }
-
-  toggle(result: FlickrResult) {
-    result.isSelected = !result.isSelected;
-  }
-
-  logout() {
-    this.authenticationService.logout()
+  handleSearch(event) {
+    let value = this.form.value;
+    let search = new FlickrSearch();
+    search.userID = value.userID;
+    search.query = value.query;
+    search.exclude = value.exclude;
+    search.tagMode = value.tagMode;
+    search.perPage = value.perPage;
+    search.images = this.images && this.images.map(result => new FlickrImage(result));
+    this.flickrService.search(search)
       .subscribe(result => {
-        this.router.navigate(['/login']);
+        console.log(result.results);
+        this.images = result.results;
       });
   }
 
-  onSave(event) {
-    let search = this.getFlickrSearch();
+  toggleDiscarded(result: FlickrImage) {
+    result.is_discarded = !result.is_discarded;
+  }
+
+  handleSave(event) {
+    let value = this.form.value;
+    let search = new FlickrSearch();
+    search.userID = value.userID;
+    search.query = value.query;
+    search.exclude = value.exclude;
+    search.tagMode = value.tagMode;
+    search.perPage = value.perPage;
+    search.images = this.images;
     this.flickrService.saveSearch(search)
       .subscribe(result => {
         console.log(result);
       });
   }
 
-  private getFlickrResults() {
-    let search = this.getFlickrSearch();
-    this.flickrService.search(search)
+  logout(event) {
+    console.log(event);
+    this.authenticationService.logout()
       .subscribe(result => {
-        this.results = result.results.filter(result => this.existingFlickrImageIDs.indexOf(result.id) == -1);
+        this.router.navigate(['/login']);
       });
-  }
-
-  private getFlickrSearch(): FlickrSearch {
-    let value = this.form.value;
-    var search = new FlickrSearch();
-    search.userID = value.userID;
-    search.query = value.query;
-    search.exclude = value.exclude;
-    search.tagMode = value.tagMode;
-    search.perPage = value.perPage;
-    search.images = this.results && this.results
-      .filter(result => result.isSelected)
-      .map(result => new FlickrImage(result.id, result.url));
-    return search;
   }
 
 }

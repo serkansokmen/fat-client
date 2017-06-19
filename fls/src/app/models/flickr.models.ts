@@ -8,16 +8,25 @@ export class FlickrSearch {
 }
 
 export class FlickrImage {
-  constructor(
-    public flickr_image_id: number,
-    public flickr_image_url: string) {}
-}
-
-export class FlickrResult {
-  id: number;
-  url: string;
+  title: string;
+  flickr_image_id: number;
+  flickr_image_url: string;
   thumbnail: string;
   tags: string;
   license: number;
-  isSelected: boolean = true;
+  is_discarded: boolean;
+
+  constructor(data: any) {
+    this.title = data.title || '';
+    this.flickr_image_id = data.id || data.flickr_image_id;
+    this.flickr_image_url = data.flickr_image_url || `https://farm${data.farm}.staticflickr.com/${data.server}/${data.id}_${data.secret}.jpg`;
+    this.thumbnail = `https://farm${data.farm}.staticflickr.com/${data.server}/${data.id}_${data.secret}_q.jpg`;
+    this.tags = data.tags;
+    this.license = data.license;
+    this.is_discarded = false;
+  }
+
+  toggleDiscarded() {
+    this.is_discarded = !this.is_discarded;
+  }
 }

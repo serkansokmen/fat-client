@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { PlatformLocation } from '@angular/common';
-import { AuthenticationService } from './authentication.service';
-import { FlickrSearch, FlickrResult, FlickrImage } from './models/flickr.models';
+import { CookieService } from 'ngx-cookie';
+import { FlickrSearch, FlickrImage } from './models/flickr.models';
 import { map, filter } from 'underscore';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../environments/environment';
@@ -12,24 +12,35 @@ import 'rxjs/add/operator/mergeMap';
 @Injectable()
 export class FlickrService {
 
-  private apiURL: string;
+  private endpoint: string;
   private apiKey: string;
+  private existingImages: FlickrImage[];
 
   constructor(
     private http: Http,
-    private authenticationService: AuthenticationService) {
+    private cookieService: CookieService) {
 
-    this.apiURL = `${environment.apiURL}/search/?format=json`;
+    this.endpoint = `${environment.apiURL}/search/?format=json`;
     this.apiKey = `${environment.flickrApiKey}`
   }
 
-  getExistingFlickrImages(): Observable<any[]> {
-    return this.http.get(this.apiURL, this.jwt())
+  getExistingFlickrImages(): Observable<FlickrImage[]> {
+    // let headers = new Headers({
+    //   'Content-Type': 'application/json; charset=utf-8',
+    //   'X-CSRFToken': this.cookieService.get('csrftoken')
+    // });
+    // let options = new RequestOptions({ headers: headers });
+    return this.http.get(this.endpoint, this.jwt())
       .map((response: Response) => response.json())
-      .map(values => [].concat.apply([], values.map(value => value.images)));
+      .map(values => [].concat.apply([], values.map(value => value.images)))
+      .map(images => {
+        this.existingImages = images.map(data => new FlickrImage(data));
+        return this.existingImages;
+      });
   }
 
   search(search: FlickrSearch): Observable<any> {
+
     let queryStr = search.query;
     let excludeStr = search.exclude.split(',').map(str => ` -${str.trim()}`).join(',');
     var searchQuery = queryStr;
@@ -58,22 +69,24 @@ export class FlickrService {
           alert('Unable to get photos from Flickr:' + result.message);
           return;
         }
-
         return {
           totalPages: result.photos.pages,
-          results: result.photos.photo.map((p) => {
-            var result = new FlickrResult();
-            new FlickrResult();
-            result.id = p.id;
-            result.url = `https://farm${p.farm}.staticflickr.com/${p.server}/${p.id}_${p.secret}.jpg`;
-            result.thumbnail = `https://farm${p.farm}.staticflickr.com/${p.server}/${p.id}_${p.secret}_q.jpg`;
-            result.tags = p.tags;
-            result.license = p.license;
-            return result;
-          })
+          results: result.photos.photo
+            .filter(photo => {
+              for (let existing of this.existingImages) {
+                if (existing.flickr_image_id == photo.id) {
+                  return false;
+                }
+              }
+              return true;
+            })
+            .map(photo => {
+              return new FlickrImage(photo);
+            })
         };
       });
   };
+
 
   saveSearch(search: FlickrSearch) {
     let body = JSON.stringify({
@@ -81,22 +94,17 @@ export class FlickrService {
       exclude: search.exclude,
       user_id: search.userID,
       tag_mode: search.tagMode,
-      images: search.images.map(image => {
-        return {
-          flickr_image_id: image.flickr_image_id,
-          flickr_image_url: image.flickr_image_url
-        };
-      })
+      images: search.images
     });
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser && currentUser.token) {
       let headers = new Headers({
         'Content-Type': 'application/json; charset=utf-8',
-        'X-CSRFToken': this.authenticationService.getCSRFToken(),
-        'Authorization': 'Token ' + currentUser.token
+        'X-CSRFToken': this.cookieService.get('csrftoken'),
+        'Authorization': `Token ${currentUser.token}`
       });
       let options = new RequestOptions({ headers: headers });
-      return this.http.post(this.apiURL, body, options)
+      return this.http.post(this.endpoint, body, options)
         .map((response: Response) => response.json());
     }
   }
@@ -105,7 +113,9 @@ export class FlickrService {
     // create authorization header with jwt token
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser && currentUser.token) {
-      let headers = new Headers({ 'Authorization': 'Token ' + currentUser.token });
+      let headers = new Headers({
+        'Authorization': `Token ${currentUser.token}`
+      });
       return new RequestOptions({ headers: headers });
     }
   }

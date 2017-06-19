@@ -1,7 +1,7 @@
 <md-sidenav-container class="example-sidenav-fab-container">
   <md-sidenav #sidenav mode="side" opened="true">
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit($event)" novalidate>
+    <form [formGroup]="form" (ngSubmit)="handleSearch($event)" novalidate>
 
         <md-input-container><input mdInput formControlName="query" type="text" placeholder="Search for keywords"/></md-input-container>
         <md-input-container><input mdInput formControlName="exclude" type="text" placeholder="Exclude keywords"/></md-input-container>
@@ -15,8 +15,8 @@
         <button md-mini-fab type="submit"><md-icon>search</md-icon></button>
 
         <div class="form-controls">
-          <button md-raised-button type="button" (click)="onSave($event)"><md-icon>save</md-icon> Save</button>
-          <button md-raised-button (click)="logout()" [disabled]="form.invalid"><md-icon>logout</md-icon> Logout</button>
+          <button md-raised-button type="button" (click)="handleSave($event)"><md-icon>save</md-icon> Save</button>
+          <button md-raised-button (click)="logout($event)">Logout</button>
         </div>
     </form>
   </md-sidenav>
@@ -26,18 +26,18 @@
   </button>
 
   <div class="thumbnails">
-    <md-card *ngFor="let result of results" [class.deselected]="!result.isSelected">
+    <md-card *ngFor="let image of images">
       <!-- <md-card-header> -->
         <!-- <md-card-title-group> -->
-          <!-- <md-card-title><span *ngIf="!result.isSelected" class="fa fa-remove"></span>{{ result.id }}</md-card-title> -->
-          <!-- <md-card-subtitle>{{ result.url }}</md-card-subtitle> -->
+          <!-- <md-card-title><span *ngIf="image.is_discarded" class="fa fa-remove"></span>{{ image.flickr_image_id }}</md-card-title> -->
+          <!-- <md-card-subtitle>{{ image.flickr_image_url }}</md-card-subtitle> -->
         <!-- </md-card-title-group> -->
       <!-- </md-card-header> -->
-      <md-card-content class="thumbnail" [class.deselected]="!result.isSelected" (click)="toggle(result)">
-        <img md-card-image [src]="result.url" [alt]="result.id" />
+      <md-card-content class="thumbnail" [class.is-discarded]="image.is_discarded" (click)="image.toggleDiscarded()">
+        <img md-card-image [src]="image.flickr_image_url" [alt]="image.flickr_image_id" />
         <div class="meta">
-          <strong>Tags:</strong> {{ result.tags }} <br>
-          <strong>License:</strong> {{ result.license }}
+          <strong>Tags:</strong> {{ image.tags }} <br>
+          <strong>License:</strong> {{ image.license }}
         </div>
       </md-card-content>
 
