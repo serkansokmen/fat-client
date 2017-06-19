@@ -6,6 +6,7 @@ django-rest-auth
 django-crispy-forms==1.6.1
 django-extensions==1.7.9
 django-filter
+dj-database-url
 gunicorn==19.7.1
 psycopg2==2.7.1
 redis==2.10.5
@@ -13,3 +14,4 @@ sorl-thumbnail==12.4a1
 sorl-thumbnail-serializer-field==0.1
 beautifulsoup4
 whitenoise==3.3.0
+django-dotenv

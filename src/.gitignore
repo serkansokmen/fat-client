@@ -5,3 +5,4 @@ cache/
 staticfiles/
 media/
 *.log
+.env
