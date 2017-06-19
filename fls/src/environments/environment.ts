@@ -4,5 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  apiURL: 'http://127.0.0.1:8000/api/v1',
+  authURL: 'http://127.0.0.1:8000/auth',
+  flickrApiKey: '6b989cc3f4f8a9cffc10e0a7a2d0ab2c'
 };
