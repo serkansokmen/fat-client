@@ -1,22 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { PlatformLocation } from '@angular/common';
 import { AuthenticationService } from './authentication.service';
 import { FlickrSearch, FlickrResult, FlickrImage } from './models/flickr.models';
 import { map, filter } from 'underscore';
 import { Observable } from 'rxjs/Observable';
+import { environment } from '../environments/environment';
 
 import 'rxjs/add/operator/mergeMap';
 
 @Injectable()
 export class FlickrService {
 
-  private baseURL = 'http://127.0.0.1:8000/';
-  private apiURL = `${this.baseURL}api/v1/search/?format=json`;
-  private apiKey = '6b989cc3f4f8a9cffc10e0a7a2d0ab2c';
+  private apiURL: string;
+  private apiKey: string;
 
   constructor(
     private http: Http,
-    private authenticationService: AuthenticationService) { }
+    private authenticationService: AuthenticationService) {
+
+    this.apiURL = `${environment.apiURL}/search/?format=json`;
+    this.apiKey = `${environment.flickrApiKey}`
+  }
 
   getExistingFlickrImages(): Observable<any[]> {
     return this.http.get(this.apiURL, this.jwt())
@@ -83,13 +88,17 @@ export class FlickrService {
         };
       })
     });
-    let headers = new Headers({
-      'Content-Type': 'application/json; charset=utf-8',
-      'X-CSRFToken': this.authenticationService.getCSRFToken()
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.post(this.apiURL, body, options)
-      .map((response: Response) => response.json());
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser && currentUser.token) {
+      let headers = new Headers({
+        'Content-Type': 'application/json; charset=utf-8',
+        'X-CSRFToken': this.authenticationService.getCSRFToken(),
+        'Authorization': 'Token ' + currentUser.token
+      });
+      let options = new RequestOptions({ headers: headers });
+      return this.http.post(this.apiURL, body, options)
+        .map((response: Response) => response.json());
+    }
   }
 
   private jwt() {

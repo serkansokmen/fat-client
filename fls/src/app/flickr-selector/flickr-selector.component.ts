@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -14,6 +14,9 @@ import { Observable } from 'rxjs/Observable';
 })
 export class FlickrSelectorComponent implements OnInit {
 
+  @Input('query') query: string = 'train';
+  @Input('exclude') exclude: string = 'cow';
+
   tagModes: any[] = [{
     label: 'AND',
     value: 'all'
@@ -23,8 +26,8 @@ export class FlickrSelectorComponent implements OnInit {
   }];
 
   form = this.formBuilder.group({
-    query: ['nude', Validators.required],
-    exclude: ['drawing, sketch'],
+    query: [this.query, Validators.required],
+    exclude: [this.exclude],
     userID: [this.tagModes[0].value],
     tagMode: ['all', Validators.required],
     perPage: [10, Validators.required]

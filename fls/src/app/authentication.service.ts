@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 import 'rxjs/add/operator/map'
 
@@ -8,11 +9,12 @@ import 'rxjs/add/operator/map'
 export class AuthenticationService {
 
   public token: string;
-  private baseURL = 'http://127.0.0.1:8000/';
-  private loginURL = `${this.baseURL}auth/login/`;
-  private logoutURL = `${this.baseURL}auth/logout/`;
+
+  private authURL: string;
 
   constructor(private http: Http) {
+
+    this.authURL = `${environment.authURL}`;
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
@@ -26,7 +28,8 @@ export class AuthenticationService {
       'X-CSRFToken': this.getCSRFToken()
     });
     let options = new RequestOptions({ headers: headers });
-    return this.http.post(this.loginURL, body, options)
+
+    return this.http.post(`${this.authURL}/login/`, body, options)
       .map((response: Response) => {
         // login successful if there's a jwt token in the response
         let token = response.json() && response.json().key;
@@ -53,7 +56,7 @@ export class AuthenticationService {
       'X-CSRFToken': this.getCSRFToken()
     });
     let options = new RequestOptions({ headers: headers });
-    return this.http.post(this.logoutURL, options)
+    return this.http.post(`${this.authURL}/logout/`, options)
       .map((response: Response) => {
         // clear token remove user from local storage to log user out
         this.token = null;
