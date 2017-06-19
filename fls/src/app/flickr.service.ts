@@ -10,7 +10,7 @@ import 'rxjs/add/operator/mergeMap';
 @Injectable()
 export class FlickrService {
 
-  private baseURL = 'http://192.168.99.100/';
+  private baseURL = 'http://127.0.0.1:8000/';
   private apiURL = `${this.baseURL}api/v1/search/?format=json`;
   private apiKey = '6b989cc3f4f8a9cffc10e0a7a2d0ab2c';
 

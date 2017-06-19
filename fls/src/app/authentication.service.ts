@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map'
 export class AuthenticationService {
 
   public token: string;
-  private baseURL = 'http://192.168.99.100/';
+  private baseURL = 'http://127.0.0.1:8000/';
   private loginURL = `${this.baseURL}auth/login/`;
   private logoutURL = `${this.baseURL}auth/logout/`;
 

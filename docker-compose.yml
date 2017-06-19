@@ -1,15 +1,15 @@
 web:
   restart: always
-  build: ./web
+  build: ./src
   expose:
     - "8000"
   links:
     - postgres:postgres
     - redis:redis
   volumes:
-    - ./web:/usr/src/app/
-    - ./web/static:/usr/src/app/static
-    - ./web/media:/usr/src/app/media
+    - ./src:/usr/src/app/
+    - ./src/static:/usr/src/app/static
+    - ./src/media:/usr/src/app/media
   env_file: .env
   environment:
     DEBUG: 'true'
