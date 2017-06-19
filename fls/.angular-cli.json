@@ -19,7 +19,8 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "fls",
       "styles": [
-        "styles.scss"
+        "styles.scss",
+        "app.theme.scss"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

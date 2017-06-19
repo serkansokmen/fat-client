@@ -6,7 +6,33 @@
     justify-content: flex-start;
   }
 
-  button {
+  md-sidenav {
+    min-width: 400px;
+
+    form {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-direction: column;
+      padding-top: 20px;
+
+      > * {
+        margin: 5px 20px 5px 20px;
+      }
+    }
+  }
+
+  md-card {
+    width: 240px;
+    padding: 5px;
+    md-card-content {
+      img {
+        width: 100%;
+      }
+    }
+  }
+
+  .thumbnail {
     border: none;
     background: none;
     box-shadow: none;
@@ -14,10 +40,8 @@
     position: relative;
     min-width: 200px;
     display: block;
-
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    height: 240px;
+    overflow: auto;
 
     &:focus {
       cursor: pointer;
@@ -28,6 +52,7 @@
       width: 100%;
       max-width: 320px;
     }
+
     .fa {
       display: none;
       position: absolute;

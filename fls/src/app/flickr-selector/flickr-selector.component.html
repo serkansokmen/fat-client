@@ -1,29 +1,48 @@
-<div class="col-md-6 col-md-offset-3">
-  <form [formGroup]="form" (ngSubmit)="onSubmit($event)" novalidate>
-    <input formControlName="query" type="text" placeholder="Search for keywords">
-    <input formControlName="exclude" type="text" placeholder="Exclude keywords">
-    <input formControlName="userID" type="text" placeholder="User ID (Optional)">
-    <select formControlName="tagMode">
-      <option *ngFor="let mode of tagModes" [value]="mode.value">{{ mode.label }}</option>
-    </select>
-    <input formControlName="perPage" type="number" placeholder="How many per page?">
-    <div class="form-controls">
-      <button type="submit">Search</button>
-      <button type="button" (click)="onSave($event)">Save</button>
-    </div>
-  </form>
+<md-sidenav-container class="example-sidenav-fab-container">
+  <md-sidenav #sidenav mode="side" opened="true">
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit($event)" novalidate>
+
+        <md-input-container><input mdInput formControlName="query" type="text" placeholder="Search for keywords"/></md-input-container>
+        <md-input-container><input mdInput formControlName="exclude" type="text" placeholder="Exclude keywords"/></md-input-container>
+        <md-input-container><input mdInput formControlName="userID" type="text" placeholder="User ID (Optional)"/></md-input-container>
+        <md-select placeholder="Tag Mode" formControlName="tagMode">
+          <md-option *ngFor="let mode of tagModes" [value]="mode.value">{{ mode.label }}</md-option>
+        </md-select>
+        <md-input-container>
+          <input mdInput formControlName="perPage" type="number" placeholder="How many per page?"/>
+        </md-input-container>
+        <button md-mini-fab type="submit"><md-icon>search</md-icon></button>
+
+        <div class="form-controls">
+          <button md-raised-button type="button" (click)="onSave($event)"><md-icon>save</md-icon> Save</button>
+          <button md-raised-button (click)="logout()" [disabled]="form.invalid"><md-icon>logout</md-icon> Logout</button>
+        </div>
+    </form>
+  </md-sidenav>
+
+  <button md-mini-fab (click)="sidenav.toggle()">
+    <md-icon>menu</md-icon>
+  </button>
+
   <div class="thumbnails">
-    <button *ngFor="let result of results" (click)="toggle(result)" [class.deselected]="!result.isSelected">
-      <img [src]="result.url" [alt]="result.id">
-      <span class="fa fa-remove"></span>
-      <div class="meta">
-        ID: {{ result.id }} <br>
-        License: {{ result.license }} <br>
-        Tags: {{ result.tags }}
-      </div>
-    </button>
+    <md-card *ngFor="let result of results" [class.deselected]="!result.isSelected">
+      <!-- <md-card-header> -->
+        <!-- <md-card-title-group> -->
+          <!-- <md-card-title><span *ngIf="!result.isSelected" class="fa fa-remove"></span>{{ result.id }}</md-card-title> -->
+          <!-- <md-card-subtitle>{{ result.url }}</md-card-subtitle> -->
+        <!-- </md-card-title-group> -->
+      <!-- </md-card-header> -->
+      <md-card-content class="thumbnail" [class.deselected]="!result.isSelected" (click)="toggle(result)">
+        <img md-card-image [src]="result.url" [alt]="result.id" />
+        <div class="meta">
+          <strong>Tags:</strong> {{ result.tags }} <br>
+          <strong>License:</strong> {{ result.license }}
+        </div>
+      </md-card-content>
+
+    </md-card>
   </div>
-  <p>
-    <button (click)="logout()" [disabled]="form.invalid">Logout</button>
-  </p>
-</div>
+
+
+</md-sidenav-container>

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthenticationService } from '../authentication.service';
 import { FlickrService } from '../flickr.service';
@@ -25,13 +25,7 @@ export class FlickrSelectorComponent implements OnInit {
     value: 'any'
   }];
 
-  form = this.formBuilder.group({
-    query: [this.query, Validators.required],
-    exclude: [this.exclude],
-    userID: [this.tagModes[0].value],
-    tagMode: ['all', Validators.required],
-    perPage: [10, Validators.required]
-  });
+  form: FormGroup;
 
   existingFlickrImageIDs: string[];
   results: FlickrResult[];
@@ -44,6 +38,13 @@ export class FlickrSelectorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.form = this.formBuilder.group({
+      query: [this.query, Validators.required],
+      exclude: [this.exclude],
+      userID: [this.tagModes[0].value],
+      tagMode: ['all', Validators.required],
+      perPage: [10, Validators.required]
+    });
     this.flickrService.getExistingFlickrImages()
       .subscribe(results => {
         this.existingFlickrImageIDs = results.map(result => result.flickr_image_id);
