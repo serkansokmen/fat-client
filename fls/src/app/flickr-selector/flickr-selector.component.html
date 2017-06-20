@@ -12,18 +12,24 @@
         <md-input-container>
           <input mdInput formControlName="perPage" type="number" placeholder="How many per page?"/>
         </md-input-container>
-        <button md-mini-fab type="submit" [disabled]="isRequesting"><md-icon>search</md-icon></button>
 
-        <div class="form-controls">
-          <button md-raised-button type="button" (click)="handleSave($event)" [disabled]="isRequesting"><md-icon>save</md-icon> Save</button>
-          <button md-raised-button (click)="logout($event)">Logout</button>
+        <div class="form-controls" *ngIf="!isRequesting">
+          <p><button md-raised-button type="submit" [disabled]="isRequesting"><md-icon>search</md-icon> Search</button></p>
+          <p><button md-button color="primary" type="button" (click)="handleSave($event)" [disabled]="isRequesting"><md-icon>save</md-icon> Save</button></p>
+          <hr>
         </div>
+        <md-progress-spinner *ngIf="isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
+        <p><button md-raised-button (click)="logout($event)"><md-icon>exit_to_app</md-icon> Logout</button></p>
     </form>
   </md-sidenav>
 
-  <button md-mini-fab (click)="sidenav.toggle()">
-    <md-icon>menu</md-icon>
-  </button>
+  <md-toolbar color="primary">
+    <button md-mini-fab (click)="sidenav.toggle()">
+      <md-icon>more_vert</md-icon>
+    </button>
+    <span class="spacer"></span>
+    <span>Flickr Search Tool</span>
+  </md-toolbar>
 
   <div class="thumbnails">
     <md-card *ngFor="let image of images">
@@ -34,17 +40,24 @@
           <!-- <md-card-subtitle>{{ image.flickr_image_url }}</md-card-subtitle> -->
         <!-- </md-card-title-group> -->
       <!-- </md-card-header> -->
-      <md-card-content class="thumbnail" [class.is-discarded]="image.is_discarded" (click)="image.toggleDiscarded()">
+      <md-card-content
+        [class.disabled]="isRequesting"
+        [class.is-discarded]="image.is_discarded"
+        (click)="image.toggleDiscarded()">
         <img md-card-image [src]="image.flickr_image_url" [alt]="image.flickr_image_id" />
+        <div>
+          <md-icon color="primary" *ngIf="image.is_discarded">close</md-icon>
+          <md-icon color="primary" *ngIf="!image.is_discarded">check</md-icon>
+        </div>
         <div class="meta" *ngIf="selectedImage == image">
           <strong>Tags:</strong> {{ image.tags }} <br>
           <strong>License:</strong> {{ image.license }}
         </div>
       </md-card-content>
 
-      <md-card-actions>
+      <!-- <md-card-actions>
         <button md-button (click)="selectImage(image)">Info</button>
-      </md-card-actions>
+      </md-card-actions> -->
 
     </md-card>
   </div>
