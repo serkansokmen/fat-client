@@ -11,7 +11,7 @@ from sorl.thumbnail import ImageField
 class FlickrImage(models.Model):
 
     image = ImageField(upload_to='flickr_images', blank=True, null=True)
-    flickr_image_id = models.CharField(max_length=255)
+    flickr_image_id = models.CharField(max_length=255, unique=True)
     flickr_image_url = models.URLField()
     license = models.CharField(max_length=255)
     tags = models.TextField(blank=True, null=True)
@@ -67,13 +67,13 @@ class FlickrSearchImage(models.Model):
 
 @receiver(post_save, sender=FlickrSearchImage)
 def flickr_search_image_post_save(sender, instance, **kwargs):
-    if instance.image.is_discarded == False:
-        img_id = instance.image.flickr_image_id
-        img_url = instance.image.flickr_image_url
-        img_temp = NamedTemporaryFile(delete=True)
-        img_temp.write(urlopen(img_url).read())
-        img_temp.flush()
-        instance.image.image.save(img_id + '.jpg', File(img_temp))
+    # if instance.image.is_discarded == False:
+    img_id = instance.image.flickr_image_id
+    img_url = instance.image.flickr_image_url
+    img_temp = NamedTemporaryFile(delete=True)
+    img_temp.write(urlopen(img_url).read())
+    img_temp.flush()
+    instance.image.image.save(img_id + '.jpg', File(img_temp))
 
 
 @receiver(post_delete, sender=FlickrSearchImage)

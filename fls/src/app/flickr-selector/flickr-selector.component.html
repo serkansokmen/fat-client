@@ -1,4 +1,4 @@
-<md-sidenav-container class="example-sidenav-fab-container">
+<md-sidenav-container>
   <md-sidenav #sidenav mode="side" opened="true">
 
     <form [formGroup]="form" (ngSubmit)="handleSearch($event)" novalidate>
@@ -12,10 +12,10 @@
         <md-input-container>
           <input mdInput formControlName="perPage" type="number" placeholder="How many per page?"/>
         </md-input-container>
-        <button md-mini-fab type="submit"><md-icon>search</md-icon></button>
+        <button md-mini-fab type="submit" [disabled]="isRequesting"><md-icon>search</md-icon></button>
 
         <div class="form-controls">
-          <button md-raised-button type="button" (click)="handleSave($event)"><md-icon>save</md-icon> Save</button>
+          <button md-raised-button type="button" (click)="handleSave($event)" [disabled]="isRequesting"><md-icon>save</md-icon> Save</button>
           <button md-raised-button (click)="logout($event)">Logout</button>
         </div>
     </form>
@@ -27,19 +27,24 @@
 
   <div class="thumbnails">
     <md-card *ngFor="let image of images">
-      <!-- <md-card-header> -->
+      <!-- <md-card-header *ngIf="image.title"> -->
+        <!-- <md-card-title>{{ image.title }}</md-card-title> -->
         <!-- <md-card-title-group> -->
-          <!-- <md-card-title><span *ngIf="image.is_discarded" class="fa fa-remove"></span>{{ image.flickr_image_id }}</md-card-title> -->
+          <!-- <md-card-title><span class="fa fa-remove"></span>{{ image.flickr_image_id }}</md-card-title> -->
           <!-- <md-card-subtitle>{{ image.flickr_image_url }}</md-card-subtitle> -->
         <!-- </md-card-title-group> -->
       <!-- </md-card-header> -->
       <md-card-content class="thumbnail" [class.is-discarded]="image.is_discarded" (click)="image.toggleDiscarded()">
         <img md-card-image [src]="image.flickr_image_url" [alt]="image.flickr_image_id" />
-        <div class="meta">
+        <div class="meta" *ngIf="selectedImage == image">
           <strong>Tags:</strong> {{ image.tags }} <br>
           <strong>License:</strong> {{ image.license }}
         </div>
       </md-card-content>
+
+      <md-card-actions>
+        <button md-button (click)="selectImage(image)">Info</button>
+      </md-card-actions>
 
     </md-card>
   </div>

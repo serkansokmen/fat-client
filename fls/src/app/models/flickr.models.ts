@@ -23,7 +23,7 @@ export class FlickrImage {
     this.thumbnail = `https://farm${data.farm}.staticflickr.com/${data.server}/${data.id}_${data.secret}_q.jpg`;
     this.tags = data.tags;
     this.license = data.license;
-    this.is_discarded = false;
+    this.is_discarded = data.is_discarded || false;
   }
 
   toggleDiscarded() {

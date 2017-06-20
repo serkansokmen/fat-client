@@ -31,5 +31,15 @@ admin.site.register(FlickrSearch, FlickrSearchAdmin)
 
 
 class FlickrSearchImageAdmin(AdminImageMixin, admin.ModelAdmin):
-    list_display = ('search', 'image',)
+    list_display = ('search', 'thumb', 'is_discarded',)
+
+    def thumb(self, obj):
+        return render_to_string('admin/thumb.html', {
+            'image': obj.image.image
+        })
+    thumb.allow_tags = True
+
+    def is_discarded(self, obj):
+        return obj.image.is_discarded
+    is_discarded.allow_tags = True
 admin.site.register(FlickrSearchImage, FlickrSearchImageAdmin)

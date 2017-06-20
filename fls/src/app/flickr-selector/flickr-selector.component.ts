@@ -26,7 +26,9 @@ export class FlickrSelectorComponent implements OnInit {
   }];
 
   form: FormGroup;
-  images: FlickrImage[];
+  images: FlickrImage[] = [];
+  selectedImage: FlickrImage;
+  isRequesting: boolean = false;
 
   constructor(
     private flickrService: FlickrService,
@@ -43,10 +45,12 @@ export class FlickrSelectorComponent implements OnInit {
       tagMode: [this.tagModes[0].value, Validators.required],
       perPage: [10, Validators.required]
     });
+    this.isRequesting = true;
     this.flickrService.getExistingFlickrImages()
       .subscribe(results => {
-        this.images = results;
+        this.selectedImage = null;
         this.handleSearch(null);
+        this.isRequesting = false;
       });
   }
 
@@ -59,15 +63,20 @@ export class FlickrSelectorComponent implements OnInit {
     search.tagMode = value.tagMode;
     search.perPage = value.perPage;
     search.images = this.images && this.images.map(result => new FlickrImage(result));
+    this.isRequesting = true;
     this.flickrService.search(search)
       .subscribe(result => {
-        console.log(result.results);
-        this.images = result.results;
+        this.images = result.results.filter((image, key) => { return key < search.perPage });
+        this.isRequesting = false;
       });
   }
 
   toggleDiscarded(result: FlickrImage) {
     result.is_discarded = !result.is_discarded;
+  }
+
+  selectImage(image) {
+    this.selectedImage == image ? this.selectedImage = null : this.selectedImage = image;
   }
 
   handleSave(event) {
@@ -79,14 +88,16 @@ export class FlickrSelectorComponent implements OnInit {
     search.tagMode = value.tagMode;
     search.perPage = value.perPage;
     search.images = this.images;
+    this.isRequesting = true;
     this.flickrService.saveSearch(search)
       .subscribe(result => {
-        console.log(result);
+        window.location.reload();
+        this.isRequesting = false;
+        // this.images = result.images.filter(image => !image.is_discarded);
       });
   }
 
   logout(event) {
-    console.log(event);
     this.authenticationService.logout()
       .subscribe(result => {
         this.router.navigate(['/login']);

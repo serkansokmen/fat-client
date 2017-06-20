@@ -3,7 +3,7 @@ import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { PlatformLocation } from '@angular/common';
 import { CookieService } from 'ngx-cookie';
 import { FlickrSearch, FlickrImage } from './models/flickr.models';
-import { map, filter } from 'underscore';
+import { map, filter, union } from 'underscore';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../environments/environment';
 
@@ -14,7 +14,7 @@ export class FlickrService {
 
   private endpoint: string;
   private apiKey: string;
-  private existingImages: FlickrImage[];
+  private existingImages: FlickrImage[] = [];
 
   constructor(
     private http: Http,
@@ -25,16 +25,13 @@ export class FlickrService {
   }
 
   getExistingFlickrImages(): Observable<FlickrImage[]> {
-    // let headers = new Headers({
-    //   'Content-Type': 'application/json; charset=utf-8',
-    //   'X-CSRFToken': this.cookieService.get('csrftoken')
-    // });
-    // let options = new RequestOptions({ headers: headers });
     return this.http.get(this.endpoint, this.jwt())
       .map((response: Response) => response.json())
       .map(values => [].concat.apply([], values.map(value => value.images)))
       .map(images => {
-        this.existingImages = images.map(data => new FlickrImage(data));
+        this.existingImages = images
+          .map(data => new FlickrImage(data))
+          // .filter(image => !image.is_discarded);
         return this.existingImages;
       });
   }
@@ -57,7 +54,8 @@ export class FlickrService {
       '&content_type=7' +
       '&media=photos' +
       '&extras=license,tags' +
-      `&per_page=${search.perPage + 1}` +
+      // `&per_page=${search.perPage + 1}` +
+      `&per_page=${100}` +
       // `&page=${page}` +
       `&tags=${searchQuery}` +
       `&tag_mode=${search.tagMode}`;
@@ -73,12 +71,9 @@ export class FlickrService {
           totalPages: result.photos.pages,
           results: result.photos.photo
             .filter(photo => {
-              for (let existing of this.existingImages) {
-                if (existing.flickr_image_id == photo.id) {
-                  return false;
-                }
-              }
-              return true;
+              return this.existingImages
+                .filter(image => image.flickr_image_id == photo.id)
+                .length == 0;
             })
             .map(photo => {
               return new FlickrImage(photo);
