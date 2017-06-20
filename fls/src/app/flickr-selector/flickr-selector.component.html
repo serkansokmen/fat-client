@@ -1,7 +1,7 @@
 <md-sidenav-container>
-  <md-sidenav #sidenav mode="push" opened="true">
+  <md-sidenav #sidenav mode="side" opened="true">
 
-    <form [formGroup]="form" (ngSubmit)="handleSearch($event); sidenav.close()" novalidate>
+    <form [formGroup]="form" (ngSubmit)="handleSearch($event)" novalidate>
 
         <md-input-container><input mdInput formControlName="query" type="text" placeholder="Search for keywords"/></md-input-container>
         <md-input-container><input mdInput formControlName="exclude" type="text" placeholder="Exclude keywords"/></md-input-container>
@@ -47,10 +47,10 @@
         (click)="image.toggleDiscarded()">
         <img md-card-image [src]="image.flickr_image_url" [alt]="image.flickr_image_id" />
         <div>
-          <md-icon color="primary" *ngIf="image.is_discarded">close</md-icon>
+          <md-icon color="primary" [style.color]="'red'" *ngIf="image.is_discarded">close</md-icon>
           <md-icon color="primary" *ngIf="!image.is_discarded">check</md-icon>
         </div>
-        <div class="meta" *ngIf="selectedImage == image">
+        <div class="meta">
           <strong>Tags:</strong> {{ image.tags }} <br>
           <strong>License:</strong> {{ image.license }}
         </div>

@@ -13,8 +13,8 @@ import { Observable } from 'rxjs/Observable';
 })
 export class FlickrSelectorComponent implements OnInit, OnDestroy {
 
-  @Input('query') query: string = 'box';
-  @Input('exclude') exclude: string = 'ring';
+  @Input('query') query: string = 'nude, skin';
+  @Input('exclude') exclude: string = 'drawing, sketch, sculpture';
 
   tagModes: any[] = [{
     label: 'AND',
@@ -56,7 +56,7 @@ export class FlickrSelectorComponent implements OnInit, OnDestroy {
       exclude: [this.exclude],
       userID: [''],
       tagMode: [this.tagModes[0].value, Validators.required],
-      perPage: [10, Validators.required]
+      perPage: [20, Validators.required]
     });
     this.isRequesting = true;
     this.flickrService.getExistingFlickrImages()
@@ -109,14 +109,16 @@ export class FlickrSelectorComponent implements OnInit, OnDestroy {
     this.isRequesting = true;
     this.flickrService.saveSearch(search)
       .subscribe(result => {
-        window.location.reload();
+        // window.location.reload();
         // this.handleSearch(null);
-        // this.router.navigate([
-        //   '/search', {
-        //     query: encodeURIComponent(result.query),
-        //     exclude: encodeURIComponent(result.exclude)
-        //   }
-        // ]);
+        this.router.navigate([
+          '/search', {
+            query: encodeURIComponent(result.query),
+            exclude: encodeURIComponent(result.exclude)
+          }
+        ], {
+          replaceUrl: true
+        });
         this.isRequesting = false;
       });
   }

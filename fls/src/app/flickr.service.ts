@@ -88,7 +88,7 @@ export class FlickrService {
   saveSearch(search: FlickrSearch) {
     let body = JSON.stringify({
       query: search.query,
-      exclude: search.exclude,
+      exclude: search.exclude || '',
       user_id: search.userID,
       tag_mode: search.tagMode,
       images: search.images
