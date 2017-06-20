@@ -43,4 +43,4 @@ class FlickrSearchImageAdmin(AdminImageMixin, admin.ModelAdmin):
     def is_discarded(self, obj):
         return obj.image.is_discarded
     is_discarded.allow_tags = True
-admin.site.register(FlickrSearchImage, FlickrSearchImageAdmin)
+# admin.site.register(FlickrSearchImage, FlickrSearchImageAdmin)

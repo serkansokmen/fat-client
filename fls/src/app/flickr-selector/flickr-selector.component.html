@@ -33,6 +33,7 @@
 
   <div class="thumbnails">
     <md-progress-spinner *ngIf="isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
+    <div *ngIf="!images[0] && !isRequesting">No more results</div>
     <md-card *ngFor="let image of images">
       <!-- <md-card-header *ngIf="image.title"> -->
         <!-- <md-card-title>{{ image.title }}</md-card-title> -->
@@ -52,7 +53,7 @@
         </div>
         <div class="meta">
           <strong>Tags:</strong> {{ image.tags }} <br>
-          <strong>License:</strong> {{ image.license }}
+          <strong>License:</strong> <a [href]="getLicence(image.license).url" target="_blank">{{ getLicence(image.license).name }}</a>
         </div>
       </md-card-content>
 

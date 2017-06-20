@@ -67,6 +67,10 @@ export class FlickrSelectorComponent implements OnInit, OnDestroy {
       });
   }
 
+  getLicence(id: number) {
+    return this.flickrService.getLicence(id);
+  }
+
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
@@ -110,15 +114,20 @@ export class FlickrSelectorComponent implements OnInit, OnDestroy {
     this.flickrService.saveSearch(search)
       .subscribe(result => {
         // window.location.reload();
-        // this.handleSearch(null);
-        this.router.navigate([
-          '/search', {
-            query: encodeURIComponent(result.query),
-            exclude: encodeURIComponent(result.exclude)
-          }
-        ], {
-          replaceUrl: true
-        });
+        this.flickrService.getExistingFlickrImages()
+          .subscribe(results => {
+            this.selectedImage = null;
+            this.handleSearch(null);
+            this.isRequesting = false;
+          });
+        // this.router.navigate([
+        //   '/search', {
+        //     query: encodeURIComponent(result.query),
+        //     exclude: encodeURIComponent(result.exclude)
+        //   }
+        // ], {
+        //   replaceUrl: true
+        // });
         this.isRequesting = false;
       });
   }

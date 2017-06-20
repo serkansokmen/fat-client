@@ -45,7 +45,7 @@ class FlickrSearch(models.Model):
 
     query = models.CharField(max_length=255)
     slug = AutoSlugField(populate_from='query')
-    exclude = models.CharField(max_length=255, default='')
+    exclude = models.CharField(max_length=255, blank=True, null=True)
     tag_mode = models.CharField(
         max_length=3, choices=TAG_MODES, default=TAG_MODES[0])
     user_id = models.CharField(max_length=255, blank=True, null=True)
