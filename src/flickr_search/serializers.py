@@ -26,7 +26,8 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
         instance = FlickrSearch.objects.create(**validated_data)
         for img_data in images_data:
             image = FlickrImage.objects.create(**img_data)
-            search_image = FlickrSearchImage.objects.create(
-                search=instance,
-                image=image)
+            instance.images.add(image)
+            # search_image = FlickrSearchImage.objects.create(
+            #     search=instance,
+            #     image=image)
         return instance

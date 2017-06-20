@@ -7,7 +7,7 @@ import { AuthGuard } from './auth.guard';
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: '', component: FlickrSelectorComponent, canActivate: [AuthGuard] },
-    { path: 'search/:query/:exclude', component: FlickrSelectorComponent, canActivate: [AuthGuard] },
+    { path: 'search', component: FlickrSelectorComponent, canActivate: [AuthGuard] },
 
     // otherwise redirect to home
     { path: '**', redirectTo: '' }

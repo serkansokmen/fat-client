@@ -31,7 +31,6 @@
     <span>Flickr Search Tool</span>
   </md-toolbar>
 
-  <p *ngIf="!isRequesting"><button md-button color="primary" type="button" (click)="handleSave($event)"><md-icon>save</md-icon> Save</button></p>
   <div class="thumbnails">
     <md-progress-spinner *ngIf="isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
     <md-card *ngFor="let image of images">
@@ -63,7 +62,6 @@
 
     </md-card>
   </div>
-  <p *ngIf="!isRequesting"><button md-button color="primary" type="button" (click)="handleSave($event)"><md-icon>save</md-icon> Save</button></p>
 
 
 </md-sidenav-container>

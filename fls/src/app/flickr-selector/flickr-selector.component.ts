@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../authentication.service';
@@ -11,7 +11,7 @@ import { Observable } from 'rxjs/Observable';
   templateUrl: './flickr-selector.component.html',
   styleUrls: ['./flickr-selector.component.scss']
 })
-export class FlickrSelectorComponent implements OnInit {
+export class FlickrSelectorComponent implements OnInit, OnDestroy {
 
   @Input('query') query: string = 'box';
   @Input('exclude') exclude: string = 'ring';
@@ -29,6 +29,8 @@ export class FlickrSelectorComponent implements OnInit {
   selectedImage: FlickrImage;
   isRequesting: boolean = false;
 
+  private sub: any;
+
   constructor(
     private flickrService: FlickrService,
     private authenticationService: AuthenticationService,
@@ -38,6 +40,16 @@ export class FlickrSelectorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.sub = this.route.params.subscribe(params => {
+
+      if (params.query) {
+        this.query = decodeURIComponent(params.query);
+      }
+      if (params.exclude) {
+        this.exclude = decodeURIComponent(params.exclude);
+      }
+    });
 
     this.form = this.formBuilder.group({
       query: [this.query, Validators.required],
@@ -53,6 +65,10 @@ export class FlickrSelectorComponent implements OnInit {
         this.handleSearch(null);
         this.isRequesting = false;
       });
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 
   handleSearch(event) {
@@ -93,12 +109,14 @@ export class FlickrSelectorComponent implements OnInit {
     this.isRequesting = true;
     this.flickrService.saveSearch(search)
       .subscribe(result => {
-        this.router.navigate([
-          '/search', {
-            query: search.query.replace(',', '-'),
-            exclude: search.exclude.replace(',', '-')
-          }
-        ]);
+        window.location.reload();
+        // this.handleSearch(null);
+        // this.router.navigate([
+        //   '/search', {
+        //     query: encodeURIComponent(result.query),
+        //     exclude: encodeURIComponent(result.exclude)
+        //   }
+        // ]);
         this.isRequesting = false;
       });
   }

@@ -26,13 +26,10 @@ export class FlickrService {
 
   getExistingFlickrImages(): Observable<FlickrImage[]> {
     return this.http.get(this.endpoint, this.jwt())
-      .map((response: Response) => {
-        if (response.status == 401) {
-          debugger
-        }
-        return response.json()
+      .map((response: Response) => response.json())
+      .map(values => {
+        return [].concat.apply([], values.map(value => value.images))
       })
-      .map(values => [].concat.apply([], values.map(value => value.images)))
       .map(images => {
         this.existingImages = images
           .map(data => new FlickrImage(data))

@@ -3,15 +3,17 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch.dispatcher import receiver
+from django_extensions.db.fields import AutoSlugField
+# from tagulous.models import SingleTagField, TagField
 from sorl.thumbnail import ImageField
 
 
 class FlickrImage(models.Model):
 
     image = ImageField(upload_to='flickr_images', blank=True, null=True)
-    flickr_image_id = models.CharField(max_length=255, unique=True)
+    flickr_image_id = models.CharField(max_length=255)
     flickr_image_url = models.URLField()
     license = models.CharField(max_length=255)
     tags = models.TextField(blank=True, null=True)
@@ -42,13 +44,14 @@ class FlickrSearch(models.Model):
     )
 
     query = models.CharField(max_length=255)
+    slug = AutoSlugField(populate_from='query')
     exclude = models.CharField(max_length=255, default='')
     tag_mode = models.CharField(
         max_length=3, choices=TAG_MODES, default=TAG_MODES[0])
     user_id = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
-    images = models.ManyToManyField(FlickrImage, through='FlickrSearchImage')
+    images = models.ManyToManyField(FlickrImage, related_name='search')
 
     class Meta:
         verbose_name = _('Flickr search')
@@ -65,20 +68,12 @@ class FlickrSearchImage(models.Model):
     image = models.ForeignKey(FlickrImage)
 
 
-@receiver(post_save, sender=FlickrSearchImage)
-def flickr_search_image_post_save(sender, instance, **kwargs):
-    # if instance.image.is_discarded == False:
-    img_id = instance.image.flickr_image_id
-    img_url = instance.image.flickr_image_url
-    img_temp = NamedTemporaryFile(delete=True)
-    img_temp.write(urlopen(img_url).read())
-    img_temp.flush()
-    instance.image.image.save(img_id + '.jpg', File(img_temp))
+# @receiver(post_save, sender=FlickrImage)
+# def flickr_image_post_save(sender, instance, **kwargs):
+#     img_id = instance.flickr_image_id
+#     img_url = instance.flickr_image_url
+#     img_temp = NamedTemporaryFile(delete=True)
+#     img_temp.write(urlopen(img_url).read())
+#     img_temp.flush()
+#     instance.image.save(img_id + '.jpg', File(img_temp))
 
-
-@receiver(post_delete, sender=FlickrSearchImage)
-def flickr_search_image_post_delete(sender, instance, **kwargs):
-    # print(instance.search.images);
-    # if instance.search.images and instance.search.images.count() == 0:
-    #     instance.search.delete()
-    pass

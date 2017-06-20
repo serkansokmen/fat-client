@@ -11,12 +11,12 @@ from sorl.thumbnail.admin import AdminImageMixin
 
 
 class FlickrImageAdmin(admin.ModelAdmin):
-    list_display = ('thumb', 'license', 'tags',)
+    list_display = ('flickr_image_id', 'thumb', 'license', 'tags',)
     list_filter = ('is_approved', 'is_processed', 'is_discarded')
 
     def thumb(self, obj):
         return render_to_string('admin/thumb.html', {
-            'image': obj.image
+            'image_url': obj.flickr_image_url
         })
     thumb.allow_tags = True
 admin.site.register(FlickrImage, FlickrImageAdmin)
@@ -26,7 +26,8 @@ class FlickrSearchAdmin(admin.ModelAdmin):
     list_display = ('query', 'exclude', 'tag_mode', 'user_id')
     list_display_links = ('query',)
     list_filter = ('tag_mode', 'user_id', 'created_at', 'updated_at',)
-    exclude = ('images',)
+    filter_horizontal = ('images',)
+    # exclude = ('images',)
 admin.site.register(FlickrSearch, FlickrSearchAdmin)
 
 
