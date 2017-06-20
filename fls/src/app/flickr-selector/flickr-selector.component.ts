@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
 import { AuthenticationService } from '../authentication.service';
 import { FlickrService } from '../flickr.service';
 import { FlickrSearch, FlickrImage } from '../models/flickr.models';
@@ -34,10 +33,12 @@ export class FlickrSelectorComponent implements OnInit {
     private flickrService: FlickrService,
     private authenticationService: AuthenticationService,
     private router: Router,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder
   ) { }
 
   ngOnInit() {
+
     this.form = this.formBuilder.group({
       query: [this.query, Validators.required],
       exclude: [this.exclude],
@@ -55,6 +56,7 @@ export class FlickrSelectorComponent implements OnInit {
   }
 
   handleSearch(event) {
+    this.images = [];
     let value = this.form.value;
     let search = new FlickrSearch();
     search.userID = value.userID;
@@ -91,9 +93,13 @@ export class FlickrSelectorComponent implements OnInit {
     this.isRequesting = true;
     this.flickrService.saveSearch(search)
       .subscribe(result => {
-        window.location.reload();
+        this.router.navigate([
+          '/search', {
+            query: search.query.replace(',', '-'),
+            exclude: search.exclude.replace(',', '-')
+          }
+        ]);
         this.isRequesting = false;
-        // this.images = result.images.filter(image => !image.is_discarded);
       });
   }
 

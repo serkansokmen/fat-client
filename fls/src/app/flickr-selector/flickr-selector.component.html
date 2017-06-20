@@ -1,7 +1,7 @@
 <md-sidenav-container>
-  <md-sidenav #sidenav mode="side" opened="true">
+  <md-sidenav #sidenav mode="push" opened="true">
 
-    <form [formGroup]="form" (ngSubmit)="handleSearch($event)" novalidate>
+    <form [formGroup]="form" (ngSubmit)="handleSearch($event); sidenav.close()" novalidate>
 
         <md-input-container><input mdInput formControlName="query" type="text" placeholder="Search for keywords"/></md-input-container>
         <md-input-container><input mdInput formControlName="exclude" type="text" placeholder="Exclude keywords"/></md-input-container>
@@ -31,7 +31,9 @@
     <span>Flickr Search Tool</span>
   </md-toolbar>
 
+  <p *ngIf="!isRequesting"><button md-button color="primary" type="button" (click)="handleSave($event)"><md-icon>save</md-icon> Save</button></p>
   <div class="thumbnails">
+    <md-progress-spinner *ngIf="isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
     <md-card *ngFor="let image of images">
       <!-- <md-card-header *ngIf="image.title"> -->
         <!-- <md-card-title>{{ image.title }}</md-card-title> -->
@@ -61,6 +63,7 @@
 
     </md-card>
   </div>
+  <p *ngIf="!isRequesting"><button md-button color="primary" type="button" (click)="handleSave($event)"><md-icon>save</md-icon> Save</button></p>
 
 
 </md-sidenav-container>
