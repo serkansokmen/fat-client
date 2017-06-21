@@ -9,19 +9,23 @@ export interface SearchState {
   tagModes: TagMode[],
   images: FlickrImage[],
   licenses: License[],
-  selectedLicenses: License[]
+  selectedLicenses: License[],
+  page: number,
+  totalPages: number
 };
 
 const initialState: SearchState = {
   isRequesting: false,
   instance: new FlickrSearch({
     query: 'nude, skin',
-    exclude: 'drawing, sketch, sculpture'
+    exclude: 'drawing, sketch'
   }),
   tagModes: [TagMode.all, TagMode.any],
   images: [],
   licenses: [],
-  selectedLicenses: []
+  selectedLicenses: [],
+  page: 1,
+  totalPages: 0
 };
 
 export function flickrReducer(state: SearchState = initialState, action: Action) {
@@ -47,18 +51,39 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         ]
       };
 
-    case FlickrActions.REQUEST_FLICKR_SEARCH:
+    case FlickrActions.REQUEST_PAGE:
       return {
         ...state,
-        instance: action.payload.search,
         isRequesting: true,
-        images: []
+        page: action.payload.page
       };
 
-    case FlickrActions.REQUEST_FLICKR_SEARCH_COMPLETE:
+    case FlickrActions.REQUEST_PAGE_COMPLETE:
       return {
         ...state,
         isRequesting: false,
+        instance: action.payload.search,
+        images: action.payload.images
+      };
+
+    case FlickrActions.REQUEST_SEARCH:
+      return {
+        ...state,
+        isRequesting: true,
+        instance: action.payload.search,
+        images: [],
+        page: action.payload.page
+      };
+
+    case FlickrActions.REQUEST_SEARCH_COMPLETE:
+      return {
+        ...state,
+        isRequesting: false,
+        instance: {
+          ...state.instance,
+          perPage: action.payload.perPage
+        },
+        totalPages: action.payload.totalPages,
         images: action.payload.images
       };
 

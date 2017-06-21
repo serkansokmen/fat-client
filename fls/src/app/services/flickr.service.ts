@@ -29,7 +29,7 @@ export class FlickrService {
   }
 
   getLicenses(): Observable<License[]> {
-    return this.http.get(`${this.endpoint}/licenses/`, this.jwt())
+    return this.http.get(`${this.endpoint}licenses/`, this.jwt())
       .map((response: Response) => response.json())
       .map(result => result.map(data => new License(data)));
   }
@@ -47,7 +47,7 @@ export class FlickrService {
       });
   }
 
-  search(search: FlickrSearch, licenses: License[]): Observable<any> {
+  search(search: FlickrSearch, licenses: License[], page: number): Observable<any> {
 
     let queryStr = search.query;
     let excludeStr = search.exclude.split(',').map(str => ` -${str.trim()}`).join(',');
@@ -66,9 +66,9 @@ export class FlickrService {
       '&content_type=7' +
       '&media=photos' +
       '&extras=license,tags' +
-      // `&per_page=${search.perPage + 1}` +
-      `&per_page=${100}` +
-      // `&page=${page}` +
+      `&user_id=${search.userID}` +
+      `&per_page=${search.perPage}` +
+      `&page=${page}` +
       `&tags=${searchQuery}` +
       `&tag_mode=${search.tagMode.value}`;
 
@@ -80,7 +80,7 @@ export class FlickrService {
           return;
         }
         return {
-          totalPages: result.photos.pages,
+          totalPages: result.photos.total,
           results: result.photos.photo
             .filter(photo => {
               return this.existingImages
@@ -111,7 +111,7 @@ export class FlickrService {
         'Authorization': `Token ${currentUser.token}`
       });
       let options = new RequestOptions({ headers: headers });
-      return this.http.post(`${this.endpoint}/search`, body, options)
+      return this.http.post(`${this.endpoint}search/`, body, options)
         .map((response: Response) => response.json());
     }
   }

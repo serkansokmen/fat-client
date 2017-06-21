@@ -7,14 +7,14 @@ import { FlickrSearch, FlickrImage, License } from '../models/flickr.models';
 export class FlickrActions {
 
   static REQUEST_LICENSES = '[Flickr] Request Flickr Licenses';
-  requestFlickrLicenses(): Action {
+  requestLicenses(): Action {
     return {
       type: FlickrActions.REQUEST_LICENSES
     }
   }
 
   static REQUEST_LICENSES_COMPLETE = '[Flickr] Request Flickr Licenses Complete';
-  requestFlickrLicensesComplete(licenses: License[]): Action {
+  requestLicensesComplete(licenses: License[]): Action {
     return {
       type: FlickrActions.REQUEST_LICENSES_COMPLETE,
       payload: {
@@ -23,22 +23,45 @@ export class FlickrActions {
     }
   }
 
-  static REQUEST_FLICKR_SEARCH = '[Flickr] Request Flickr Search';
-  requestFlickrSearch(search: FlickrSearch, licenses: License[]): Action {
+  static REQUEST_PAGE = '[Flickr] Set Page';
+  requestPage(page: number): Action {
     return {
-      type: FlickrActions.REQUEST_FLICKR_SEARCH,
+      type: FlickrActions.REQUEST_PAGE,
       payload: {
-        search,
-        licenses
+        page
       }
     }
   }
 
-  static REQUEST_FLICKR_SEARCH_COMPLETE = '[Flickr] Request Flickr Search Complete';
-  requestFlickrSearchComplete(images: FlickrImage[]): Action {
+  static REQUEST_PAGE_COMPLETE = '[Flickr] Request Page';
+  requestPageComplete(search: FlickrSearch, images: FlickrImage[]): Action {
     return {
-      type: FlickrActions.REQUEST_FLICKR_SEARCH_COMPLETE,
+      type: FlickrActions.REQUEST_PAGE_COMPLETE,
       payload: {
+        search,
+        images
+      }
+    }
+  }
+
+  static REQUEST_SEARCH = '[Flickr] Request Flickr Search';
+  requestSearch(search: FlickrSearch, licenses: License[], page: number): Action {
+    return {
+      type: FlickrActions.REQUEST_SEARCH,
+      payload: {
+        search,
+        licenses,
+        page
+      }
+    }
+  }
+
+  static REQUEST_SEARCH_COMPLETE = '[Flickr] Request Flickr Search Complete';
+  requestSearchComplete(search: FlickrSearch, images: FlickrImage[]): Action {
+    return {
+      type: FlickrActions.REQUEST_SEARCH_COMPLETE,
+      payload: {
+        search,
         images
       }
     }
@@ -82,6 +105,16 @@ export class FlickrActions {
     }
   }
 
+  static REQUEST_SEARCH_PAGE = '[Flickr] Search Set Page';
+  setSearchPage(page: number): Action {
+    return {
+      type: FlickrActions.REQUEST_SEARCH,
+      payload: {
+        page
+      }
+    }
+  }
+
   static SAVE_SEARCH = '[Flickr] Save Search';
   saveSearch(search: FlickrSearch, images: FlickrImage[]): Action {
     return {
@@ -94,12 +127,13 @@ export class FlickrActions {
   }
 
   static SAVE_SEARCH_COMPLETE = '[Flickr] Save Search Complete';
-  saveSearchComplete(search: FlickrSearch, images: FlickrImage[]): Action {
+  saveSearchComplete(search: FlickrSearch, images: FlickrImage[], page: number): Action {
     return {
       type: FlickrActions.SAVE_SEARCH_COMPLETE,
       payload: {
         search,
-        images
+        images,
+        page
       }
     }
   }

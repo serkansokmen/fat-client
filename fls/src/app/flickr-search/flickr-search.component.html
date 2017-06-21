@@ -1,28 +1,39 @@
 <md-sidenav-container>
   <md-sidenav #sidenav mode="side" opened="true">
 
-    <form [formGroup]="form" (ngSubmit)="handleSearch($event)" novalidate>
-
+    <form *ngIf="state$ | async" [formGroup]="form" (ngSubmit)="handleSearch($event, state$.page)" novalidate>
         <md-input-container><input mdInput formControlName="query" type="text" placeholder="Search for keywords"/></md-input-container>
         <md-input-container><input mdInput formControlName="exclude" type="text" placeholder="Exclude keywords"/></md-input-container>
         <md-input-container><input mdInput formControlName="userID" type="text" placeholder="User ID (Optional)"/></md-input-container>
-        <md-select placeholder="Tag Mode" formControlName="tagMode">
+        <md-select placeholder="Tag mode" formControlName="tagMode">
           <md-option *ngFor="let mode of (state$ | async)?.tagModes" [value]="mode">{{ mode.label }}</md-option>
         </md-select>
         <hr>
-        <div class="licenses" *ngFor="let license of (state$ | async)?.licenses">
-          <md-checkbox [checked]="isLicenseSelected(license)" (change)="handleToggleLicense(license, $event?.checked)">
-            {{ license?.name }}
-          </md-checkbox>
+        <div>
+          <md-expansion-panel #licensesPanel>
+            <md-expansion-panel-header>
+              <mat-panel-title>Licenses</mat-panel-title>
+            </md-expansion-panel-header>
+            <div class="licenses" *ngFor="let license of (state$ | async)?.licenses">
+              <md-checkbox [checked]="isLicenseSelected(license)" (change)="handleToggleLicense(license, $event?.checked)">
+                {{ license?.name }}
+              </md-checkbox>
+            </div>
+          </md-expansion-panel>
         </div>
         <hr>
         <md-input-container>
           <input mdInput formControlName="perPage" type="number" placeholder="How many per page?"/>
         </md-input-container>
-
+        <md-input-container>
+          <input mdInput formControlName="page"
+            [max]="(state$ | async)?.totalPages"
+            [placeholder]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.totalPages + ' pages'"
+            [value]="(state$ | async)?.page" type="number"/>
+        </md-input-container>
         <div class="form-controls" *ngIf="!(state$ | async)?.isRequesting">
           <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon>search</md-icon> Search</button></p>
-          <p><button md-button color="primary" type="button" (click)="handleSave($event)" [disabled]="(state$ | async)?.isRequesting"><md-icon>save</md-icon> Save</button></p>
+          <p><button md-button color="primary" type="button" (click)="handleSave($event, state$.page)" [disabled]="(state$ | async)?.isRequesting"><md-icon>save</md-icon> Save</button></p>
           <hr>
         </div>
         <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
@@ -42,13 +53,6 @@
     <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
     <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No more results</div>
     <md-card *ngFor="let image of (state$ | async)?.images">
-      <!-- <md-card-header *ngIf="image.title"> -->
-        <!-- <md-card-title>{{ image.title }}</md-card-title> -->
-        <!-- <md-card-title-group> -->
-          <!-- <md-card-title><span class="fa fa-remove"></span>{{ image.flickr_image_id }}</md-card-title> -->
-          <!-- <md-card-subtitle>{{ image.flickr_image_url }}</md-card-subtitle> -->
-        <!-- </md-card-title-group> -->
-      <!-- </md-card-header> -->
       <md-card-content
         [class.disabled]="(state$ | async)?.isRequesting"
         [class.is-discarded]="image.is_discarded"
@@ -63,11 +67,6 @@
           <strong>License:</strong> <a [href]="image.license.url" target="_blank">{{ image.license.name }}</a>
         </div>
       </md-card-content>
-
-      <!-- <md-card-actions>
-        <button md-button (click)="selectImage(image)">Info</button>
-      </md-card-actions> -->
-
     </md-card>
   </div>
 

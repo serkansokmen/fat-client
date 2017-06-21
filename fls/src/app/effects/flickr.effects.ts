@@ -29,14 +29,15 @@ export class FlickrEffects {
       })
     });
 
-  @Effect() search$ = this.actions$
-    .ofType(FlickrActions.REQUEST_FLICKR_SEARCH)
+  @Effect() searchPage$ = this.actions$
+    .ofType(FlickrActions.REQUEST_SEARCH)
     .map(toPayload)
-    .switchMap(payload => this.service.search(payload.search, payload.licenses))
+    .switchMap(payload => this.service.search(payload.search, payload.licenses, payload.page))
     .switchMap(result => {
       return Observable.of({
-        type: FlickrActions.REQUEST_FLICKR_SEARCH_COMPLETE,
+        type: FlickrActions.REQUEST_SEARCH_COMPLETE,
         payload: {
+          totalPages: result.totalPages * 1,
           images: result.results
         }
       })

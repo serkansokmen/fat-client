@@ -30,9 +30,9 @@ export class FlickrSearch {
   constructor(data: any) {
     this.query = data.query || '';
     this.exclude = data.exclude || '';
-    this.userID = '';
+    this.userID = data.userID || '';
     this.tagMode = data.tagMode || TagMode.all;
-    this.perPage = data.perPage || 10;
+    this.perPage = data.perPage || 40;
   }
 }
 

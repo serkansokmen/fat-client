@@ -6,7 +6,6 @@ from django.utils.translation import ugettext as _
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch.dispatcher import receiver
 from django_extensions.db.fields import AutoSlugField
-# from tagulous.models import SingleTagField, TagField
 from sorl.thumbnail import ImageField
 
 
@@ -81,4 +80,3 @@ class FlickrSearchImage(models.Model):
 #     img_temp.write(urlopen(img_url).read())
 #     img_temp.flush()
 #     instance.image.save(img_id + '.jpg', File(img_temp))
-

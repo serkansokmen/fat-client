@@ -27,13 +27,12 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   private sub: any;
 
   constructor(
-    private flickrService: FlickrService,
     private authenticationService: AuthenticationService,
-    private actions: FlickrActions,
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private store: Store<SearchState>,
+    private actions: FlickrActions,
   ) {
     this.state$ = store.select('flickr');
     this.images = [];
@@ -46,16 +45,9 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
       exclude: [''],
       userID: [''],
       tagMode: ['', Validators.required],
-      perPage: [10, Validators.required]
+      perPage: [10, Validators.required],
+      page: [1, Validators.required]
     });
-
-    // this.route.params
-    //   .switchMap((params: Params) => this.flickrService.getSearch(params['id']))
-    //   .subscribe((survey: any) => {
-    //     // update the form controls
-    //   });
-
-    this.store.dispatch(this.actions.requestFlickrLicenses());
 
     this.state$.subscribe(state => {
 
@@ -64,14 +56,18 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
 
       if (state.instance.query != this.form.value.query && state.licenses.length > 0) {
         this.form.patchValue(state.instance);
-        this.store.dispatch(this.actions.requestFlickrSearch(state.instance, state.selectedLicenses));
       }
+    });
+
+    this.form.valueChanges.debounceTime(500).subscribe(data => {
+      this.handleSearch(null);
     });
 
     this.sub = this.route.params.subscribe(params => {
       if (params.slug) {
         console.log(params.slug);
       }
+      this.store.dispatch(this.actions.requestLicenses());
     });
 
   }
@@ -86,9 +82,10 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
 
   handleSearch(event) {
     this.store.dispatch(
-      this.actions.requestFlickrSearch(
+      this.actions.requestSearch(
         new FlickrSearch(this.form.value),
-        this.selectedLicenses));
+        this.selectedLicenses,
+        this.form.value.page));
   }
 
   handleToggleLicense(license: License, isChecked: boolean) {
