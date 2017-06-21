@@ -6,8 +6,13 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.template.loader import render_to_string
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
-from .models import FlickrSearch, FlickrImage, FlickrSearchImage
+from .models import FlickrSearch, FlickrImage, FlickrSearchImage, FlickrLicense
 from sorl.thumbnail.admin import AdminImageMixin
+
+
+class FlickrLicenseAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'url')
+admin.site.register(FlickrLicense, FlickrLicenseAdmin)
 
 
 class FlickrImageAdmin(admin.ModelAdmin):

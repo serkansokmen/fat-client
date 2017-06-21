@@ -9,6 +9,13 @@
         <md-select placeholder="Tag Mode" formControlName="tagMode">
           <md-option *ngFor="let mode of (state$ | async)?.tagModes" [value]="mode">{{ mode.label }}</md-option>
         </md-select>
+        <hr>
+        <div class="licenses" *ngFor="let license of (state$ | async)?.licenses">
+          <md-checkbox [checked]="isLicenseSelected(license)" (change)="handleToggleLicense(license, $event?.checked)">
+            {{ license?.name }}
+          </md-checkbox>
+        </div>
+        <hr>
         <md-input-container>
           <input mdInput formControlName="perPage" type="number" placeholder="How many per page?"/>
         </md-input-container>
@@ -53,7 +60,7 @@
         </div>
         <div class="meta">
           <strong>Tags:</strong> {{ image.tags }} <br>
-          <strong>License:</strong> <a [href]="getLicence(image.license).url" target="_blank">{{ getLicence(image.license).name }}</a>
+          <strong>License:</strong> <a [href]="image.license.url" target="_blank">{{ image.license.name }}</a>
         </div>
       </md-card-content>
 

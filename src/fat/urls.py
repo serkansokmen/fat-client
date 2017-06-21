@@ -11,6 +11,7 @@ import flickr_search.api as flickr_search_api
 router = routers.DefaultRouter()
 router.register(r'search', flickr_search_api.FlickrSearchViewSet)
 router.register(r'images', flickr_search_api.FlickrImageViewSet)
+router.register(r'licenses', flickr_search_api.FlickrLicenseViewSet)
 
 
 urlpatterns = [

@@ -10,12 +10,18 @@ from django_extensions.db.fields import AutoSlugField
 from sorl.thumbnail import ImageField
 
 
+class FlickrLicense(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=255)
+    url = models.URLField(blank=True)
+
+
 class FlickrImage(models.Model):
 
     image = ImageField(upload_to='flickr_images', blank=True, null=True)
     flickr_image_id = models.CharField(max_length=255)
     flickr_image_url = models.URLField()
-    license = models.CharField(max_length=255)
+    license = models.ForeignKey(FlickrLicense)
     tags = models.TextField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)

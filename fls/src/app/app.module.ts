@@ -41,7 +41,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     StoreModule.provideStore({
       flickr: flickrReducer,
     }),
-    EffectsModule.run(FlickrEffects),
+    EffectsModule.runAfterBootstrap(FlickrEffects),
     StoreDevtoolsModule.instrumentOnlyWithExtension()
   ],
   providers: [

@@ -1,17 +1,35 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { FlickrSearch, FlickrImage } from '../models/flickr.models';
+import { FlickrSearch, FlickrImage, License } from '../models/flickr.models';
 
 
 @Injectable()
 export class FlickrActions {
 
+  static REQUEST_LICENSES = '[Flickr] Request Flickr Licenses';
+  requestFlickrLicenses(): Action {
+    return {
+      type: FlickrActions.REQUEST_LICENSES
+    }
+  }
+
+  static REQUEST_LICENSES_COMPLETE = '[Flickr] Request Flickr Licenses Complete';
+  requestFlickrLicensesComplete(licenses: License[]): Action {
+    return {
+      type: FlickrActions.REQUEST_LICENSES_COMPLETE,
+      payload: {
+        licenses
+      }
+    }
+  }
+
   static REQUEST_FLICKR_SEARCH = '[Flickr] Request Flickr Search';
-  requestFlickrSearch(search: FlickrSearch): Action {
+  requestFlickrSearch(search: FlickrSearch, licenses: License[]): Action {
     return {
       type: FlickrActions.REQUEST_FLICKR_SEARCH,
       payload: {
-        search
+        search,
+        licenses
       }
     }
   }
@@ -31,6 +49,26 @@ export class FlickrActions {
     return {
       type: FlickrActions.REQUEST_EXISTING_IMAGES,
       payload: {}
+    }
+  }
+
+  static SELECT_LICENCE = '[Flickr] Select License';
+  selectLicense(license: License): Action {
+    return {
+      type: FlickrActions.SELECT_LICENCE,
+      payload: {
+        license
+      }
+    }
+  }
+
+  static DESELECT_LICENCE = '[Flickr] Deselect License';
+  deselectLicense(license: License): Action {
+    return {
+      type: FlickrActions.DESELECT_LICENCE,
+      payload: {
+        license
+      }
     }
   }
 

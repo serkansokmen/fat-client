@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 
 import { SearchState } from '../reducers/flickr.reducer';
 import { FlickrActions } from '../actions/flickr.actions';
-import { FlickrSearch, FlickrImage } from '../models/flickr.models';
+import { FlickrSearch, FlickrImage, TagMode, License } from '../models/flickr.models';
 
 
 @Component({
@@ -22,6 +22,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   state$: Observable<SearchState>;
   form: FormGroup;
   images: FlickrImage[];
+  selectedLicenses: License[];
 
   private sub: any;
 
@@ -54,11 +55,16 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
     //     // update the form controls
     //   });
 
+    this.store.dispatch(this.actions.requestFlickrLicenses());
+
     this.state$.subscribe(state => {
+
+      this.selectedLicenses = state.selectedLicenses;
       this.images = state.images;
-      if (state.instance.query != this.form.value.query) {
+
+      if (state.instance.query != this.form.value.query && state.licenses.length > 0) {
         this.form.patchValue(state.instance);
-        this.store.dispatch(this.actions.requestFlickrSearch(state.instance));
+        this.store.dispatch(this.actions.requestFlickrSearch(state.instance, state.selectedLicenses));
       }
     });
 
@@ -68,10 +74,6 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
       }
     });
 
-  }
-
-  getLicence(id: number) {
-    return this.flickrService.getLicence(id);
   }
 
   ngOnDestroy() {
@@ -85,12 +87,21 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   handleSearch(event) {
     this.store.dispatch(
       this.actions.requestFlickrSearch(
-        new FlickrSearch(this.form.value)));
+        new FlickrSearch(this.form.value),
+        this.selectedLicenses));
   }
 
-  // selectImage(image) {
-  //   this.selectedImage == image ? this.selectedImage = null : this.selectedImage = image;
-  // }
+  handleToggleLicense(license: License, isChecked: boolean) {
+    if (isChecked == true) {
+      this.store.dispatch(this.actions.selectLicense(license))
+    } else {
+      this.store.dispatch(this.actions.deselectLicense(license));
+    }
+  }
+
+  isLicenseSelected(license: License): boolean {
+    return this.selectedLicenses.indexOf(license) > -1;
+  }
 
   handleSave(event) {
     this.store.dispatch(
@@ -105,7 +116,6 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   //       // window.location.reload();
   //       this.flickrService.getExistingFlickrImages()
   //         .subscribe(results => {
-  //           this.selectedImage = null;
   //           this.handleSearch(null);
   //           this.isRequesting = false;
   //         });

@@ -1,6 +1,12 @@
-from .models import FlickrSearch, FlickrImage
-from .serializers import FlickrSearchSerializer, FlickrImageSerializer
+from .models import FlickrSearch, FlickrImage, FlickrLicense
+from .serializers import FlickrSearchSerializer, FlickrImageSerializer, FlickrLicenseSerializer
 from rest_framework import viewsets, parsers
+
+
+class FlickrLicenseViewSet(viewsets.ReadOnlyModelViewSet):
+
+    serializer_class = FlickrLicenseSerializer
+    queryset = FlickrLicense.objects.all()
 
 
 class FlickrSearchViewSet(viewsets.ModelViewSet):

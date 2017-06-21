@@ -1,5 +1,12 @@
 from rest_framework import serializers, permissions
-from .models import FlickrSearch, FlickrImage, FlickrSearchImage
+from .models import FlickrSearch, FlickrImage, FlickrSearchImage, FlickrLicense
+
+
+class FlickrLicenseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FlickrLicense
+        fields = ('id', 'name', 'url')
 
 
 class FlickrImageSerializer(serializers.ModelSerializer):

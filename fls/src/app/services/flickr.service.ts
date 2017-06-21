@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { PlatformLocation } from '@angular/common';
 import { CookieService } from 'ngx-cookie';
-import { FlickrSearch, FlickrImage } from '../models/flickr.models';
+import { FlickrSearch, FlickrImage, License } from '../models/flickr.models';
 import { map, filter, union } from 'underscore';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
@@ -20,27 +20,18 @@ export class FlickrService {
     private http: Http,
     private cookieService: CookieService) {
 
-    this.endpoint = `${environment.apiURL}/search/?format=json`;
-    this.apiKey = `${environment.flickrApiKey}`
-  }
-
-  getLicence(id: number): any {
-    let licences = [
-      { id: 0, name: 'All Rights Reserved', url: ''},
-      { id: 1, name: "Attribution-NonCommercial-ShareAlike License", url:"http://creativecommons.org/licenses/by-nc-sa/2.0/"},
-      { id: 2, name: "Attribution-NonCommercial License", url:"http://creativecommons.org/licenses/by-nc/2.0/"},
-      { id: 3, name: "Attribution-NonCommercial-NoDerivs License", url:"http://creativecommons.org/licenses/by-nc-nd/2.0/"},
-      { id: 4, name: "Attribution License", url:"http://creativecommons.org/licenses/by/2.0/"},
-      { id: 5, name: "Attribution-ShareAlike License", url:"http://creativecommons.org/licenses/by-sa/2.0/"},
-      { id: 6, name: "Attribution-NoDerivs License", url:"http://creativecommons.org/licenses/by-nd/2.0/"},
-      { id: 7, name: "No known copyright restrictions", url:"http://flickr.com/commons/usage/"},
-      { id: 8, name: "United States Government Work", url:"http://www.usa.gov/copyright.shtml"}
-      ];
-      return licences.filter(license => license.id == id)[0];
+    this.endpoint = environment.apiURL;
+    this.apiKey = environment.flickrApiKey
   }
 
   getSearch(id: number) {
     console.log(id);
+  }
+
+  getLicenses(): Observable<License[]> {
+    return this.http.get(`${this.endpoint}/licenses/`, this.jwt())
+      .map((response: Response) => response.json())
+      .map(result => result.map(data => new License(data)));
   }
 
   getExistingFlickrImages(): Observable<FlickrImage[]> {
@@ -56,7 +47,7 @@ export class FlickrService {
       });
   }
 
-  search(search: FlickrSearch): Observable<any> {
+  search(search: FlickrSearch, licenses: License[]): Observable<any> {
 
     let queryStr = search.query;
     let excludeStr = search.exclude.split(',').map(str => ` -${str.trim()}`).join(',');
@@ -68,8 +59,7 @@ export class FlickrService {
     let url = `https://api.flickr.com/services/rest/?method=flickr.photos.search` +
       `&api_key=${this.apiKey}` +
       '&format=json&nojsoncallback=1' +
-      // '&license=4,5,6,7' +
-      '&license=0,1,2,3,4,5,6,7,8' +
+      `&license=${licenses.map(license => license.id).join(',')}` +
       '&safe_search=3' +
       '&sort=relevance' +
       '&media=photos' +
@@ -121,7 +111,7 @@ export class FlickrService {
         'Authorization': `Token ${currentUser.token}`
       });
       let options = new RequestOptions({ headers: headers });
-      return this.http.post(this.endpoint, body, options)
+      return this.http.post(`${this.endpoint}/search`, body, options)
         .map((response: Response) => response.json());
     }
   }

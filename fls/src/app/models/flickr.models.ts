@@ -8,6 +8,18 @@ export class TagMode {
   static any = new TagMode('OR', 'any');
 }
 
+export class License {
+  id: number;
+  name: string;
+  url: string;
+
+  constructor(data: any) {
+    this.id = data.id;
+    this.name = data.name;
+    this.url = data.url;
+  }
+}
+
 export class FlickrSearch {
   query: string;
   exclude: string;
@@ -30,7 +42,7 @@ export class FlickrImage {
   flickr_image_url: string;
   thumbnail: string;
   tags: string;
-  license: number;
+  license: License;
   is_discarded: boolean;
 
   constructor(data: any = {}) {
@@ -43,11 +55,7 @@ export class FlickrImage {
       this.thumbnail = '';
     }
     this.tags = data.tags || '';
-    this.license = data.license || -1;
+    this.license = data.license || null;
     this.is_discarded = data.is_discarded || false;
-  }
-
-  toggleDiscarded() {
-    this.is_discarded = !this.is_discarded;
   }
 }
