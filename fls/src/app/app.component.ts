@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FlickrService } from './flickr.service';
+import { FlickrService } from './services/flickr.service';
 
 @Component({
   selector: 'app-root',

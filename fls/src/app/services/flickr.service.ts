@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { PlatformLocation } from '@angular/common';
 import { CookieService } from 'ngx-cookie';
-import { FlickrSearch, FlickrImage } from './models/flickr.models';
+import { FlickrSearch, FlickrImage } from '../models/flickr.models';
 import { map, filter, union } from 'underscore';
 import { Observable } from 'rxjs/Observable';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 
 import 'rxjs/add/operator/mergeMap';
 
@@ -39,6 +39,10 @@ export class FlickrService {
       return licences.filter(license => license.id == id)[0];
   }
 
+  getSearch(id: number) {
+    console.log(id);
+  }
+
   getExistingFlickrImages(): Observable<FlickrImage[]> {
     return this.http.get(this.endpoint, this.jwt())
       .map((response: Response) => response.json())
@@ -48,7 +52,6 @@ export class FlickrService {
       .map(images => {
         this.existingImages = images
           .map(data => new FlickrImage(data))
-          // .filter(image => !image.is_discarded);
         return this.existingImages;
       });
   }
@@ -75,7 +78,7 @@ export class FlickrService {
       `&per_page=${100}` +
       // `&page=${page}` +
       `&tags=${searchQuery}` +
-      `&tag_mode=${search.tagMode}`;
+      `&tag_mode=${search.tagMode.value}`;
 
     return this.http.get(url)
       .map((response: Response) => response.json())

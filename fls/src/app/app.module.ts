@@ -10,18 +10,24 @@ import { AppMaterial } from './app.material';
 import { routing } from './app.routing';
 import { AuthGuard } from './auth.guard';
 import { AuthenticationService } from './authentication.service';
-import { FlickrService } from './flickr.service';
+import { FlickrActions } from './actions/flickr.actions';
+import { FlickrService } from './services/flickr.service';
+import { FlickrEffects } from './effects/flickr.effects';
+import { flickrReducer } from './reducers/flickr.reducer';
 import { LoginComponent } from './login/login.component';
-import { FlickrSelectorComponent } from './flickr-selector/flickr-selector.component';
+import { FlickrSearchComponent } from './flickr-search/flickr-search.component';
 
-import 'mdi';
+import { StoreModule } from '@ngrx/store';
+// import { routerReducer, RouterStoreModule } from '@ngrx/router-store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    FlickrSelectorComponent,
+    FlickrSearchComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,10 +38,16 @@ import 'mdi';
     BrowserAnimationsModule,
     CookieModule.forRoot(),
     AppMaterial,
+    StoreModule.provideStore({
+      flickr: flickrReducer,
+    }),
+    EffectsModule.run(FlickrEffects),
+    StoreDevtoolsModule.instrumentOnlyWithExtension()
   ],
   providers: [
     AuthGuard,
     AuthenticationService,
+    FlickrActions,
     FlickrService,
     CookieService,
   ],
