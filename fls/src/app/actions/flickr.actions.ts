@@ -44,6 +44,28 @@ export class FlickrActions {
     }
   }
 
+  static SAVE_SEARCH = '[Flickr] Save Search';
+  saveSearch(search: FlickrSearch, images: FlickrImage[]): Action {
+    return {
+      type: FlickrActions.SAVE_SEARCH,
+      payload: {
+        search,
+        images
+      }
+    }
+  }
+
+  static SAVE_SEARCH_COMPLETE = '[Flickr] Save Search Complete';
+  saveSearchComplete(search: FlickrSearch, images: FlickrImage[]): Action {
+    return {
+      type: FlickrActions.SAVE_SEARCH_COMPLETE,
+      payload: {
+        search,
+        images
+      }
+    }
+  }
+
   // static REQUEST_EXISTING_IMAGES = '[Flickr] Request Existing Images';
 
 }

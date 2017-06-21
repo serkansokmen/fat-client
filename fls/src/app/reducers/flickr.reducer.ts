@@ -7,9 +7,9 @@ import { union, without } from 'underscore';
 export interface SearchState {
   isRequesting: boolean,
   instance: FlickrSearch,
-  images: FlickrImage[],
   selectedImage: FlickrImage,
   tagModes: TagMode[],
+  images: FlickrImage[]
 };
 
 const initialState: SearchState = {
@@ -18,9 +18,9 @@ const initialState: SearchState = {
     query: 'nude, skin',
     exclude: 'drawing, sketch, sculpture'
   }),
-  images: [],
   selectedImage: null,
-  tagModes: [TagMode.all, TagMode.any]
+  tagModes: [TagMode.all, TagMode.any],
+  images: []
 };
 
 export function flickrReducer(state: SearchState = initialState, action: Action) {
@@ -46,11 +46,26 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         ...state,
         isRequesting: false,
         images: state.images.map(image => {
-          return image == action.payload.image ? {
+          return image == action.payload.image ? new FlickrImage({
             ...image,
             is_discarded: !image.is_discarded
-          } : image;
+          }) : image;
         })
+      }
+
+    case FlickrActions.SAVE_SEARCH:
+      return {
+        ...state,
+        isRequesting: true,
+        search: state.instance
+      }
+
+    case FlickrActions.SAVE_SEARCH_COMPLETE:
+      return {
+        ...state,
+        isRequesting: false,
+        search: action.payload.search,
+        images: action.payload.images
       }
 
     default:

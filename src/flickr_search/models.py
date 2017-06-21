@@ -17,7 +17,6 @@ class FlickrImage(models.Model):
     flickr_image_url = models.URLField()
     license = models.CharField(max_length=255)
     tags = models.TextField(blank=True, null=True)
-    thumbnail = models.CharField(max_length=255)
 
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)

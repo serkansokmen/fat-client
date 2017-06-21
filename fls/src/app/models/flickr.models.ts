@@ -14,15 +14,13 @@ export class FlickrSearch {
   userID: string;
   tagMode: TagMode;
   perPage: number;
-  images: FlickrImage[];
 
   constructor(data: any) {
     this.query = data.query || '';
     this.exclude = data.exclude || '';
     this.userID = '';
     this.tagMode = data.tagMode || TagMode.all;
-    this.perPage = 10;
-    this.images = [];
+    this.perPage = data.perPage || 10;
   }
 }
 

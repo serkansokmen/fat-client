@@ -21,6 +21,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
 
   state$: Observable<SearchState>;
   form: FormGroup;
+  images: FlickrImage[];
 
   private sub: any;
 
@@ -34,6 +35,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
     private store: Store<SearchState>,
   ) {
     this.state$ = store.select('flickr');
+    this.images = [];
   }
 
   ngOnInit() {
@@ -43,7 +45,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
       exclude: [''],
       userID: [''],
       tagMode: ['', Validators.required],
-      perPage: [20, Validators.required]
+      perPage: [10, Validators.required]
     });
 
     // this.route.params
@@ -53,6 +55,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
     //   });
 
     this.state$.subscribe(state => {
+      this.images = state.images;
       if (state.instance.query != this.form.value.query) {
         this.form.patchValue(state.instance);
         this.store.dispatch(this.actions.requestFlickrSearch(state.instance));
@@ -89,7 +92,9 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   //   this.selectedImage == image ? this.selectedImage = null : this.selectedImage = image;
   // }
 
-  // handleSave(event) {
+  handleSave(event) {
+    this.store.dispatch(
+      this.actions.saveSearch(new FlickrSearch(this.form.value), this.images));
   //   let search = new FlickrSearch({
   //     ...this.form.value,
   //     images: this.images
@@ -114,7 +119,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   //       // });
   //       this.isRequesting = false;
   //     });
-  // }
+  }
 
   logout(event) {
     this.authenticationService.logout()

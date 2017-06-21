@@ -6,10 +6,10 @@ class FlickrImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlickrImage
-        # query = FlickrImage.objects.filter(
-        #     is_approved=False, is_discarded=False, is_processed=False)
+        query = FlickrImage.objects.filter(
+            is_approved=False, is_discarded=False, is_processed=False)
         fields = ('flickr_image_id', 'flickr_image_url', 'is_discarded',
-            'image', 'license', 'tags', 'thumbnail')
+            'image', 'license', 'tags')
         read_only_fields = ('image', 'is_approved', 'is_processed')
 
 

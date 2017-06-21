@@ -64,10 +64,12 @@ export class FlickrService {
     if (excludeStr != '-') {
       searchQuery += `,${excludeStr}`;
     }
+
     let url = `https://api.flickr.com/services/rest/?method=flickr.photos.search` +
       `&api_key=${this.apiKey}` +
       '&format=json&nojsoncallback=1' +
-      '&license=4,5,6,7' +
+      // '&license=4,5,6,7' +
+      '&license=0,1,2,3,4,5,6,7,8' +
       '&safe_search=3' +
       '&sort=relevance' +
       '&media=photos' +
@@ -103,13 +105,13 @@ export class FlickrService {
   };
 
 
-  saveSearch(search: FlickrSearch) {
+  saveSearch(search: FlickrSearch, images: FlickrImage[]) {
     let body = JSON.stringify({
       query: search.query,
       exclude: search.exclude || '',
       user_id: search.userID,
-      tag_mode: search.tagMode,
-      images: search.images
+      tag_mode: search.tagMode.value,
+      images
     });
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser && currentUser.token) {
