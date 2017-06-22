@@ -56,11 +56,5 @@ export class FlickrEffects {
         }
       })
     });
-    // // Map the payload into JSON to use as the request body
-    // .switchMap(payload => this.http.post('/auth', payload)
-    //   // If successful, dispatch success action with result
-    //   .map(res => ({ type: 'LOGIN_SUCCESS', payload: res.json() }))
-    //   // If request fails, dispatch failed action
-    //   .catch(() => Observable.of({ type: 'LOGIN_FAILED' }))
-    // );
+
 }

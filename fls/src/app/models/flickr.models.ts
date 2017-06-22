@@ -1,3 +1,14 @@
+export class ImageState {
+  constructor(
+    public label: string,
+    public value: string
+  ) {}
+
+  static discarded = new ImageState('Discarded', 'discarded');
+  static approved = new ImageState('Approved', 'approved');
+  static processed = new ImageState('Processed', 'processed');
+}
+
 export class TagMode {
   constructor(
     public label: string,
@@ -37,25 +48,46 @@ export class FlickrSearch {
 }
 
 export class FlickrImage {
+
+  state: ImageState;
+
   title: string;
-  flickr_image_id: number;
-  flickr_image_url: string;
-  thumbnail: string;
+
+  flickr_id: string;
+  flickr_url: string;
+  flickr_thumbnail: string;
+
+  owner: string;
+  secret: string;
+  server: string;
+  farm: string;
+
+  license: string;
   tags: string;
-  license: License;
-  is_discarded: boolean;
+
+  is_public: boolean;
+  is_friend: boolean;
+  is_family: boolean;
 
   constructor(data: any = {}) {
-    this.title = data.title || '';
-    this.flickr_image_id = data.id || data.flickr_image_id;
-    this.flickr_image_url = data.flickr_image_url || `https://farm${data.farm}.staticflickr.com/${data.server}/${data.id}_${data.secret}.jpg`;
-    if (data.farm && data.server & data.secret) {
-      this.thumbnail =  `https://farm${data.farm}.staticflickr.com/${data.server}/${data.id}_${data.secret}_q.jpg`;
-    } else {
-      this.thumbnail = '';
-    }
-    this.tags = data.tags || '';
-    this.license = data.license || null;
-    this.is_discarded = data.is_discarded || false;
+    console.log(data);
+    this.title = data.title;
+    this.flickr_id = data.flickr_id;
+    this.flickr_url = data.flickr_url;
+    this.flickr_thumbnail = data.flickr_thumbnail;
+
+    this.owner = data.owner;
+    this.secret = data.secret;
+    this.server = data.server;
+    this.farm = data.farm;
+
+    this.license = data.license;
+    this.tags = data.tags;
+
+    this.is_public = data.is_public;
+    this.is_friend = data.is_friend;
+    this.is_family = data.is_family;
+
+    this.state = data.state;
   }
 }

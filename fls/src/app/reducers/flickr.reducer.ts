@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { FlickrSearch, FlickrImage, TagMode, License } from '../models/flickr.models';
+import { FlickrSearch, FlickrImage, TagMode, License, ImageState } from '../models/flickr.models';
 import { FlickrActions } from '../actions/flickr.actions';
 import { union, without } from 'underscore';
 
@@ -85,6 +85,8 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         },
         totalPages: action.payload.totalPages,
         images: action.payload.images
+        // .filter(image =>
+        //   state.savedImages.filter(saved => saved.flickr_image_id != image.flickr_image_id ).length > 0)
       };
 
     case FlickrActions.TOGGLE_IMAGE_DISCARDED:
@@ -94,7 +96,7 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         images: state.images.map(image => {
           return image == action.payload.image ? new FlickrImage({
             ...image,
-            is_discarded: !image.is_discarded
+            state: image.state == ImageState.discarded ? null : ImageState.discarded
           }) : image;
         })
       };

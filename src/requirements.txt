@@ -1,12 +1,13 @@
 Django==1.11.2
 Pillow==4.1.1
 djangorestframework==3.6.3
+dj-database-url
 django-cors-middleware
 django-rest-auth
 django-crispy-forms==1.6.1
 django-extensions==1.7.9
+django-multiselectfield
 django-filter
-dj-database-url
 gunicorn==19.7.1
 psycopg2==2.7.1
 redis==2.10.5
@@ -16,4 +17,5 @@ beautifulsoup4
 whitenoise==3.3.0
 django-dotenv
 brotlipy
-flickrapi
+requests
+ipdb

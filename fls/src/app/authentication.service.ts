@@ -31,7 +31,7 @@ export class AuthenticationService {
     });
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.post(`${this.authURL}/login/`, body, options)
+    return this.http.post(`${this.authURL}login/`, body, options)
       .map((response: Response) => {
         let token = response.json() && response.json().key;
         if (token) {
@@ -56,7 +56,7 @@ export class AuthenticationService {
       'Content-Type': 'application/json; charset=utf-8'
     });
     let options = new RequestOptions({ headers: headers });
-    return this.http.post(`${this.authURL}/logout/`, options)
+    return this.http.post(`${this.authURL}logout/`, options)
       .map((response: Response) => {
         // clear token remove user from local storage to log user out
         this.token = null;
