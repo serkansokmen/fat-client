@@ -6,14 +6,14 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.template.loader import render_to_string
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
-from .models import FlickrSearch, FlickrImage
 from sorl.thumbnail.admin import AdminImageMixin
+from .models import FlickrSearch, FlickrImage
 
 
 class FlickrImageAdmin(AdminImageMixin, admin.ModelAdmin):
     list_display = ('thumb', 'flickr_id', 'secret', 'license', 'tags', 'search')
-    list_filter = ('state', 'license', 'server', 'farm', 'owner', 'ispublic', 'isfriend', 'isfamily')
-    # filter_horizontal = ('tags',)
+    list_filter = ('state', 'license', 'server', 'farm', 'owner',
+        'ispublic', 'isfriend', 'isfamily')
 
     def thumb(self, obj):
         return render_to_string('admin/thumb.html', {

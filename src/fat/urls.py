@@ -6,6 +6,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from rest_framework import routers
 import flickr_search.api as flickr_search_api
+from flickr_search.api import search_flickr
 
 
 router = routers.DefaultRouter()
@@ -21,7 +22,8 @@ urlpatterns = [
 urlpatterns += [
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', include('rest_auth.urls')),
-    url(r'^api/v1/flickr-licenses/', flickr_search_api.FlickrLicenseView.as_view()),
+    url(r'^api/v1/licenses/', flickr_search_api.FlickrLicenseView.as_view()),
+    url(r'^api/v1/search-flickr/', search_flickr, name='search_flickr'),
     url(r'^$', TemplateView.as_view(template_name='flickr_search/app.html')),
     url(r'^flickr_search/', include('flickr_search.urls')),
 ]

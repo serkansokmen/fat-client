@@ -26,7 +26,7 @@ export class FlickrService {
   }
 
   getLicenses(): Observable<License[]> {
-    return this.http.get(`${this.endpoint}flickr-licenses/`, this.jwt())
+    return this.http.get(`${this.endpoint}licenses/`, this.jwt())
       .map((response: Response) => response.json())
       .map(result => result.map(data => new License(data)));
   }

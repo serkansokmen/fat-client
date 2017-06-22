@@ -49,7 +49,7 @@ class FlickrImage(models.Model):
     server = models.CharField(max_length=255)
     farm = models.IntegerField()
 
-    license = models.CharField(max_length=1, choices=LICENSES, blank=True, null=True)
+    license = models.CharField(max_length=2, choices=LICENSES, blank=True, null=True)
     tags = models.CharField(max_length=255, blank=True, null=True)
 
     ispublic = models.NullBooleanField()
@@ -91,8 +91,8 @@ class FlickrSearch(models.Model):
     user_id = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
-    licenses = MultiSelectField(choices=FlickrImage.LICENSES)
-    images = models.ManyToManyField(FlickrImage, related_name='search')
+    licenses = MultiSelectField(max_length=20, choices=FlickrImage.LICENSES)
+    images = models.ManyToManyField(FlickrImage, related_name='search', blank=True)
 
     class Meta:
         verbose_name = _('Flickr search')
@@ -101,7 +101,7 @@ class FlickrSearch(models.Model):
         ordering = ['-created_at', '-updated_at', ]
 
     def __str__(self):
-        return '{}'.format(self.query)
+        return '{}'.format(self.tags)
 
 
 @receiver(post_delete, sender=FlickrSearch)

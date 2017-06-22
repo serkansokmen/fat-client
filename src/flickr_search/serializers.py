@@ -21,7 +21,6 @@ class FlickrImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlickrImage
-        query = FlickrImage.objects.all()
         fields = ('flickr_id', 'secret', 'title',
             'owner', 'secret', 'server', 'farm',
             'license', 'tags',
@@ -33,92 +32,65 @@ class FlickrImageSerializer(serializers.ModelSerializer):
         read_only_fields = ('image', 'flickr_url', 'flickr_thumbnail')
 
 
-class FlickrSearchSerializer(serializers.Serializer):
+class FlickrSearchSerializer(serializers.ModelSerializer):
 
-    tags = serializers.CharField()
-    user_id = serializers.CharField(allow_blank=True, allow_null=True, default="")
-    tag_mode = serializers.ChoiceField(choices=FlickrSearch.TAG_MODES,
-        default=FlickrSearch.TAG_MODES[0], allow_null=True)
-    licenses = serializers.MultipleChoiceField(choices=FlickrImage.LICENSES,
-        allow_null=True)
-    per_page = serializers.IntegerField(default=settings.REST_FRAMEWORK['PAGE_SIZE'],
-        allow_null=True)
-    page = serializers.IntegerField(default=1)
+    # tags = serializers.CharField()
+    # user_id = serializers.CharField(allow_blank=True, allow_null=True, default="")
+    # tag_mode = serializers.ChoiceField(choices=FlickrSearch.TAG_MODES,
+    #     default=FlickrSearch.TAG_MODES[0], allow_null=True)
+    licenses = serializers.MultipleChoiceField(choices=FlickrImage.LICENSES, allow_blank=True)
     images = FlickrImageSerializer(many=True)
 
     class Meta:
-        fields = ('tags', 'user_id', 'tag_mode', 'licenses')
-
-    def request_flickr_search(self, validated_data):
-        return requests.get('https://api.flickr.com/services/rest/?method=flickr.photos.search',
-            params={
-                'api_key': settings.FLICKR_API_KEY,
-                'api_secret': settings.FLICKR_API_SECRET,
-                'format': 'json',
-                'nojsoncallback': 1,
-                'license': validated_data.get('license'),
-                'safe_search': 3,
-                'sort' : 'relevance',
-                'media': 'photos',
-                'content_type': 7,
-                'extras': 'license,tags',
-                'per_page': validated_data.get('per_page', '20'),
-                'page': validated_data.get('page', 1),
-                'tags': validated_data.get('tags', ''),
-                'tag_mode': validated_data.get('tag_mode', 'all')})
+        model = FlickrSearch
+        fields = ('tags', 'tag_mode', 'user_id', 'licenses', 'images', 'created_at', 'updated_at')
+        read_only_fields = ('created_at', 'updated_at')
 
     def create(self, validated_data):
+        # import ipdb; ipdb.set_trace()
+        instance = FlickrSearch.objects.create(
+            tags=validated_data.get('tags'),
+            tag_mode=validated_data.get('tag_mode'),
+            user_id=validated_data.get('user_id'),
+            licenses=validated_data.get('licenses'),)
 
-        req = self.request_flickr_search(validated_data)
+        # for image in validated_data.get('images'):
+        #     image, created = FlickrImage.objects.get_or_create(
+        #         flickr_id=photo.get('id'),
+        #         title=photo.get('title'),
+        #         owner=photo.get('owner'),
+        #         secret=photo.get('secret'),
+        #         server=photo.get('server'),
+        #         farm=photo.get('farm'),
+        #         license=photo.get('license'),
+        #         tags=photo.get('tags'),
+        #         ispublic=photo.get('ispublic'),
+        #         isfriend=photo.get('isfriend'),
+        #         isfamily=photo.get('isfamily'))
+        #     if image not in instance.images.all():
+        #         instance.images.add(image)
+        # instance.save()
+        return instance
 
-        if req.json()['stat'] == 'ok':
-            instance, created = FlickrSearch.objects.create(
-                tags=validated_data.get('tags'),
-                tag_mode=validated_data.get('tag_mode'),
-                user_id=validated_data.get('user_id'))
+    # def update(self, instance, validated_data):
 
-            for photo in req.json()['photos']['photo']:
-                image, created = FlickrImage.objects.get_or_create(
-                    flickr_id=photo.get('id'),
-                    title=photo.get('title'),
-                    owner=photo.get('owner'),
-                    secret=photo.get('secret'),
-                    server=photo.get('server'),
-                    farm=photo.get('farm'),
-                    license=photo.get('license'),
-                    tags=photo.get('tags'),
-                    ispublic=photo.get('ispublic'),
-                    isfriend=photo.get('isfriend'),
-                    isfamily=photo.get('isfamily'))
-                if created:
-                    instance.images.add(image)
-            instance.save()
-            return instance
+    #     req = self.request_flickr_search(validated_data)
 
-    def update(self, instance, validated_data):
-
-        req = self.request_flickr_search(validated_data)
-
-        if req.json()['stat'] == 'ok':
-            instance, created = FlickrSearch.objects.create(
-                tags=validated_data.get('tags'),
-                tag_mode=validated_data.get('tag_mode'),
-                user_id=validated_data.get('user_id'))
-
-            for photo in req.json()['photos']['photo']:
-                image, created = FlickrImage.objects.get_or_create(
-                    flickr_id=photo.get('id'),
-                    title=photo.get('title'),
-                    owner=photo.get('owner'),
-                    secret=photo.get('secret'),
-                    server=photo.get('server'),
-                    farm=photo.get('farm'),
-                    license=photo.get('license'),
-                    tags=photo.get('tags'),
-                    ispublic=photo.get('ispublic'),
-                    isfriend=photo.get('isfriend'),
-                    isfamily=photo.get('isfamily'))
-                if created:
-                    instance.images.add(image)
-            instance.save()
-            return instance
+    #     if req.json()['stat'] == 'ok':
+    #         for photo in req.json()['photos']['photo']:
+    #             image, created = FlickrImage.objects.get_or_create(
+    #                 flickr_id=photo.get('id'),
+    #                 title=photo.get('title'),
+    #                 owner=photo.get('owner'),
+    #                 secret=photo.get('secret'),
+    #                 server=photo.get('server'),
+    #                 farm=photo.get('farm'),
+    #                 license=photo.get('license'),
+    #                 tags=photo.get('tags'),
+    #                 ispublic=photo.get('ispublic'),
+    #                 isfriend=photo.get('isfriend'),
+    #                 isfamily=photo.get('isfamily'))
+    #             if image not in instance.images.all():
+    #                 instance.images.add(image)
+    #         instance.save()
+    #         return instance

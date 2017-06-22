@@ -2,18 +2,61 @@ import requests
 import json
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from rest_framework import viewsets, parsers, views
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from .models import FlickrSearch, FlickrImage
 from .serializers import FlickrSearchSerializer, FlickrImageSerializer
-from rest_framework import viewsets, parsers, views, response
 
 
-class FlickrLicenseView(views.APIView):
+@api_view(['GET'])
+def search_flickr(request):
+    # import ipdb; ipdb.set_trace()
+    req = requests.get('https://api.flickr.com/services/rest/?method=flickr.photos.search',
+        params={
+            'api_key': settings.FLICKR_API_KEY,
+            'api_secret': settings.FLICKR_API_SECRET,
+            'format': 'json',
+            'nojsoncallback': 1,
+            'license': request.GET.get('license'),
+            'safe_search': 3,
+            'sort' : 'relevance',
+            'media': 'photos',
+            'content_type': 7,
+            'extras': 'license,tags',
+            'per_page': request.GET.get('per_page', '20'),
+            'page': request.GET.get('page', 1),
+            'tags': request.GET.get('tags', ''),
+            'tag_mode': request.GET.get('tag_mode', 'all')})
 
-    def get(self, request, format=None):
-        return response.Response([{
-            'id': license[0],
-            'name': license[1],
-        } for license in FlickrImage.LICENSES])
+    if req.json()['stat'] == 'ok':
+        search_serializer = FlickrSearchSerializer(data=req.json())
+        # photos = [{
+        #     'id': photo.get('id'),
+        #     'owner': photo.get('owner'),
+        #     'secret': photo.get('secret'),
+        #     'server': photo.get('server'),
+        #     'farm': photo.get('farm'),
+        #     'title': photo.get('title'),
+        #     'ispublic': photo.get('ispublic'),
+        #     'isfriend': photo.get('isfriend'),
+        #     'isfamily': photo.get('isfamily'),
+        #     'license': photo.get('license'),
+        #     'tags': ', '.join(photo.get('tags').split(' ')),
+        # } for photo in req.json()['photos']['photo']]
+
+        # serializer = FlickrImageSerializer(data=photos, many=True)
+        # return Response({
+        #     'tags': request.GET.get('tags', ''),
+        #     'total': req.json()['photos']['total'] * 1,
+        #     'pages': req.json()['photos']['pages'],
+        #     'results': serializer.initial_data,
+        #     'serializer': search_serializer.data
+        # })
+        return Response(search_serializer.initial_data)
+    else:
+        return Response({'message': 'No results'})
 
 
 class FlickrSearchQueryView(views.APIView):
@@ -58,7 +101,7 @@ class FlickrSearchQueryView(views.APIView):
                 'tags': photo.get('tags'),
             } for photo in req.json()['photos']['photo']]
             serializer = FlickrImageSerializer(data=photos, many=True)
-            return response.Response({
+            return Response({
                 'total': req.json()['photos']['total'] * 1,
                 'pages': req.json()['photos']['pages'],
                 'results': serializer.initial_data
@@ -78,5 +121,11 @@ class FlickrImageViewSet(viewsets.ModelViewSet):
     # parser_classes = [parsers.FileUploadParser,]
 
 
+class FlickrLicenseView(views.APIView):
 
+    def get(self, request, format=None):
+        return Response([{
+            'id': license[0],
+            'name': license[1],
+        } for license in FlickrImage.LICENSES])
 
