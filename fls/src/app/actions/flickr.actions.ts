@@ -67,14 +67,6 @@ export class FlickrActions {
     }
   }
 
-  static REQUEST_EXISTING_IMAGES = '[Flickr] Request Existing Images';
-  requestExistingImages(): Action {
-    return {
-      type: FlickrActions.REQUEST_EXISTING_IMAGES,
-      payload: {}
-    }
-  }
-
   static SELECT_LICENCE = '[Flickr] Select License';
   selectLicense(license: License): Action {
     return {

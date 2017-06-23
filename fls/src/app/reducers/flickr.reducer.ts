@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { FlickrSearch, FlickrImage, TagMode, License } from '../models/flickr.models';
+import { FlickrSearch, FlickrImage, TagMode, License, ImageState } from '../models/flickr.models';
 import { FlickrActions } from '../actions/flickr.actions';
 import { union, without } from 'underscore';
 
@@ -11,7 +11,8 @@ export interface SearchState {
   licenses: License[],
   selectedLicenses: License[],
   page: number,
-  totalPages: number
+  pages: number,
+  total: number
 };
 
 const initialState: SearchState = {
@@ -25,7 +26,8 @@ const initialState: SearchState = {
   licenses: [],
   selectedLicenses: [],
   page: 1,
-  totalPages: 0
+  pages: 0,
+  total: 0
 };
 
 export function flickrReducer(state: SearchState = initialState, action: Action) {
@@ -83,8 +85,10 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
           ...state.instance,
           perPage: action.payload.perPage
         },
-        totalPages: action.payload.totalPages,
+        pages: action.payload.pages,
         images: action.payload.images
+        // .filter(image =>
+        //   state.savedImages.filter(saved => saved.flickr_image_id != image.flickr_image_id ).length > 0)
       };
 
     case FlickrActions.TOGGLE_IMAGE_DISCARDED:
@@ -94,7 +98,7 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         images: state.images.map(image => {
           return image == action.payload.image ? new FlickrImage({
             ...image,
-            is_discarded: !image.is_discarded
+            state: image.state == ImageState.discarded ? null : ImageState.discarded
           }) : image;
         })
       };

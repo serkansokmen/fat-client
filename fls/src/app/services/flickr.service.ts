@@ -14,14 +14,11 @@ export class FlickrService {
 
   private endpoint: string;
   private apiKey: string;
-  private existingImages: FlickrImage[] = [];
 
   constructor(
     private http: Http,
     private cookieService: CookieService) {
-
     this.endpoint = environment.apiURL;
-    this.apiKey = environment.flickrApiKey
   }
 
   getSearch(id: number) {
@@ -34,62 +31,37 @@ export class FlickrService {
       .map(result => result.map(data => new License(data)));
   }
 
-  getExistingFlickrImages(): Observable<FlickrImage[]> {
-    return this.http.get(this.endpoint, this.jwt())
+  getSavedImages(): Observable<FlickrImage[]> {
+    return this.http.get(`${this.endpoint}images/`, this.jwt())
       .map((response: Response) => response.json())
-      .map(values => {
-        return [].concat.apply([], values.map(value => value.images))
-      })
-      .map(images => {
-        this.existingImages = images
-          .map(data => new FlickrImage(data))
-        return this.existingImages;
-      });
+      .map(data => data.map(image => new FlickrImage(image)));
   }
 
   search(search: FlickrSearch, licenses: License[], page: number): Observable<any> {
 
-    let queryStr = search.query;
-    let excludeStr = search.exclude.split(',').map(str => ` -${str.trim()}`).join(',');
-    var searchQuery = queryStr;
-    if (excludeStr != '-') {
-      searchQuery += `,${excludeStr}`;
+    var query = search.query.replace(' ', '');
+    let exclude = search.exclude.replace(' ', '').split(',').map(str => `-${str.trim()}`).join(',');
+    if (exclude != '-') {
+      query += `,${exclude}`;
     }
 
-    let url = `https://api.flickr.com/services/rest/?method=flickr.photos.search` +
-      `&api_key=${this.apiKey}` +
-      '&format=json&nojsoncallback=1' +
-      `&license=${licenses.map(license => license.id).join(',')}` +
-      '&safe_search=3' +
-      '&sort=relevance' +
-      '&media=photos' +
-      '&content_type=7' +
-      '&media=photos' +
-      '&extras=license,tags' +
+    let url = `${this.endpoint}search-flickr/` +
+      `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
       `&user_id=${search.userID}` +
       `&per_page=${search.perPage}` +
       `&page=${page}` +
-      `&tags=${searchQuery}` +
+      `&tags=${query}` +
       `&tag_mode=${search.tagMode.value}`;
 
-    return this.http.get(url)
+    return this.http.get(url, this.jwt())
       .map((response: Response) => response.json())
       .map((result: any) => {
-        if (result.stat != 'ok') {
-          alert('Unable to get photos from Flickr:' + result.message);
-          return;
-        }
         return {
-          totalPages: result.photos.total,
-          results: result.photos.photo
-            .filter(photo => {
-              return this.existingImages
-                .filter(image => image.flickr_image_id == photo.id)
-                .length == 0;
-            })
-            .map(photo => {
-              return new FlickrImage(photo);
-            })
+          pages: parseInt(result.total, 10),
+          page: result.page,
+          perPage: result.perpage,
+          total: result.total,
+          images: result.photo.map(photo => new FlickrImage(photo))
         };
       });
   };

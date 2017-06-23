@@ -5,13 +5,16 @@ from django.conf.urls.static import static
 from django.views.generic.base import TemplateView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from rest_framework import routers
+from rest_framework.schemas import get_schema_view
 import flickr_search.api as flickr_search_api
+from flickr_search.api import search_flickr
 
+schema_view = get_schema_view(title='Flickr Search Tool API')
 
 router = routers.DefaultRouter()
 router.register(r'search', flickr_search_api.FlickrSearchViewSet)
 router.register(r'images', flickr_search_api.FlickrImageViewSet)
-router.register(r'licenses', flickr_search_api.FlickrLicenseViewSet)
+# router.register(r'licenses', flickr_search_api.FlickrLicenseViewSet)
 
 
 urlpatterns = [
@@ -21,6 +24,9 @@ urlpatterns = [
 urlpatterns += [
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', include('rest_auth.urls')),
+    url(r'^api/v1/licenses/', flickr_search_api.FlickrLicenseView.as_view()),
+    url(r'^api/v1/schema/$', schema_view),
+    url(r'^api/v1/search-flickr/', search_flickr, name='search_flickr'),
     url(r'^$', TemplateView.as_view(template_name='flickr_search/app.html')),
     url(r'^flickr_search/', include('flickr_search.urls')),
 ]
