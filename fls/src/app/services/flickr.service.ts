@@ -39,19 +39,18 @@ export class FlickrService {
 
   search(search: FlickrSearch, licenses: License[], page: number): Observable<any> {
 
-    let queryStr = search.query;
-    let excludeStr = search.exclude.split(',').map(str => ` -${str.trim()}`).join(',');
-    var searchQuery = queryStr;
-    if (excludeStr != '-') {
-      searchQuery += `,${excludeStr}`;
+    var query = search.query.replace(' ', '');
+    let exclude = search.exclude.replace(' ', '').split(',').map(str => `-${str.trim()}`).join(',');
+    if (exclude != '-') {
+      query += `,${exclude}`;
     }
 
-    let url = `${this.endpoint}search/` +
-      `&license=${licenses.map(license => license.id).sort().join(',')}` +
+    let url = `${this.endpoint}search-flickr/` +
+      `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
       `&user_id=${search.userID}` +
       `&per_page=${search.perPage}` +
       `&page=${page}` +
-      `&tags=${searchQuery}` +
+      `&tags=${query}` +
       `&tag_mode=${search.tagMode.value}`;
 
     return this.http.get(url, this.jwt())

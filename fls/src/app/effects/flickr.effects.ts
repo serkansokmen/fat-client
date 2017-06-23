@@ -37,8 +37,8 @@ export class FlickrEffects {
       return Observable.of({
         type: FlickrActions.REQUEST_SEARCH_COMPLETE,
         payload: {
-          totalPages: result.totalPages * 1,
-          images: result.results
+          totalPages: result.pages,
+          images: result.photo
         }
       })
     });

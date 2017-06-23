@@ -59,6 +59,9 @@ class FlickrImage(models.Model):
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
+    flickr_url = models.URLField(blank=True, null=True)
+    flickr_thumbnail = models.URLField(blank=True, null=True)
+
     class Meta:
         verbose_name = _('Flickr image')
         verbose_name_plural = _('Flickr images')
