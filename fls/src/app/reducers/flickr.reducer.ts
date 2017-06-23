@@ -3,6 +3,7 @@ import { FlickrSearch, FlickrImage, TagMode, License, ImageState } from '../mode
 import { FlickrActions } from '../actions/flickr.actions';
 import { union, without } from 'underscore';
 
+
 export interface SearchState {
   isRequesting: boolean,
   instance: FlickrSearch,
@@ -11,8 +12,12 @@ export interface SearchState {
   licenses: License[],
   selectedLicenses: License[],
   page: number,
+  perpage: number,
   pages: number,
-  total: number
+  total: number,
+  thumbnailScale: number,
+  cardMinBoxSize: number,
+  cardMaxBoxSize: number,
 };
 
 const initialState: SearchState = {
@@ -23,35 +28,25 @@ const initialState: SearchState = {
   }),
   tagModes: [TagMode.all, TagMode.any],
   images: [],
-  licenses: [],
-  selectedLicenses: [],
+  licenses: License.licensesAvailable,
+  selectedLicenses: [
+    License.getLicense('4'),
+    License.getLicense('5'),
+    License.getLicense('6'),
+    License.getLicense('7')
+  ],
   page: 1,
+  perpage: 10,
   pages: 0,
-  total: 0
+  total: 0,
+  thumbnailScale: 100,
+  cardMinBoxSize: 640,
+  cardMaxBoxSize: 1200,
 };
 
 export function flickrReducer(state: SearchState = initialState, action: Action) {
 
   switch (action.type) {
-
-    case FlickrActions.REQUEST_LICENSES:
-      return {
-        ...state,
-        isRequesting: true
-      };
-
-    case FlickrActions.REQUEST_LICENSES_COMPLETE:
-      return {
-        ...state,
-        isRequesting: false,
-        licenses: action.payload.licenses,
-        selectedLicenses: [
-          action.payload.licenses[4],
-          action.payload.licenses[5],
-          action.payload.licenses[6],
-          action.payload.licenses[7]
-        ]
-      };
 
     case FlickrActions.REQUEST_PAGE:
       return {
@@ -74,6 +69,7 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         isRequesting: true,
         instance: action.payload.search,
         images: [],
+        total: 0,
         page: action.payload.page
       };
 
@@ -81,14 +77,11 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
       return {
         ...state,
         isRequesting: false,
-        instance: {
-          ...state.instance,
-          perPage: action.payload.perPage
-        },
         pages: action.payload.pages,
+        perpage: action.payload.perpage,
+        page: action.payload.page,
+        total: action.payload.total,
         images: action.payload.images
-        // .filter(image =>
-        //   state.savedImages.filter(saved => saved.flickr_image_id != image.flickr_image_id ).length > 0)
       };
 
     case FlickrActions.TOGGLE_IMAGE_DISCARDED:
@@ -129,6 +122,14 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         isRequesting: false,
         search: action.payload.search,
         images: action.payload.images
+      };
+
+    case FlickrActions.SET_THUMBNAIL_SCALE:
+      return {
+        ...state,
+        thumbnailScale: action.payload.scale,
+        cardMinBoxSize: (640 * action.payload.scale) / 100,
+        cardMaxBoxSize: (1200 * action.payload.scale) / 100
       };
 
     default: {

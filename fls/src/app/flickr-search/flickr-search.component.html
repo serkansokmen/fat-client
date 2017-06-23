@@ -1,73 +1,95 @@
+<md-toolbar color="primary" *ngIf="!sidenav.opened">
+  <button md-mini-fab (click)="sidenav.toggle()">
+    <md-icon>more_horizontal</md-icon>
+  </button>
+  <span class="spacer"></span>
+  <span>Flickr Search Tool</span>
+</md-toolbar>
+
 <md-sidenav-container>
   <md-sidenav #sidenav mode="side" opened="true">
-    <!-- {{ (state$ | async)?.savedImages | json }} -->
-    <form [formGroup]="form" (ngSubmit)="handleSearch($event, state$.page)" novalidate>
-        <md-input-container><input mdInput formControlName="query" type="text" placeholder="Search for keywords"/></md-input-container>
-        <md-input-container><input mdInput formControlName="exclude" type="text" placeholder="Exclude keywords"/></md-input-container>
-        <md-input-container><input mdInput formControlName="userID" type="text" placeholder="User ID (Optional)"/></md-input-container>
-        <md-select placeholder="Tag mode" formControlName="tagMode">
-          <md-option *ngFor="let mode of (state$ | async)?.tagModes" [value]="mode">{{ mode.label }}</md-option>
-        </md-select>
+    <form [formGroup]="form" (ngSubmit)="handleSearch($event, state$?.page)" novalidate>
+      <md-input-container><input [autocomplete]="false" mdInput formControlName="query" type="text" placeholder="Search for keywords"/></md-input-container>
+      <md-input-container><input [autocomplete]="false" mdInput formControlName="exclude" type="text" placeholder="Exclude keywords"/></md-input-container>
+      <md-input-container><input [autocomplete]="false" mdInput formControlName="userID" type="text" placeholder="User ID (Optional)"/></md-input-container>
+      <md-select placeholder="Tag mode" formControlName="tagMode">
+        <md-option *ngFor="let mode of (state$ | async)?.tagModes" [value]="mode">{{ mode.label }}</md-option>
+      </md-select>
+      <hr>
+      <div>
+        <md-expansion-panel #licensesPanel>
+          <md-expansion-panel-header>
+            <mat-panel-title>Licenses</mat-panel-title>
+          </md-expansion-panel-header>
+          <div class="licenses" *ngFor="let license of (state$ | async)?.licenses">
+            <md-checkbox [checked]="isLicenseSelected(license)" (change)="handleToggleLicense(license, $event?.checked)">
+              {{ license?.name }}
+            </md-checkbox>
+          </div>
+        </md-expansion-panel>
+      </div>
+      <hr>
+      <md-input-container>
+        <input [autocomplete]="false" mdInput formControlName="perpage" type="number" placeholder="How many per page?"/>
+      </md-input-container>
+      <md-input-container>
+        <input [autocomplete]="false" mdInput formControlName="page"
+          [max]="(state$ | async)?.pages"
+          [placeholder]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' results'"
+          [value]="(state$ | async)?.page" type="number"/>
+      </md-input-container>
+      <div class="form-controls">
+        <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon>search</md-icon> Search</button></p>
+        <p><button md-button color="primary" type="button" (click)="handleSave($event, state$?.page)" [disabled]="(state$ | async)?.isRequesting"><md-icon>save</md-icon> Save</button></p>
         <hr>
-        <div>
-          <md-expansion-panel #licensesPanel>
-            <md-expansion-panel-header>
-              <mat-panel-title>Licenses</mat-panel-title>
-            </md-expansion-panel-header>
-            <div class="licenses" *ngFor="let license of (state$ | async)?.licenses">
-              <md-checkbox [checked]="isLicenseSelected(license)" (change)="handleToggleLicense(license, $event?.checked)">
-                {{ license?.name }}
-              </md-checkbox>
-            </div>
-          </md-expansion-panel>
-        </div>
-        <hr>
-        <md-input-container>
-          <input mdInput formControlName="perPage" type="number" placeholder="How many per page?"/>
-        </md-input-container>
-        <md-input-container>
-          <input mdInput formControlName="page"
-            [max]="(state$ | async)?.pages"
-            [placeholder]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' pages'"
-            [value]="(state$ | async)?.page" type="number"/>
-        </md-input-container>
-        <div class="form-controls">
-          <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon>search</md-icon> Search</button></p>
-          <p><button md-button color="primary" type="button" (click)="handleSave($event, state$.page)" [disabled]="(state$ | async)?.isRequesting"><md-icon>save</md-icon> Save</button></p>
-          <hr>
-        </div>
-        <p><button md-raised-button (click)="logout($event)"><md-icon>exit_to_app</md-icon> Logout</button></p>
+      </div>
+      <p><button md-raised-button (click)="logout($event)"><md-icon>exit_to_app</md-icon> Logout</button></p>
     </form>
   </md-sidenav>
 
-  <md-toolbar color="primary">
-    <button md-mini-fab (click)="sidenav.toggle()">
-      <md-icon>more_vert</md-icon>
-    </button>
-    <span class="spacer"></span>
-    <span>Flickr Search Tool</span>
-  </md-toolbar>
-
-  <div class="thumbnails">
+  <div class="content" [class.is-loading]="(state$ | async)?.isRequesting">
     <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
     <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No more results</div>
-    <md-card *ngFor="let image of (state$ | async)?.images">
-      <md-card-content
-        [class.disabled]="(state$ | async)?.isRequesting"
-        [class.is-discarded]="image.state == 0"
-        (click)="handleImageClick(image)">
-        <img md-card-image [src]="getImageURL(image)" [alt]="image.flickr_id" />
-        <div>
-          <md-icon color="primary" [style.color]="'red'" *ngIf="image.state == 0">close</md-icon>
-          <md-icon color="primary" *ngIf="image.state != 0">check</md-icon>
-        </div>
-        <div class="meta">
-          <strong>Tags:</strong> {{ image.tags }} <br>
-          <strong>License:</strong> <a [href]="image.license.url" target="_blank">{{ image.license.name }}</a>
-        </div>
-      </md-card-content>
-    </md-card>
+    <div class="content-heading" *ngIf="!(state$ | async)?.isRequesting">
+      <h2 *ngIf="(state$ | async)?.total > 1" [innerHTML]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' results'"></h2>
+      <md-slider
+        [disabled]="(state$ | async)?.isRequesting"
+        [max]="100"
+        [min]="20"
+        [step]="5"
+        [thumb-label]="true"
+        [tick-interval]="1"
+        [value]="(state$ | async)?.thumbnailScale"
+        [vertical]="false"
+        (change)="handleThumbnailScale($event)">
+    </md-slider>
+    </div>
+    <div class="thumbnails">
+      <md-card *ngFor="let image of (state$ | async)?.images"
+        [class.is-discarded]="image.state?.value == 0"
+        [style.min-width]="(state$ | async)?.cardMinBoxSize + 'px'"
+        [style.max-width]="(state$ | async)?.cardMaxBoxSize + 'px'">
+        <md-card-content>
+          <div class="card-image-wrapper"
+            [ngStyle]="{'background-image': 'url(' + getImageURL(image) + ')', 'opacity': image.state?.value == 0 ? 0.2 : 1.0}"
+            (click)="handleImageClick(image)" >
+            <!-- <img md-card-image [src]="getImageURL(image)" [alt]="image.flickr_id" /> -->
+          </div>
+        </md-card-content>
+        <md-card-actions [class.is-meta-visible]="image.isMetaVisible">
+          <div class="meta">
+            <strong>Tags:</strong> {{ image.tags }} <br>
+            <strong>License:</strong> <a [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
+          </div>
+          <button md-button (click)="image.isMetaVisible = !image.isMetaVisible">
+            <md-icon color="primary" >info</md-icon>
+          </button>
+          <button md-button (click)="handleImageClick(image)">
+            <md-icon color="primary" [style.color]="image.state?.value == 0 ? 'red' : 'green'"
+              [innerHTML]="image.state?.value == 0 ? 'close' : 'check'"></md-icon>
+          </button>
+        </md-card-actions>
+      </md-card>
+    </div>
   </div>
-
-
 </md-sidenav-container>

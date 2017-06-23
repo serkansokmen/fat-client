@@ -19,15 +19,6 @@ class FlickrImage(models.Model):
     )
 
     LICENSES = (
-        # (0, _('All Rights Reserved'), ''),
-        # (1, _('Attribution-NonCommercial-ShareAlike License'), 'http://creativecommons.org/licenses/by-nc-sa/2.0/'),
-        # (2, _('Attribution-NonCommercial License'), 'http://creativecommons.org/licenses/by-nc/2.0/'),
-        # (3, _('Attribution-NonCommercial-NoDerivs License'), 'http://creativecommons.org/licenses/by-nc-nd/2.0/'),
-        # (4, _('Attribution License'), 'http://creativecommons.org/licenses/by/2.0/'),
-        # (5, _('Attribution-ShareAlike License'), 'http://creativecommons.org/licenses/by-sa/2.0/'),
-        # (6, _('Attribution-NoDerivs License'), 'http://creativecommons.org/licenses/by-nd/2.0/'),
-        # (7, _('No known copyright restrictions'), 'http://flickr.com/commons/usage/'),
-        # (8, _('United States Government Work'), 'http://www.usa.gov/copyright.shtml'),
         ('0', _('All Rights Reserved')),
         ('1', _('Attribution-NonCommercial-ShareAlike')),
         ('2', _('Attribution-NonCommercial')),
@@ -50,7 +41,7 @@ class FlickrImage(models.Model):
     farm = models.IntegerField()
 
     license = models.CharField(max_length=2, choices=LICENSES, blank=True, null=True)
-    tags = models.CharField(max_length=255, blank=True, null=True)
+    tags = models.TextField(blank=True, null=True)
 
     ispublic = models.NullBooleanField()
     isfriend = models.NullBooleanField()

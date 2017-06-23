@@ -6,23 +6,6 @@ import { FlickrSearch, FlickrImage, License } from '../models/flickr.models';
 @Injectable()
 export class FlickrActions {
 
-  static REQUEST_LICENSES = '[Flickr] Request Flickr Licenses';
-  requestLicenses(): Action {
-    return {
-      type: FlickrActions.REQUEST_LICENSES
-    }
-  }
-
-  static REQUEST_LICENSES_COMPLETE = '[Flickr] Request Flickr Licenses Complete';
-  requestLicensesComplete(licenses: License[]): Action {
-    return {
-      type: FlickrActions.REQUEST_LICENSES_COMPLETE,
-      payload: {
-        licenses
-      }
-    }
-  }
-
   static REQUEST_PAGE = '[Flickr] Set Page';
   requestPage(page: number): Action {
     return {
@@ -45,12 +28,13 @@ export class FlickrActions {
   }
 
   static REQUEST_SEARCH = '[Flickr] Request Flickr Search';
-  requestSearch(search: FlickrSearch, licenses: License[], page: number): Action {
+  requestSearch(search: FlickrSearch, licenses: License[], perpage: number, page: number): Action {
     return {
       type: FlickrActions.REQUEST_SEARCH,
       payload: {
         search,
         licenses,
+        perpage,
         page
       }
     }
@@ -130,6 +114,14 @@ export class FlickrActions {
     }
   }
 
-  // static REQUEST_EXISTING_IMAGES = '[Flickr] Request Existing Images';
+  static SET_THUMBNAIL_SCALE = '[Flickr] Set Thumbnail Scale';
+  setThumbnailScale(scale: number): Action {
+    return {
+      type: FlickrActions.SET_THUMBNAIL_SCALE,
+      payload: {
+        scale
+      }
+    }
+  }
 
 }

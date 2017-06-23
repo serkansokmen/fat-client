@@ -1,12 +1,12 @@
 export class ImageState {
   constructor(
+    public value: number,
     public label: string,
-    public value: string
   ) {}
 
-  static discarded = new ImageState('Discarded', 'discarded');
-  static approved = new ImageState('Approved', 'approved');
-  static processed = new ImageState('Processed', 'processed');
+  static discarded = new ImageState(0, 'Discarded');
+  static approved = new ImageState(1, 'Approved');
+  static processed = new ImageState(2, 'Processed');
 }
 
 export class TagMode {
@@ -20,15 +20,28 @@ export class TagMode {
 }
 
 export class License {
-  id: number;
-  name: string;
-  url: string;
+  constructor(
+    public id: string,
+    public name: string,
+    public url: string
+  ) {}
 
-  constructor(data: any) {
-    this.id = data.id;
-    this.name = data.name;
-    this.url = data.url;
+  static licensesAvailable = [
+    new License('0', 'All Rights Reserved', ''),
+    new License('1', 'Attribution-NonCommercial-ShareAlike', 'http://creativecommons.org/licenses/by-nc-sa/2.0/'),
+    new License('2', 'Attribution-NonCommercial', 'http://creativecommons.org/licenses/by-nc/2.0/'),
+    new License('3', 'Attribution-NonCommercial-NoDerivs', 'http://creativecommons.org/licenses/by-nc-nd/2.0/'),
+    new License('4', 'Attribution', 'http://creativecommons.org/licenses/by/2.0/'),
+    new License('5', 'Attribution-ShareAlike', 'http://creativecommons.org/licenses/by-sa/2.0/'),
+    new License('6', 'Attribution-NoDerivs', 'http://creativecommons.org/licenses/by-nd/2.0/'),
+    new License('7', 'No known copyright restrictions', 'http://flickr.com/commons/usage/'),
+    new License('8', 'United States Government Work', 'http://www.usa.gov/copyright.shtml'),
+  ];
+
+  static getLicense(id: string): License {
+    return License.licensesAvailable.filter(l => l.id == id)[0];
   }
+
 }
 
 export class FlickrSearch {
@@ -36,14 +49,12 @@ export class FlickrSearch {
   exclude: string;
   userID: string;
   tagMode: TagMode;
-  perPage: number;
 
   constructor(data: any) {
     this.query = data.query || '';
     this.exclude = data.exclude || '';
     this.userID = data.userID || '';
     this.tagMode = data.tagMode || TagMode.all;
-    this.perPage = data.perPage || 40;
   }
 }
 
@@ -63,12 +74,12 @@ export class FlickrImage {
   server: string;
   farm: string;
 
-  license: string;
+  license: License;
   tags: string;
 
-  is_public: boolean;
-  is_friend: boolean;
-  is_family: boolean;
+  // is_public: boolean;
+  // is_friend: boolean;
+  // is_family: boolean;
 
   constructor(data: any = {}) {
     this.id = data.id;
@@ -81,13 +92,12 @@ export class FlickrImage {
     this.secret = data.secret;
     this.server = data.server;
     this.farm = data.farm;
-
-    this.license = data.license;
+    this.license = data.license.id ? data.license : License.getLicense(data.license);
     this.tags = data.tags;
 
-    this.is_public = data.is_public;
-    this.is_friend = data.is_friend;
-    this.is_family = data.is_family;
+    // this.is_public = data.is_public;
+    // this.is_friend = data.is_friend;
+    // this.is_family = data.is_family;
 
     this.state = data.state;
   }

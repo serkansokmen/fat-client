@@ -25,20 +25,13 @@ export class FlickrService {
     console.log(id);
   }
 
-  getLicenses(): Observable<License[]> {
-    return this.http.get(`${this.endpoint}licenses/`, this.jwt())
-      .map((response: Response) => response.json())
-      .map(result => result.map(data => new License(data)));
-  }
-
   getSavedImages(): Observable<FlickrImage[]> {
     return this.http.get(`${this.endpoint}images/`, this.jwt())
       .map((response: Response) => response.json())
       .map(data => data.map(image => new FlickrImage(image)));
   }
 
-  search(search: FlickrSearch, licenses: License[], page: number): Observable<any> {
-
+  search(search: FlickrSearch, licenses: License[], perpage: number, page: number): Observable<any> {
     var query = search.query.replace(' ', '');
     let exclude = search.exclude.replace(' ', '').split(',').map(str => `-${str.trim()}`).join(',');
     if (exclude != '-') {
@@ -48,7 +41,7 @@ export class FlickrService {
     let url = `${this.endpoint}search-flickr/` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
       `&user_id=${search.userID}` +
-      `&per_page=${search.perPage}` +
+      `&per_page=${perpage}` +
       `&page=${page}` +
       `&tags=${query}` +
       `&tag_mode=${search.tagMode.value}`;
@@ -59,7 +52,7 @@ export class FlickrService {
         return {
           pages: parseInt(result.total, 10),
           page: result.page,
-          perPage: result.perpage,
+          perpage: result.perpage,
           total: result.total,
           images: result.photo.map(photo => new FlickrImage(photo))
         };
@@ -68,13 +61,24 @@ export class FlickrService {
 
 
   saveSearch(search: FlickrSearch, images: FlickrImage[]) {
+
     let body = JSON.stringify({
       query: search.query,
       exclude: search.exclude || '',
       user_id: search.userID,
       tag_mode: search.tagMode.value,
-      images
+      images: images.map(image => {
+        // let licenses = this.licenses;
+        // let license = this.licenses.filter(l => image.license.id == l.id)[0];
+        // debugger
+        return {
+          ...image,
+          license: image.license.id,
+          state: image.state.value
+        }
+      })
     });
+
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser && currentUser.token) {
       let headers = new Headers({

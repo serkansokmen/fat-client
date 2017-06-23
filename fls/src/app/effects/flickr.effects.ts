@@ -16,30 +16,21 @@ export class FlickrEffects {
     private service: FlickrService
   ) { }
 
-  @Effect() licenses$: Observable<Action> = this.actions$
-    .ofType(FlickrActions.REQUEST_LICENSES)
-    .map(toPayload)
-    .switchMap(payload => this.service.getLicenses())
-    .switchMap(licenses => {
-      return Observable.of({
-        type: FlickrActions.REQUEST_LICENSES_COMPLETE,
-        payload: {
-          licenses
-        }
-      })
-    });
-
   @Effect() searchPage$ = this.actions$
     .ofType(FlickrActions.REQUEST_SEARCH)
     .map(toPayload)
-    .switchMap(payload => this.service.search(payload.search, payload.licenses, payload.page))
+    .switchMap(payload => this.service.search(
+      payload.search,
+      payload.licenses,
+      payload.perpage,
+      payload.page))
     .switchMap(result => {
       return Observable.of({
         type: FlickrActions.REQUEST_SEARCH_COMPLETE,
         payload: {
           pages: result.pages,
           page: result.page,
-          perPage: result.perPage,
+          perpage: result.perpage,
           total: result.total,
           images: result.images
         }

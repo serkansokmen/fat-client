@@ -2,3 +2,4 @@
 backup/
 .env
 sigmard.pem
+*.rdb

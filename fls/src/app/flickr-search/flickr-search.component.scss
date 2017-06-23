@@ -1,16 +1,62 @@
 :host {
+  overflow: hidden;
+  width: 100%;
+
+  md-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%  !important;
+  }
+
+  h2 {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .content {
+    width: 100%;
+    height: 100%;
+    padding: 20px 20px 120px 20px;
+    margin-top: 60px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-direction: column;
+
+    &.is-loading {
+    }
+
+    .content-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-direction: row;
+      width: 100%;
+      h2 {
+        flex: 1 1 auto;
+      }
+    }
+  }
+
   .thumbnails {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
     justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 0px;
   }
 
   md-sidenav-container {
     height: 100%;
+
     md-sidenav {
       min-width: 325px;
-
 
       form {
         display: flex;
@@ -45,19 +91,28 @@
 
 
   md-card {
-    max-width: 420px;
+    max-width: 600px;
+    min-width: 320px;
+    flex: 1 1 auto;
     padding: 5px;
-    cursor: pointer;
     position: relative;
     display: block;
     overflow: auto;
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 20px -8px rgba(0,0,0,0.75);
+    border-radius: 10px;
+    margin: 15px;
+
+    &.is-discarded {
+      box-shadow: none;
+      border: 1px solid #e2e2e2;
+
+      .card-image-wrapper {
+        opacity: 0.2;
+      }
+    }
 
     md-card-content {
-      transition: all 0.4s ease;
-      border: 1px solid #ccc;
-      box-shadow: 0px 0px 20px -8px rgba(0,0,0,0.75);
-      border-radius: 10px;
-      margin: 5px;
       display: flex;
       align-items: flex-start;
       justify-content: center;
@@ -66,51 +121,44 @@
       overflow: hidden;
       padding: 5px;
 
-      .meta {
-        transition: all 0.4s ease;
-        font-size: 12px;
-      }
-
-      img {
+      .card-image-wrapper {
         transition: all 0.4s ease;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
-        overflow: hidden;
         opacity: 1;
         margin-bottom: 5px;
-        // max-width: 100%;
-        max-height: 240px;
-        // width: 100%;
-        // min-width: 200px;
-        // max-height: 120px;
-      }
-      .fa {
-        display: none;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translateX(-50%) translateY(-50%);
-        font-size: 48px;
-        color: red;
+        background: transparent none center center no-repeat;
+        background-size: cover;
+        width: 100%;
+        min-height: 400px;
+        cursor: pointer;
+
+        md-card-image {
+          opacity: 0;
+        }
+
       }
 
-      &.is-discarded {
-        box-shadow: none;
-        border: 1px solid #e2e2e2;
-        img {
-          opacity: 0.5;
-        }
-        .fa {
+    }
+
+    md-card-actions {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      flex-direction: row;
+
+      &.is-meta-visible {
+        flex-direction: column;
+        .meta {
           display: block;
         }
-        .meta {
-          opacity: 0.2;
-        }
       }
 
-      &.disabled {
-        opacity: 0.2;
-        pointer-events: none;
+      .meta {
+        transition: all 0.4s ease;
+        font-size: 12px;
+        margin: 10px;
+        display: none;
       }
     }
 

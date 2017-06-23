@@ -45,7 +45,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
       exclude: [''],
       userID: [''],
       tagMode: ['', Validators.required],
-      perPage: [10, Validators.required],
+      perpage: [10, Validators.required],
       page: [1, Validators.required]
     });
 
@@ -67,7 +67,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
       if (params.slug) {
         console.log(params.slug);
       }
-      this.store.dispatch(this.actions.requestLicenses());
+      this.handleSearch(null);
     });
 
   }
@@ -85,6 +85,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
       this.actions.requestSearch(
         new FlickrSearch(this.form.value),
         this.selectedLicenses,
+        this.form.value.perpage,
         this.form.value.page));
   }
 
@@ -98,6 +99,10 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
 
   isLicenseSelected(license: License): boolean {
     return this.selectedLicenses.indexOf(license) > -1;
+  }
+
+  handleThumbnailScale(event) {
+    this.store.dispatch(this.actions.setThumbnailScale(event.value));
   }
 
   handleSave(event) {

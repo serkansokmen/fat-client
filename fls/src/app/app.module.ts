@@ -22,12 +22,15 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
+import { SafeStylePipe } from './pipes/safe-style.pipe';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     FlickrSearchComponent,
+    SafeStylePipe,
   ],
   imports: [
     BrowserModule,
