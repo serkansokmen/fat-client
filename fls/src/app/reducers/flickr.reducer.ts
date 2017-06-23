@@ -11,7 +11,8 @@ export interface SearchState {
   licenses: License[],
   selectedLicenses: License[],
   page: number,
-  totalPages: number
+  pages: number,
+  total: number
 };
 
 const initialState: SearchState = {
@@ -25,7 +26,8 @@ const initialState: SearchState = {
   licenses: [],
   selectedLicenses: [],
   page: 1,
-  totalPages: 0
+  pages: 0,
+  total: 0
 };
 
 export function flickrReducer(state: SearchState = initialState, action: Action) {
@@ -83,7 +85,7 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
           ...state.instance,
           perPage: action.payload.perPage
         },
-        totalPages: action.payload.totalPages,
+        pages: action.payload.pages,
         images: action.payload.images
         // .filter(image =>
         //   state.savedImages.filter(saved => saved.flickr_image_id != image.flickr_image_id ).length > 0)

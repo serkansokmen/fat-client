@@ -54,13 +54,16 @@ export class FlickrService {
       `&tag_mode=${search.tagMode.value}`;
 
     return this.http.get(url, this.jwt())
-      .map((response: Response) => response.json());
-      // .map((result: any) => {
-      //   return {
-      //     totalPages: result.total,
-      //     results: result.results.map(photo => new FlickrImage(photo))
-      //   };
-      // });
+      .map((response: Response) => response.json())
+      .map((result: any) => {
+        return {
+          pages: parseInt(result.total, 10),
+          page: result.page,
+          perPage: result.perpage,
+          total: result.total,
+          images: result.photo.map(photo => new FlickrImage(photo))
+        };
+      });
   };
 
 

@@ -53,6 +53,7 @@ export class FlickrImage {
 
   title: string;
 
+  id: string;
   flickr_id: string;
   flickr_url: string;
   flickr_thumbnail: string;
@@ -70,9 +71,9 @@ export class FlickrImage {
   is_family: boolean;
 
   constructor(data: any = {}) {
-    console.log(data);
+    this.id = data.id;
     this.title = data.title;
-    this.flickr_id = data.flickr_id;
+    this.flickr_id = data.flickr_id || data.id;
     this.flickr_url = data.flickr_url;
     this.flickr_thumbnail = data.flickr_thumbnail;
 
@@ -90,4 +91,5 @@ export class FlickrImage {
 
     this.state = data.state;
   }
+
 }

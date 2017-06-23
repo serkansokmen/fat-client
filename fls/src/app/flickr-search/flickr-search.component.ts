@@ -128,6 +128,14 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   //     });
   }
 
+  getImageURL(image: FlickrImage) {
+    return `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`;
+  }
+
+  getThumbnail(image: FlickrImage) {
+    return `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}_q.jpg`;
+  }
+
   logout(event) {
     this.authenticationService.logout()
       .subscribe(result => {
