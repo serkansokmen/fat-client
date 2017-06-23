@@ -1,6 +1,14 @@
+:host,
+.card-image-wrapper,
+img[md-card-image],
+.meta {
+  transition: all 0.4s ease;
+}
+
 :host {
-  width: auto;
+  // width: auto;
   md-card {
+
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -14,6 +22,7 @@
     box-shadow: 0px 0px 20px -8px rgba(0,0,0,0.75);
     border-radius: 10px;
     margin-bottom: 15px;
+    margin: 5px;
 
     &.is-discarded {
       box-shadow: none;
@@ -23,12 +32,6 @@
       img[md-card-image] {
         opacity: 0.2;
       }
-    }
-
-    .card-image-wrapper,
-    img[md-card-image],
-    .meta {
-      transition: all 0.4s ease;
     }
 
     md-card-content {
@@ -90,15 +93,11 @@
         display: block !important;
       }
     }
-    &.view-mode-thumbnails {
-      align-items: flex-start;
-      justify-content: flex-start;
-      margin: 15px;
-      .card-image-wrapper {
-        min-height: 400px;
-        width: 100%;
-      }
-    }
+    // &.view-mode-thumbnails {
+    //   align-items: flex-start;
+    //   justify-content: flex-start;
+    //   margin: 15px;
+    // }
 
   }
 

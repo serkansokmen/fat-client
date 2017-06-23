@@ -2,6 +2,17 @@
   overflow: hidden;
   width: 100%;
 
+  .pagination-label {
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e2e2e2;
+  }
+
+  md-slider {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
   md-toolbar {
     position: fixed;
     top: 0;
@@ -34,6 +45,7 @@
       justify-content: space-between;
       flex-direction: row;
       width: 100%;
+      margin-bottom: 20px;
       h2 {
         flex: 1 1 auto;
       }
@@ -51,16 +63,23 @@
     overflow-y: auto;
     min-height: 0px;
   }
+  .brick {
+    // width: 200px;
+    background: green;
+    margin: 5px;
+    padding: 15px;
+  }
 
   md-sidenav-container {
     height: 100%;
 
     md-sidenav {
       min-width: 325px;
+      padding-top: 120px;
 
       form {
         display: flex;
-        align-items: flex-start;
+        align-items: stretch;
         justify-content: flex-start;
         flex-direction: column;
         padding-top: 20px;
@@ -75,9 +94,9 @@
 
         .form-controls {
           display: flex;
-          align-items: stretch;
-          justify-content: center;
-          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          flex-direction: row;
         }
       }
     }

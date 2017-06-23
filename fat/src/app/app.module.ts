@@ -23,7 +23,6 @@ import { StoreModule } from '@ngrx/store';
 // import { routerReducer, RouterStoreModule } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-
 import { SafeStylePipe } from './pipes/safe-style.pipe';
 import { SearchCardComponent } from './search-card/search-card.component';
 
