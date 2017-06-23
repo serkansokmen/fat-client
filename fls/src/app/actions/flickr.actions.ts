@@ -114,14 +114,4 @@ export class FlickrActions {
     }
   }
 
-  static SET_THUMBNAIL_SCALE = '[Flickr] Set Thumbnail Scale';
-  setThumbnailScale(scale: number): Action {
-    return {
-      type: FlickrActions.SET_THUMBNAIL_SCALE,
-      payload: {
-        scale
-      }
-    }
-  }
-
 }

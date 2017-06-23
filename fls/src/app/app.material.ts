@@ -3,7 +3,8 @@ import {
   // MaterialModule
   MdToolbarModule,
   MdSlideToggleModule,
-  MdButtonModule ,
+  MdButtonModule,
+  MdButtonToggleModule,
   MdCheckboxModule,
   MdSliderModule,
   MdInputModule,
@@ -27,7 +28,8 @@ import 'hammerjs';
     // MaterialModule
     MdToolbarModule,
     MdSlideToggleModule,
-    MdButtonModule ,
+    MdButtonModule,
+    MdButtonToggleModule,
     MdCheckboxModule,
     MdSliderModule,
     MdInputModule,
@@ -47,7 +49,8 @@ import 'hammerjs';
     // MaterialModule
     MdToolbarModule,
     MdSlideToggleModule,
-    MdButtonModule ,
+    MdButtonModule,
+    MdButtonToggleModule,
     MdCheckboxModule,
     MdSliderModule,
     MdInputModule,

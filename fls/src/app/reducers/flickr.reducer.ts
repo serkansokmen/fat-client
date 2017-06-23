@@ -14,10 +14,7 @@ export interface SearchState {
   page: number,
   perpage: number,
   pages: number,
-  total: number,
-  thumbnailScale: number,
-  cardMinBoxSize: number,
-  cardMaxBoxSize: number,
+  total: number
 };
 
 const initialState: SearchState = {
@@ -39,9 +36,6 @@ const initialState: SearchState = {
   perpage: 10,
   pages: 0,
   total: 0,
-  thumbnailScale: 100,
-  cardMinBoxSize: 640,
-  cardMaxBoxSize: 1200,
 };
 
 export function flickrReducer(state: SearchState = initialState, action: Action) {
@@ -122,14 +116,6 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         isRequesting: false,
         search: action.payload.search,
         images: action.payload.images
-      };
-
-    case FlickrActions.SET_THUMBNAIL_SCALE:
-      return {
-        ...state,
-        thumbnailScale: action.payload.scale,
-        cardMinBoxSize: (640 * action.payload.scale) / 100,
-        cardMaxBoxSize: (1200 * action.payload.scale) / 100
       };
 
     default: {

@@ -50,6 +50,47 @@
     overflow-x: hidden;
     overflow-y: auto;
     min-height: 0px;
+
+    &.view-mode-list {
+      md-card {
+        height: auto;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row !important;
+
+        .card-image-wrapper {
+          min-width: 120px;
+          max-width: 120px;
+          min-height: 120px;
+          max-height: 120px;
+        }
+        .meta {
+          display: block !important;
+        }
+      }
+    }
+    &.view-mode-thumbnails {
+      md-card {
+        align-items: flex-start;
+        justify-content: flex-start;
+        .card-image-wrapper {
+          min-height: 100%;
+          width: 250px;
+          height: 200px;
+        }
+      }
+    }
+    &.view-mode-agenda {
+      md-card {
+        width: 100%;
+        max-width: 1200px;
+
+        .meta {
+          display: block !important;
+        }
+      }
+    }
   }
 
   md-sidenav-container {
@@ -91,8 +132,10 @@
 
 
   md-card {
-    max-width: 600px;
-    min-width: 320px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
     flex: 1 1 auto;
     padding: 5px;
     position: relative;
