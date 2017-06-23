@@ -3,28 +3,31 @@
   [ngSwitch]="viewMode?.id">
 
   <md-card-content (click)="handleImageClick(image)">
-    <img *ngSwitchCase="0" md-card-image [src]="getImageURL(image)" [alt]="image.flickr_id" />
-    <div *ngSwitchCase="1" class="card-image-wrapper"
+    <img md-card-image [src]="getImageURL(image)" [alt]="image.flickr_id" />
+    <!-- <div *ngSwitchCase="1" class="card-image-wrapper"
       [ngStyle]="{
         'background-image': 'url(' + getImageURL(image) + ')',
         'opacity': image.state?.value == 0 ? 0.2 : 1.0
       }">
-    </div>
+    </div> -->
     <div class="meta" *ngSwitchCase="0">
       <strong>Tags:</strong> {{ image.tags }} <br>
       <strong>License:</strong> <a [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
     </div>
+    <button md-button (click)="handleImageClick(image)" *ngSwitchCase="0">
+      <md-icon color="primary" [style.color]="image.state?.value == 0 ? 'red' : 'green'"
+        [innerHTML]="image.state?.value == 0 ? 'close' : 'check'"></md-icon>
+    </button>
   </md-card-content>
 
-  <md-card-actions *ngSwitchCase="1" [class.is-meta-visible]="image.isMetaVisible">
-    <div class="meta">
-      <strong>Tags:</strong> {{ image.tags }} <br>
-      <strong>License:</strong> <a [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
+  <md-card-actions>
+    <div *ngSwitchCase="1">
+      <div class="meta" *ngIf="thumbnailScale >= 50">
+        <strong>Tags:</strong> {{ image.tags }} <br>
+        <strong>License:</strong> <a [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
+      </div>
     </div>
-    <button md-button (click)="image.isMetaVisible = !image.isMetaVisible" *ngIf="viewMode && viewMode?.id != 2">
-      <md-icon color="primary" >info</md-icon>
-    </button>
-    <button md-button (click)="handleImageClick(image)">
+    <button md-button (click)="handleImageClick(image)" *ngSwitchCase="1">
       <md-icon color="primary" [style.color]="image.state?.value == 0 ? 'red' : 'green'"
         [innerHTML]="image.state?.value == 0 ? 'close' : 'check'"></md-icon>
     </button>

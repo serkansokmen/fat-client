@@ -56,12 +56,12 @@
         *ngIf="(cardLayout$ | async)?.isScaleSliderVisible"
         [disabled]="(state$ | async)?.isRequesting"
         [max]="100"
-        [min]="20"
-        [step]="10"
+        [min]="10"
+        [step]="5"
         [thumb-label]="true"
         [value]="(cardLayout$ | async)?.thumbnailScale"
         [vertical]="false"
-        (change)="handleThumbnailScale($event)">
+        (input)="handleThumbnailScale($event)">
       </md-slider>
       <md-button-toggle-group #viewMode="mdButtonToggleGroup"
         (change)="handleViewMode($event)">
@@ -74,7 +74,9 @@
     <div class="thumbnails">
       <fls-search-card *ngFor="let image of (state$ | async)?.images"
         [image]="image"
-        [viewMode]="(cardLayout$ | async)?.currentViewMode"></fls-search-card>
+        [thumbnailScale]="(cardLayout$ | async)?.thumbnailScale"
+        [viewMode]="(cardLayout$ | async)?.currentViewMode"
+        [style.width]="(cardLayout$ | async)?.currentViewMode?.id == 0 ? '100%' : (cardLayout$ | async)?.thumbnailScale + '%'"></fls-search-card>
     </div>
   </div>
 </md-sidenav-container>
