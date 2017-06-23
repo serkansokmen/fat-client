@@ -35,7 +35,7 @@
       <md-input-container>
         <input [autocomplete]="false" mdInput formControlName="page"
           [max]="(state$ | async)?.pages"
-          [placeholder]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' results'"
+          [placeholder]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.total + ' results'"
           [value]="(state$ | async)?.page" type="number"/>
       </md-input-container>
       <div class="form-controls">
@@ -53,53 +53,28 @@
     <div class="content-heading" *ngIf="!(state$ | async)?.isRequesting">
       <h2 *ngIf="(state$ | async)?.total > 1" [innerHTML]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' results'"></h2>
       <md-slider
-        *ngIf="currentViewMode?.id == viewModes[1]?.id"
+        *ngIf="(cardLayout$ | async)?.isScaleSliderVisible"
         [disabled]="(state$ | async)?.isRequesting"
         [max]="100"
         [min]="20"
-        [step]="20"
+        [step]="10"
         [thumb-label]="true"
-        [tick-interval]="20"
-        [value]="thumbnailScale"
+        [value]="(cardLayout$ | async)?.thumbnailScale"
         [vertical]="false"
         (change)="handleThumbnailScale($event)">
       </md-slider>
-      <md-button-toggle-group #viewMode="mdButtonToggleGroup" [(ngModel)]="currentViewMode">
-        <md-button-toggle [value]="viewModes[0]">
-          <md-icon>{{ viewModes[0].iconName }}</md-icon>
-        </md-button-toggle>
-        <md-button-toggle [value]="viewModes[1]">
-          <md-icon>{{ viewModes[1].iconName }}</md-icon>
-        </md-button-toggle>
-        <md-button-toggle [value]="viewModes[2]">
-          <md-icon>{{ viewModes[2].iconName }}</md-icon>
+      <md-button-toggle-group #viewMode="mdButtonToggleGroup"
+        (change)="handleViewMode($event)">
+        <md-button-toggle *ngFor="let viewMode of (cardLayout$ | async)?.viewModes" [value]="viewMode"
+          [checked]="(cardLayout$ | async)?.currentViewMode.id == viewMode?.id">
+          <md-icon>{{ viewMode?.iconName }}</md-icon>
         </md-button-toggle>
       </md-button-toggle-group>
     </div>
-    <div class="thumbnails" [ngClass]="currentViewMode?.containerClassName">
-      <md-card *ngFor="let image of (state$ | async)?.images"
-        [class.is-discarded]="image.state?.value == 0">
-        <md-card-content>
-          <div class="card-image-wrapper"
-            [ngStyle]="{'background-image': 'url(' + getImageURL(image) + ')', 'opacity': image.state?.value == 0 ? 0.2 : 1.0}"
-            (click)="handleImageClick(image)" >
-            <!-- <img md-card-image [src]="getImageURL(image)" [alt]="image.flickr_id" /> -->
-          </div>
-        </md-card-content>
-        <md-card-actions [class.is-meta-visible]="image.isMetaVisible">
-          <div class="meta">
-            <strong>Tags:</strong> {{ image.tags }} <br>
-            <strong>License:</strong> <a [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
-          </div>
-          <button md-button (click)="image.isMetaVisible = !image.isMetaVisible" *ngIf="currentVideMode && currentVideMode?.id != 2">
-            <md-icon color="primary" >info</md-icon>
-          </button>
-          <button md-button (click)="handleImageClick(image)">
-            <md-icon color="primary" [style.color]="image.state?.value == 0 ? 'red' : 'green'"
-              [innerHTML]="image.state?.value == 0 ? 'close' : 'check'"></md-icon>
-          </button>
-        </md-card-actions>
-      </md-card>
+    <div class="thumbnails">
+      <fls-flickr-card *ngFor="let image of (state$ | async)?.images"
+        [flickrImage]="image"
+        [viewMode]="(cardLayout$ | async)?.currentViewMode"></fls-flickr-card>
     </div>
   </div>
 </md-sidenav-container>

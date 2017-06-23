@@ -5,28 +5,12 @@ import { AuthenticationService } from '../authentication.service';
 import { FlickrService } from '../services/flickr.service';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-
 import { SearchState } from '../reducers/flickr.reducer';
 import { FlickrActions } from '../actions/flickr.actions';
 import { FlickrSearch, FlickrImage, TagMode, License } from '../models/flickr.models';
-
-
-export class ViewMode {
-  constructor(
-    public id: number,
-    public name: string,
-    public containerClassName: string,
-    public iconName: string,
-    public thumbMinWidth: string,
-    public thumbMaxWidth: string,
-    public thumbMinHeight: string,
-    public thumbMaxHeight: string,
-  ) {}
-
-  static list = new ViewMode(0, 'List', 'view-mode-list', 'view_list', '120px', '120px', '120px', '120px');
-  static thumbnails = new ViewMode(1, 'Thumbnails', 'view-mode-thumbnails', 'dashboard', '200px', '600px', '200px', '600px');
-  static agenda = new ViewMode(2, 'Agenda', 'view-mode-agenda', 'view_agenda', '100%', '1200px', '100%', '100%');
-}
+import { CardLayoutActions } from '../actions/card-layout.actions';
+import { CardLayoutState } from '../reducers/card-layout.reducer';
+import { ViewMode } from '../models/card-layout.models';
 
 
 @Component({
@@ -38,13 +22,10 @@ export class ViewMode {
 export class FlickrSearchComponent implements OnInit, OnDestroy {
 
   state$: Observable<SearchState>;
+  cardLayout$: Observable<CardLayoutState>;
   form: FormGroup;
   images: FlickrImage[];
   selectedLicenses: License[];
-
-  viewModes: ViewMode[] = [ViewMode.list, ViewMode.thumbnails, ViewMode.agenda];
-  currentViewwMode: ViewMode;
-  thumbnailScale: number;
 
   private sub: any;
 
@@ -54,12 +35,12 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private store: Store<SearchState>,
-    private actions: FlickrActions,
+    private flickrActions: FlickrActions,
+    private cardLayoutActions: CardLayoutActions,
   ) {
     this.state$ = store.select('flickr');
+    this.cardLayout$ = store.select('cardLayout');
     this.images = [];
-    this.currentViewwMode = this.viewModes[1];
-    this.thumbnailScale = 50;
   }
 
   ngOnInit() {
@@ -92,6 +73,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
         console.log(params.slug);
       }
       this.handleSearch(null);
+      this.store.dispatch(this.cardLayoutActions.selectViewMode(ViewMode.thumbnails));
     });
 
   }
@@ -100,13 +82,9 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  handleImageClick(image: FlickrImage) {
-    this.store.dispatch(this.actions.toggleImageDiscarded(image));
-  }
-
   handleSearch(event) {
     this.store.dispatch(
-      this.actions.requestSearch(
+      this.flickrActions.requestSearch(
         new FlickrSearch(this.form.value),
         this.selectedLicenses,
         this.form.value.perpage,
@@ -115,9 +93,9 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
 
   handleToggleLicense(license: License, isChecked: boolean) {
     if (isChecked == true) {
-      this.store.dispatch(this.actions.selectLicense(license))
+      this.store.dispatch(this.flickrActions.selectLicense(license))
     } else {
-      this.store.dispatch(this.actions.deselectLicense(license));
+      this.store.dispatch(this.flickrActions.deselectLicense(license));
     }
   }
 
@@ -126,12 +104,16 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   }
 
   handleThumbnailScale(event) {
-    this.thumbnailScale = event.value;
+    this.store.dispatch(this.cardLayoutActions.setThumbnailScale(event.value));
+  }
+
+  handleViewMode(event) {
+    this.store.dispatch(this.cardLayoutActions.selectViewMode(event.value));
   }
 
   handleSave(event) {
     this.store.dispatch(
-      this.actions.saveSearch(new FlickrSearch(this.form.value), this.images));
+      this.flickrActions.saveSearch(new FlickrSearch(this.form.value), this.images));
   //   let search = new FlickrSearch({
   //     ...this.form.value,
   //     images: this.images
@@ -155,14 +137,6 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   //       // });
   //       this.isRequesting = false;
   //     });
-  }
-
-  getImageURL(image: FlickrImage) {
-    return `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`;
-  }
-
-  getThumbnail(image: FlickrImage) {
-    return `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}_q.jpg`;
   }
 
   logout(event) {
