@@ -72,9 +72,9 @@
       </md-button-toggle-group>
     </div>
     <div class="thumbnails">
-      <fls-flickr-card *ngFor="let image of (state$ | async)?.images"
-        [flickrImage]="image"
-        [viewMode]="(cardLayout$ | async)?.currentViewMode"></fls-flickr-card>
+      <fls-search-card *ngFor="let image of (state$ | async)?.images"
+        [image]="image"
+        [viewMode]="(cardLayout$ | async)?.currentViewMode"></fls-search-card>
     </div>
   </div>
 </md-sidenav-container>

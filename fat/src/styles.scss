@@ -5,3 +5,8 @@ body {
   // font-size: 14px;
 }
 
+.jumbotron {
+  input:focus {
+    background-color: #eceeef;
+  }
+}

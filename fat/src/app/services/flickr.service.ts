@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { PlatformLocation } from '@angular/common';
 import { CookieService } from 'ngx-cookie';
-import { FlickrSearch, FlickrImage, License } from '../models/flickr.models';
+import { Search, Image, License } from '../models/search.models';
 import { map, filter, union } from 'underscore';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
@@ -25,13 +25,13 @@ export class FlickrService {
     console.log(id);
   }
 
-  getSavedImages(): Observable<FlickrImage[]> {
+  getSavedImages(): Observable<Image[]> {
     return this.http.get(`${this.endpoint}images/`, this.jwt())
       .map((response: Response) => response.json())
-      .map(data => data.map(image => new FlickrImage(image)));
+      .map(data => data.map(image => new Image(image)));
   }
 
-  search(search: FlickrSearch, licenses: License[], perpage: number, page: number): Observable<any> {
+  search(search: Search, licenses: License[], perpage: number, page: number): Observable<any> {
     var query = search.query.replace(' ', '');
     let exclude = search.exclude.replace(' ', '').split(',').map(str => `-${str.trim()}`).join(',');
     if (exclude != '-') {
@@ -54,13 +54,13 @@ export class FlickrService {
           page: result.page,
           perpage: result.perpage,
           total: result.total,
-          images: result.photo.map(photo => new FlickrImage(photo))
+          images: result.photo.map(photo => new Image(photo))
         };
       });
   };
 
 
-  saveSearch(search: FlickrSearch, images: FlickrImage[]) {
+  saveSearch(search: Search, images: Image[]) {
 
     let body = JSON.stringify({
       query: search.query,

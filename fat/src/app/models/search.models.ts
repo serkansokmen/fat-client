@@ -44,7 +44,7 @@ export class License {
 
 }
 
-export class FlickrSearch {
+export class Search {
   query: string;
   exclude: string;
   userID: string;
@@ -58,7 +58,7 @@ export class FlickrSearch {
   }
 }
 
-export class FlickrImage {
+export class Image {
 
   state: ImageState;
 

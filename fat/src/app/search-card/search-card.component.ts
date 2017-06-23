@@ -1,38 +1,38 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { SearchState } from '../reducers/flickr.reducer';
-import { FlickrActions } from '../actions/flickr.actions';
-import { FlickrImage } from '../models/flickr.models';
+import { SearchState } from '../reducers/search.reducer';
+import { SearchActions } from '../actions/search.actions';
+import { Image } from '../models/search.models';
 import { ViewMode } from '../models/card-layout.models';
 
 @Component({
-  selector: 'fls-flickr-card',
-  templateUrl: './flickr-card.component.html',
-  styleUrls: ['./flickr-card.component.scss'],
+  selector: 'fls-search-card',
+  templateUrl: './search-card.component.html',
+  styleUrls: ['./search-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FlickrCardComponent implements OnInit {
+export class SearchCardComponent implements OnInit {
 
-  @Input() flickrImage: FlickrImage;
+  @Input() image: Image;
   @Input() viewMode: ViewMode;
 
   constructor(
     private store: Store<SearchState>,
-    private actions: FlickrActions,
+    private actions: SearchActions,
   ) { }
 
   ngOnInit() {
   }
 
-  getImageURL(image: FlickrImage) {
+  getImageURL(image: Image) {
     return `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`;
   }
 
-  getThumbnail(image: FlickrImage) {
+  getThumbnail(image: Image) {
     return `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}_q.jpg`;
   }
 
-  handleImageClick(image: FlickrImage) {
+  handleImageClick(image: Image) {
     this.store.dispatch(this.actions.toggleImageDiscarded(image));
   }
 

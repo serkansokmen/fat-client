@@ -10,14 +10,14 @@ import { AppMaterial } from './app.material';
 import { routing } from './app.routing';
 import { AuthGuard } from './auth.guard';
 import { AuthenticationService } from './authentication.service';
-import { FlickrActions } from './actions/flickr.actions';
+import { SearchActions } from './actions/search.actions';
 import { FlickrService } from './services/flickr.service';
-import { FlickrEffects } from './effects/flickr.effects';
-import { flickrReducer } from './reducers/flickr.reducer';
+import { SearchEffects } from './effects/search.effects';
+import { searchReducer } from './reducers/search.reducer';
 import { CardLayoutActions } from './actions/card-layout.actions';
 import { cardLayoutReducer } from './reducers/card-layout.reducer';
 import { LoginComponent } from './login/login.component';
-import { FlickrSearchComponent } from './flickr-search/flickr-search.component';
+import { SearchComponent } from './search/search.component';
 
 import { StoreModule } from '@ngrx/store';
 // import { routerReducer, RouterStoreModule } from '@ngrx/router-store';
@@ -25,16 +25,16 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { SafeStylePipe } from './pipes/safe-style.pipe';
-import { FlickrCardComponent } from './flickr-card/flickr-card.component';
+import { SearchCardComponent } from './search-card/search-card.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    FlickrSearchComponent,
+    SearchComponent,
     SafeStylePipe,
-    FlickrCardComponent,
+    SearchCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,16 +46,16 @@ import { FlickrCardComponent } from './flickr-card/flickr-card.component';
     CookieModule.forRoot(),
     AppMaterial,
     StoreModule.provideStore({
-      flickr: flickrReducer,
+      search: searchReducer,
       cardLayout: cardLayoutReducer,
     }),
-    EffectsModule.runAfterBootstrap(FlickrEffects),
+    EffectsModule.runAfterBootstrap(SearchEffects),
     StoreDevtoolsModule.instrumentOnlyWithExtension()
   ],
   providers: [
     AuthGuard,
     AuthenticationService,
-    FlickrActions,
+    SearchActions,
     FlickrService,
     CookieService,
     CardLayoutActions,

@@ -5,26 +5,27 @@ import { AuthenticationService } from '../authentication.service';
 import { FlickrService } from '../services/flickr.service';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { SearchState } from '../reducers/flickr.reducer';
-import { FlickrActions } from '../actions/flickr.actions';
-import { FlickrSearch, FlickrImage, TagMode, License } from '../models/flickr.models';
+import { SearchState } from '../reducers/search.reducer';
+import { SearchActions } from '../actions/search.actions';
+import { Search, Image, TagMode, License } from '../models/search.models';
 import { CardLayoutActions } from '../actions/card-layout.actions';
 import { CardLayoutState } from '../reducers/card-layout.reducer';
 import { ViewMode } from '../models/card-layout.models';
+import { maxValue } from '../validators/max-value.validator';
 
 
 @Component({
-  selector: 'fls-flickr-search',
-  templateUrl: './flickr-search.component.html',
-  styleUrls: ['./flickr-search.component.scss'],
+  selector: 'fls-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FlickrSearchComponent implements OnInit, OnDestroy {
+export class SearchComponent implements OnInit, OnDestroy {
 
   state$: Observable<SearchState>;
   cardLayout$: Observable<CardLayoutState>;
   form: FormGroup;
-  images: FlickrImage[];
+  images: Image[];
   selectedLicenses: License[];
 
   private sub: any;
@@ -35,10 +36,10 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private store: Store<SearchState>,
-    private flickrActions: FlickrActions,
+    private searchActions: SearchActions,
     private cardLayoutActions: CardLayoutActions,
   ) {
-    this.state$ = store.select('flickr');
+    this.state$ = store.select('search');
     this.cardLayout$ = store.select('cardLayout');
     this.images = [];
   }
@@ -64,9 +65,11 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.form.valueChanges.debounceTime(500).subscribe(data => {
-      this.handleSearch(null);
-    });
+    this.form.valueChanges
+      .debounceTime(500)
+      .subscribe(data => {
+        this.handleSearch(null);
+      });
 
     this.sub = this.route.params.subscribe(params => {
       if (params.slug) {
@@ -84,8 +87,8 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
 
   handleSearch(event) {
     this.store.dispatch(
-      this.flickrActions.requestSearch(
-        new FlickrSearch(this.form.value),
+      this.searchActions.requestSearch(
+        new Search(this.form.value),
         this.selectedLicenses,
         this.form.value.perpage,
         this.form.value.page));
@@ -93,9 +96,9 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
 
   handleToggleLicense(license: License, isChecked: boolean) {
     if (isChecked == true) {
-      this.store.dispatch(this.flickrActions.selectLicense(license))
+      this.store.dispatch(this.searchActions.selectLicense(license))
     } else {
-      this.store.dispatch(this.flickrActions.deselectLicense(license));
+      this.store.dispatch(this.searchActions.deselectLicense(license));
     }
   }
 
@@ -113,8 +116,8 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
 
   handleSave(event) {
     this.store.dispatch(
-      this.flickrActions.saveSearch(new FlickrSearch(this.form.value), this.images));
-  //   let search = new FlickrSearch({
+      this.searchActions.saveSearch(new Search(this.form.value), this.images));
+  //   let search = new Search({
   //     ...this.form.value,
   //     images: this.images
   //   });
@@ -122,7 +125,7 @@ export class FlickrSearchComponent implements OnInit, OnDestroy {
   //   this.flickrService.saveSearch(search)
   //     .subscribe(result => {
   //       // window.location.reload();
-  //       this.flickrService.getExistingFlickrImages()
+  //       this.flickrService.getExistingImages()
   //         .subscribe(results => {
   //           this.handleSearch(null);
   //           this.isRequesting = false;

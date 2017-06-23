@@ -1,14 +1,14 @@
 import { Action } from '@ngrx/store';
-import { FlickrSearch, FlickrImage, TagMode, License, ImageState } from '../models/flickr.models';
-import { FlickrActions } from '../actions/flickr.actions';
+import { Search, Image, TagMode, License, ImageState } from '../models/search.models';
+import { SearchActions } from '../actions/search.actions';
 import { union, without } from 'underscore';
 
 
 export interface SearchState {
   isRequesting: boolean,
-  instance: FlickrSearch,
+  instance: Search,
   tagModes: TagMode[],
-  images: FlickrImage[],
+  images: Image[],
   licenses: License[],
   selectedLicenses: License[],
   page: number,
@@ -19,7 +19,7 @@ export interface SearchState {
 
 const initialState: SearchState = {
   isRequesting: false,
-  instance: new FlickrSearch({
+  instance: new Search({
     query: 'nude, skin',
     exclude: 'drawing, sketch'
   }),
@@ -38,18 +38,18 @@ const initialState: SearchState = {
   total: 0,
 };
 
-export function flickrReducer(state: SearchState = initialState, action: Action) {
+export function searchReducer(state: SearchState = initialState, action: Action) {
 
   switch (action.type) {
 
-    case FlickrActions.REQUEST_PAGE:
+    case SearchActions.REQUEST_PAGE:
       return {
         ...state,
         isRequesting: true,
         page: action.payload.page
       };
 
-    case FlickrActions.REQUEST_PAGE_COMPLETE:
+    case SearchActions.REQUEST_PAGE_COMPLETE:
       return {
         ...state,
         isRequesting: false,
@@ -57,7 +57,7 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         images: action.payload.images
       };
 
-    case FlickrActions.REQUEST_SEARCH:
+    case SearchActions.REQUEST_SEARCH:
       return {
         ...state,
         isRequesting: true,
@@ -67,7 +67,7 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         page: action.payload.page
       };
 
-    case FlickrActions.REQUEST_SEARCH_COMPLETE:
+    case SearchActions.REQUEST_SEARCH_COMPLETE:
       return {
         ...state,
         isRequesting: false,
@@ -78,12 +78,12 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
         images: action.payload.images
       };
 
-    case FlickrActions.TOGGLE_IMAGE_DISCARDED:
+    case SearchActions.TOGGLE_IMAGE_DISCARDED:
       return {
         ...state,
         isRequesting: false,
         images: state.images.map(image => {
-          return image == action.payload.image ? new FlickrImage({
+          return image == action.payload.image ? new Image({
             ...image,
             state: image.state == ImageState.discarded ? null : ImageState.discarded
           }) : image;
@@ -91,26 +91,26 @@ export function flickrReducer(state: SearchState = initialState, action: Action)
       };
 
 
-    case FlickrActions.SELECT_LICENCE:
+    case SearchActions.SELECT_LICENCE:
       return {
         ...state,
         selectedLicenses: state.selectedLicenses.concat(action.payload.license)
       };
 
-    case FlickrActions.DESELECT_LICENCE:
+    case SearchActions.DESELECT_LICENCE:
       return {
         ...state,
         selectedLicenses: without(state.selectedLicenses, action.payload.license)
       };
 
-    case FlickrActions.SAVE_SEARCH:
+    case SearchActions.SAVE_SEARCH:
       return {
         ...state,
         isRequesting: true,
         search: state.instance
       };
 
-    case FlickrActions.SAVE_SEARCH_COMPLETE:
+    case SearchActions.SAVE_SEARCH_COMPLETE:
       return {
         ...state,
         isRequesting: false,
