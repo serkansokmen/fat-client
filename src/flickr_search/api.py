@@ -31,9 +31,33 @@ def search_flickr(request):
             'tag_mode': request.GET.get('tag_mode', 'all')})
 
     if req.json()['stat'] == 'ok':
-        photos = req.json()['photos']
-        search_serializer = FlickrSearchSerializer(data=photos)
-        return Response(search_serializer.initial_data)
+        data = req.json()['photos']
+
+        # for photo_data in data['photo']:
+        #     serializer = FlickrImageSerializer(data=photo_data)
+        #     print(serializer.initial_data)
+        search_serializer = FlickrSearchSerializer(data=data)
+        # import ipdb; ipdb.set_trace()
+        return Response({
+            'page': data['page'],
+            'pages': data['pages'],
+            'perpage': data['perpage'],
+            'total': data['total'],
+            'images': [{
+                # 'id': photo_data['id'],
+                'flickr_id': photo_data['id'],
+                'title': photo_data['title'],
+                'owner': photo_data['owner'],
+                'secret': photo_data['secret'],
+                'server': photo_data['server'],
+                'farm': photo_data['farm'],
+                'license': photo_data['license'],
+                'tags': photo_data['tags'],
+                'ispublic': photo_data['ispublic'],
+                'isfriend': photo_data['isfriend'],
+                'isfamily': photo_data['isfamily'],
+            } for photo_data in data['photo'] if FlickrImage.objects.filter(flickr_id=photo_data['id']).count() == 0 ]
+        })
     else:
         return Response({'message': 'No results'})
 

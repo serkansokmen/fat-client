@@ -92,12 +92,13 @@ export class SearchActions {
   }
 
   static SAVE_SEARCH = '[Search] Save Search';
-  saveSearch(search: Search, images: Image[]): Action {
+  saveSearch(search: Search, images: Image[], licenses: License[]): Action {
     return {
       type: SearchActions.SAVE_SEARCH,
       payload: {
         search,
-        images
+        images,
+        licenses
       }
     }
   }

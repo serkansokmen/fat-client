@@ -10,7 +10,6 @@
 <md-sidenav-container>
   <md-sidenav #sidenav mode="side" opened="true">
     <form [formGroup]="form" (ngSubmit)="handleSearch($event, state$?.page)" novalidate>
-      <p class="pagination-label" *ngIf="(state$ | async)?.total > 1" [innerHTML]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' results'"></p>
       <md-input-container><input [autocomplete]="false" mdInput formControlName="query" type="text" placeholder="Tags"/></md-input-container>
       <md-input-container><input [autocomplete]="false" mdInput formControlName="exclude" type="text" placeholder="Exclude"/></md-input-container>
       <md-select placeholder="Tag mode" formControlName="tagMode">
@@ -29,13 +28,14 @@
           </div>
         </md-expansion-panel>
       </div>
+      <p class="pagination-label" *ngIf="!(state$ | async)?.isRequesting" [innerHTML]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' results'"></p>
       <md-input-container>
         <input [autocomplete]="false" mdInput formControlName="perpage" type="number" placeholder="How many per page?"/>
       </md-input-container>
       <md-input-container>
         <input [autocomplete]="false" mdInput formControlName="page"
           [max]="(state$ | async)?.pages"
-          [placeholder]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.total + ' results'"
+          [placeholder]="'Page ' + (state$ | async)?.page"
           [value]="(state$ | async)?.page" type="number"/>
       </md-input-container>
       <div class="form-controls">

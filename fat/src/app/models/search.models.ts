@@ -82,7 +82,7 @@ export class Image {
   // is_family: boolean;
 
   constructor(data: any = {}) {
-    this.id = data.id;
+    this.id = data.id || data.flickr_id;
     this.title = data.title;
     this.flickr_id = data.flickr_id || data.id;
     this.flickr_url = data.flickr_url;
@@ -100,6 +100,7 @@ export class Image {
     // this.is_family = data.is_family;
 
     this.state = data.state;
+    console.log('state:', data.state);
   }
 
 }

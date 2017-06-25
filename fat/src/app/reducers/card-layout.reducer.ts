@@ -14,7 +14,7 @@ export interface CardLayoutState {
 const initialState: CardLayoutState = {
   viewModes: [ViewMode.list, ViewMode.thumbnails],
   currentViewMode: ViewMode.list,
-  thumbnailScale: 50,
+  thumbnailScale: 25,
   isScaleSliderVisible: false,
 };
 

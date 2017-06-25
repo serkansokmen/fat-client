@@ -40,7 +40,7 @@ export class SearchEffects {
   @Effect() save$ = this.actions$
     .ofType(SearchActions.SAVE_SEARCH)
     .map(toPayload)
-    .switchMap(payload => this.service.saveSearch(payload.search, payload.images))
+    .switchMap(payload => this.service.saveSearch(payload.search, payload.images, payload.licenses))
     .switchMap(result => {
       return Observable.of({
         type: SearchActions.SAVE_SEARCH_COMPLETE,

@@ -20,7 +20,7 @@ export interface SearchState {
 const initialState: SearchState = {
   isRequesting: false,
   instance: new Search({
-    query: 'nude, skin',
+    query: 'train, child',
     exclude: 'drawing, sketch'
   }),
   tagModes: [TagMode.all, TagMode.any],
@@ -33,7 +33,7 @@ const initialState: SearchState = {
     License.getLicense('7')
   ],
   page: 1,
-  perpage: 10,
+  perpage: 40,
   pages: 0,
   total: 0,
 };
@@ -107,7 +107,8 @@ export function searchReducer(state: SearchState = initialState, action: Action)
       return {
         ...state,
         isRequesting: true,
-        search: state.instance
+        search: state.instance,
+        images: state.images
       };
 
     case SearchActions.SAVE_SEARCH_COMPLETE:

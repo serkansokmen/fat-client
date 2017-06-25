@@ -54,19 +54,23 @@ export class FlickrService {
           page: result.page,
           perpage: result.perpage,
           total: result.total,
-          images: result.photo.map(photo => new Image(photo))
+          images: result.images.map(photo => new Image(photo))
         };
       });
   };
 
 
-  saveSearch(search: Search, images: Image[]) {
+  saveSearch(search: Search, images: Image[], licenses: License[] = []) {
 
     let body = JSON.stringify({
       query: search.query,
       exclude: search.exclude || '',
       user_id: search.userID,
       tag_mode: search.tagMode.value,
+      licenses: licenses.map(license => license.id),
+      tags: union(
+        search.query.split(',').map(tag => tag.trim()),
+        search.exclude.split(',').map(tag => `-${tag.trim()}`)).join(','),
       images: images.map(image => {
         // let licenses = this.licenses;
         // let license = this.licenses.filter(l => image.license.id == l.id)[0];
@@ -74,7 +78,7 @@ export class FlickrService {
         return {
           ...image,
           license: image.license.id,
-          state: image.state.value
+          state: image.state ? image.state.value : null
         }
       })
     });

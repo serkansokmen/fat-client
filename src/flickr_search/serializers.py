@@ -15,6 +15,10 @@ class FlickrImageSerializer(serializers.ModelSerializer):
         return FlickrImage.objects.create(**validated_data,
             state=state)
 
+    # def to_presentation(self, obj):
+    #     import ipdb; ipdb.set_trace()
+    #     return obj
+
     class Meta:
         model = FlickrImage
         queryset=FlickrImage.objects.all()
@@ -40,7 +44,6 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
         depth = 1
 
     def create(self, validated_data):
-        # import ipdb; ipdb.set_trace()
         images_data = validated_data.pop('images')
         instance = FlickrSearch.objects.create(**validated_data)
         for image_data in images_data:

@@ -65,11 +65,11 @@ export class SearchComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.form.valueChanges
-      .debounceTime(500)
-      .subscribe(data => {
-        this.handleSearch(null);
-      });
+    // this.form.valueChanges
+    //   .debounceTime(500)
+    //   .subscribe(data => {
+    //     this.handleSearch(null);
+    //   });
 
     this.sub = this.route.params.subscribe(params => {
       if (params.slug) {
@@ -116,7 +116,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   handleSave(event) {
     this.store.dispatch(
-      this.searchActions.saveSearch(new Search(this.form.value), this.images));
+      this.searchActions.saveSearch(new Search(this.form.value), this.images, this.selectedLicenses));
   //   let search = new Search({
   //     ...this.form.value,
   //     images: this.images
