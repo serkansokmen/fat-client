@@ -121,7 +121,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   handleSave(event) {
     this.store.dispatch(
-      this.searchActions.saveSearch(new Search(this.form.value), this.images, this.selectedLicenses));
+      this.searchActions.saveSearch(
+        new Search(this.form.value),
+        this.images,
+        this.selectedLicenses));
   //   let search = new Search({
   //     ...this.form.value,
   //     images: this.images

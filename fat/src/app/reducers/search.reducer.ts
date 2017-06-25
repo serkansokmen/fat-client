@@ -116,7 +116,8 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         ...state,
         isRequesting: false,
         search: action.payload.search,
-        images: action.payload.images
+        images: action.payload.images,
+        page: state.page < state.total ? state.page + 1 : state.page
       };
 
     default: {
