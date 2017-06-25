@@ -27,6 +27,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   form: FormGroup;
   images: Image[];
   selectedLicenses: License[];
+  currentPage: number;
 
   private sub: any;
 
@@ -42,6 +43,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.state$ = store.select('search');
     this.cardLayout$ = store.select('cardLayout');
     this.images = [];
+    this.currentPage = 0;
   }
 
   ngOnInit() {
@@ -51,7 +53,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       exclude: [''],
       userID: [''],
       tagMode: ['', Validators.required],
-      perpage: [10, Validators.required],
+      perpage: [40, Validators.required],
       page: [1, Validators.required]
     });
 
@@ -65,11 +67,14 @@ export class SearchComponent implements OnInit, OnDestroy {
       }
     });
 
-    // this.form.valueChanges
-    //   .debounceTime(500)
-    //   .subscribe(data => {
-    //     this.handleSearch(null);
-    //   });
+    this.form.valueChanges
+      .debounceTime(500)
+      .subscribe(data => {
+        if (this.currentPage != data.page) {
+          console.log(data.page);
+          this.handleSearch(null);
+        }
+      });
 
     this.sub = this.route.params.subscribe(params => {
       if (params.slug) {

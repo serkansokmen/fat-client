@@ -47,7 +47,6 @@
 
   <div class="content" [class.is-loading]="(state$ | async)?.isRequesting">
     <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
-    <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No more results</div>
     <div class="content-heading" *ngIf="!(state$ | async)?.isRequesting">
       <md-button-toggle-group #viewMode="mdButtonToggleGroup"
         (change)="handleViewMode($event)">
@@ -68,6 +67,7 @@
         (input)="handleThumbnailScale($event)">
       </md-slider>
     </div>
+    <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No more results</div>
     <div class="thumbnails">
       <fls-search-card *ngFor="let image of (state$ | async)?.images"
         [image]="image"
