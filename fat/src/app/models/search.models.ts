@@ -7,6 +7,7 @@ export class ImageState {
   static discarded = new ImageState(0, 'Discarded');
   static approved = new ImageState(1, 'Approved');
   static processed = new ImageState(2, 'Processed');
+  static indeterminate = new ImageState(3, 'Indeterminate');
 }
 
 export class TagMode {
@@ -99,8 +100,7 @@ export class Image {
     // this.is_friend = data.is_friend;
     // this.is_family = data.is_family;
 
-    this.state = data.state;
-    console.log('state:', data.state);
+    this.state = data.state || ImageState.indeterminate;
   }
 
 }
