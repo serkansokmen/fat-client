@@ -62,9 +62,6 @@ export class FlickrService {
         search.query.split(',').map(tag => tag.trim()),
         search.exclude.split(',').map(tag => `-${tag.trim()}`)).join(','),
       images: images.map(image => {
-        // let licenses = this.licenses;
-        // let license = this.licenses.filter(l => image.license.id == l.id)[0];
-        // debugger
         return {
           ...image,
           license: image.license.id,
