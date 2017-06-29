@@ -70,7 +70,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.form.valueChanges
       .debounceTime(500)
       .subscribe(data => {
-        if (this.currentPage != data.page) {
+        if (this.currentPage != data.page && data.page > 0) {
           console.log(data.page);
           this.handleSearch(null);
         }
