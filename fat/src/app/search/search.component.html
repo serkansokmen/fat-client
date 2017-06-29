@@ -28,7 +28,7 @@
           </div>
         </md-expansion-panel>
       </div>
-      <p class="pagination-label" *ngIf="!(state$ | async)?.isRequesting" [innerHTML]="'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' results'"></p>
+      <p class="pagination-label" [innerHTML]="(state$ | async)?.isRequesting ? 'Loading...' : 'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' results'"></p>
       <md-input-container>
         <input [autocomplete]="false" mdInput formControlName="perpage" type="number" placeholder="How many per page?"/>
       </md-input-container>
