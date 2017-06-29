@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { SearchState } from '../reducers/search.reducer';
 import { SearchActions } from '../actions/search.actions';
-import { Search, Image, TagMode, License } from '../models/search.models';
+import { Search, Image, TagMode, ImageState, License } from '../models/search.models';
 import { CardLayoutActions } from '../actions/card-layout.actions';
 import { CardLayoutState } from '../reducers/card-layout.reducer';
 import { ViewMode } from '../models/card-layout.models';
@@ -53,7 +53,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       exclude: [''],
       userID: [''],
       tagMode: ['', Validators.required],
-      perpage: [40, Validators.required],
+      perpage: [20, Validators.required],
       page: [1, Validators.required]
     });
 
@@ -117,6 +117,19 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   handleViewMode(event) {
     this.store.dispatch(this.cardLayoutActions.selectViewMode(event.value));
+  }
+
+  handleDiscardAll(event) {
+    this.store.dispatch(
+      this.searchActions.saveSearch(
+        new Search(this.form.value),
+        this.images.map(image => {
+          return new Image({
+            ...image,
+            state: ImageState.discarded
+          })
+        }),
+        this.selectedLicenses));
   }
 
   handleSave(event) {

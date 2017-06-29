@@ -40,6 +40,7 @@
       </md-input-container>
       <div class="form-controls">
         <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon>search</md-icon> Search</button></p>
+        <p><button md-button color="accent" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting"><md-icon>remove_circle</md-icon> Discard all</button></p>
         <p><button md-button color="primary" type="button" (click)="handleSave($event, state$?.page)" [disabled]="(state$ | async)?.isRequesting"><md-icon>save</md-icon> Save</button></p>
       </div>
     </form>
