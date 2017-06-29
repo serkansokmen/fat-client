@@ -48,7 +48,11 @@ def make_search_query(request, page=1):
             'isfamily': photo_data['isfamily'],
         } for photo_data in data['photo'] if FlickrImage.objects.filter(flickr_id=photo_data['id']).count() == 0 ]
 
-        if len(images) < int(per_page) and int(data['pages']) > int(data['page']):
+        pages = int(data['pages'])
+        page = int(data['page'])
+        per_page = int(per_page)
+
+        if (len(images) == 0 and len(images) < per_page) and pages > page:
             # import ipdb; ipdb.set_trace()
             return make_search_query(request, page=page+1)
         else:
@@ -63,7 +67,6 @@ def make_search_query(request, page=1):
         return Response({'message': 'No results'})
 
 
-
 @api_view(['GET'])
 def search_flickr(request):
     return make_search_query(request, page=int(request.GET.get('page', 1)))
@@ -72,50 +75,16 @@ def search_flickr(request):
 class FlickrSearchQueryView(views.APIView):
 
     def post(self, request, format=None):
+        # search, created = FlickrSearch.objects.get_or_create(tags=request.data['tags'])
+        # if created:
+        #     pass
+        # else:
+        #     pass
         serializer = FlickrSearchSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def get(self, request, format=None):
-        req = requests.get('https://api.flickr.com/services/rest/?method=flickr.photos.search',
-            params={
-                'api_key': settings.FLICKR_API_KEY,
-                'api_secret': settings.FLICKR_API_SECRET,
-                'format': 'json',
-                'nojsoncallback': 1,
-                'license': request.query_params.get('license'),
-                'safe_search': 3,
-                'sort' : 'relevance',
-                'media': 'photos',
-                'content_type': 7,
-                'extras': 'license,tags',
-                'per_page': request.query_params.get('per_page', '20'),
-                'page': request.query_params.get('page', 1),
-                'tags': request.query_params.get('tags', ''),
-                'tag_mode': request.query_params.get('tag_mode', 'all')})
-
-        if req.json()['stat'] == 'ok':
-            photos = [{
-                'id': photo.get('id'),
-                'owner': photo.get('owner'),
-                'secret': photo.get('secret'),
-                'server': photo.get('server'),
-                'farm': photo.get('farm'),
-                'title': photo.get('title'),
-                'ispublic': photo.get('ispublic'),
-                'isfriend': photo.get('isfriend'),
-                'isfamily': photo.get('isfamily'),
-                'license': photo.get('license'),
-                'tags': photo.get('tags'),
-            } for photo in req.json()['photos']['photo']]
-            serializer = FlickrImageSerializer(data=photos, many=True)
-            return Response({
-                'total': req.json()['photos']['total'] * 1,
-                'pages': req.json()['photos']['pages'],
-                'results': serializer.initial_data
-            })
 
 
 class FlickrSearchViewSet(viewsets.ModelViewSet):

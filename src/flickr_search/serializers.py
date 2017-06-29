@@ -73,25 +73,5 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
         #         instance.images.add(image)
         # instance.save()
 
-    # def update(self, instance, validated_data):
-
-    #     req = self.request_flickr_search(validated_data)
-
-    #     if req.json()['stat'] == 'ok':
-    #         for photo in req.json()['photos']['photo']:
-    #             image, created = FlickrImage.objects.get_or_create(
-    #                 flickr_id=photo.get('id'),
-    #                 title=photo.get('title'),
-    #                 owner=photo.get('owner'),
-    #                 secret=photo.get('secret'),
-    #                 server=photo.get('server'),
-    #                 farm=photo.get('farm'),
-    #                 license=photo.get('license'),
-    #                 tags=photo.get('tags'),
-    #                 ispublic=photo.get('ispublic'),
-    #                 isfriend=photo.get('isfriend'),
-    #                 isfamily=photo.get('isfamily'))
-    #             if image not in instance.images.all():
-    #                 instance.images.add(image)
-    #         instance.save()
-    #         return instance
+    def update(self, instance, validated_data):
+        return instance
