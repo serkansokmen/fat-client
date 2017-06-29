@@ -21,16 +21,6 @@ export class FlickrService {
     this.endpoint = environment.apiURL;
   }
 
-  getSearch(id: number) {
-    console.log(id);
-  }
-
-  getSavedImages(): Observable<Image[]> {
-    return this.http.get(`${this.endpoint}images/`, this.jwt())
-      .map((response: Response) => response.json())
-      .map(data => data.map(image => new Image(image)));
-  }
-
   search(search: Search, licenses: License[], perpage: number, page: number): Observable<any> {
     var query = search.query.replace(' ', '');
     let exclude = search.exclude.replace(' ', '').split(',').map(str => `-${str.trim()}`).join(',');
