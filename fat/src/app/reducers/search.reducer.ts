@@ -33,7 +33,7 @@ const initialState: SearchState = {
     License.getLicense('7')
   ],
   page: 1,
-  perpage: 40,
+  perpage: 20,
   pages: 0,
   total: 0,
 };
@@ -90,7 +90,6 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         })
       };
 
-
     case SearchActions.SELECT_LICENCE:
       return {
         ...state,
@@ -116,8 +115,7 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         ...state,
         isRequesting: false,
         search: action.payload.search,
-        images: action.payload.images,
-        page: state.page < state.total ? state.page + 1 : state.page
+        images: action.payload.images
       };
 
     default: {
