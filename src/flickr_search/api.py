@@ -10,9 +10,8 @@ from .models import FlickrSearch, FlickrImage
 from .serializers import FlickrSearchSerializer, FlickrImageSerializer
 
 
-@api_view(['GET'])
-def search_flickr(request):
-    # import ipdb; ipdb.set_trace()
+def make_search_query(request, page=1):
+    per_page = request.GET.get('per_page', '20')
     req = requests.get('https://api.flickr.com/services/rest/?method=flickr.photos.search',
         params={
             'api_key': settings.FLICKR_API_KEY,
@@ -25,41 +24,49 @@ def search_flickr(request):
             'media': 'photos',
             'content_type': 7,
             'extras': 'license,tags',
-            'per_page': request.GET.get('per_page', '20'),
-            'page': request.GET.get('page', 1),
+            'per_page': per_page,
+            'page': str(page),
             'tags': request.GET.get('tags', ''),
             'tag_mode': request.GET.get('tag_mode', 'all')})
 
     if req.json()['stat'] == 'ok':
+
         data = req.json()['photos']
 
-        # for photo_data in data['photo']:
-        #     serializer = FlickrImageSerializer(data=photo_data)
-        #     print(serializer.initial_data)
-        search_serializer = FlickrSearchSerializer(data=data)
-        # import ipdb; ipdb.set_trace()
-        return Response({
-            'page': data['page'],
-            'pages': data['pages'],
-            'perpage': data['perpage'],
-            'total': data['total'],
-            'images': [{
-                # 'id': photo_data['id'],
-                'flickr_id': photo_data['id'],
-                'title': photo_data['title'],
-                'owner': photo_data['owner'],
-                'secret': photo_data['secret'],
-                'server': photo_data['server'],
-                'farm': photo_data['farm'],
-                'license': photo_data['license'],
-                'tags': photo_data['tags'],
-                'ispublic': photo_data['ispublic'],
-                'isfriend': photo_data['isfriend'],
-                'isfamily': photo_data['isfamily'],
-            } for photo_data in data['photo'] if FlickrImage.objects.filter(flickr_id=photo_data['id']).count() == 0 ]
-        })
+        images = [{
+            # 'id': photo_data['id'],
+            'flickr_id': photo_data['id'],
+            'title': photo_data['title'],
+            'owner': photo_data['owner'],
+            'secret': photo_data['secret'],
+            'server': photo_data['server'],
+            'farm': photo_data['farm'],
+            'license': photo_data['license'],
+            'tags': photo_data['tags'],
+            'ispublic': photo_data['ispublic'],
+            'isfriend': photo_data['isfriend'],
+            'isfamily': photo_data['isfamily'],
+        } for photo_data in data['photo'] if FlickrImage.objects.filter(flickr_id=photo_data['id']).count() == 0 ]
+
+        if len(images) < int(per_page) and int(data['pages']) > int(data['page']):
+            # import ipdb; ipdb.set_trace()
+            return make_search_query(request, page=page+1)
+        else:
+            return Response({
+                'page': data['page'],
+                'pages': data['pages'],
+                'perpage': data['perpage'],
+                'total': data['total'],
+                'images': images
+            })
     else:
         return Response({'message': 'No results'})
+
+
+
+@api_view(['GET'])
+def search_flickr(request):
+    return make_search_query(request, page=int(request.GET.get('page', 1)))
 
 
 class FlickrSearchQueryView(views.APIView):
