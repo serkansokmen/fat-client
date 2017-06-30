@@ -63,13 +63,20 @@ class FlickrImage(models.Model):
     def __str__(self):
         return '{}'.format(self.flickr_id)
 
-    def get_flickr_url(self):
-        return 'https://farm{}.staticflickr.com/{}/{}_{}.jpg'.format(
+    def get_flickr_image_base(self):
+        return 'https://farm{}.staticflickr.com/{}/{}_{}'.format(
             self.farm, self.server, self.flickr_id, self.secret)
 
+    def get_flickr_url(self):
+        return '{}.jpg'.format(self.get_flickr_image_base())
+
     def get_flickr_thumbnail(self):
-        return 'https://farm{}.staticflickr.com/{}/{}_{}_q.jpg'.format(
-            self.farm, self.server, self.flickr_id, self.secret)
+        return '{}_q.jpg'.format(self.get_flickr_image_base())
+
+    def image_tag(self):
+        return '<img src="{}" />'.format(self.get_flickr_thumbnail())
+    image_tag.short_description = 'Image'
+    image_tag.allow_tags = True
 
 
 class FlickrSearch(models.Model):
@@ -79,7 +86,7 @@ class FlickrSearch(models.Model):
         ('any', 'OR'),
     )
 
-    tags = models.TextField(unique=True)
+    tags = models.TextField()
     slug = AutoSlugField(populate_from='tags', max_length=255)
     tag_mode = models.CharField(
         max_length=3, choices=TAG_MODES, default=TAG_MODES[0])
@@ -93,7 +100,8 @@ class FlickrSearch(models.Model):
         verbose_name = _('Flickr search')
         verbose_name_plural = _('Flickr searches')
         get_latest_by = 'updated_at'
-        ordering = ['-created_at', '-updated_at', ]
+        ordering = ['-created_at', '-updated_at']
+        unique_together = (('tags', 'tag_mode'),)
 
     def __str__(self):
         return '{}'.format(self.tags)

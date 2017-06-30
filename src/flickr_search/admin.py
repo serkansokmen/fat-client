@@ -11,15 +11,10 @@ from .models import FlickrSearch, FlickrImage
 
 
 class FlickrImageAdmin(AdminImageMixin, admin.ModelAdmin):
-    list_display = ('thumb', 'flickr_id', 'secret', 'license', 'tags', 'search')
+    list_display = ('image_tag', 'flickr_id', 'secret', 'license', 'tags', 'search')
     list_filter = ('state', 'license', 'server', 'farm', 'owner',
         'ispublic', 'isfriend', 'isfamily')
-
-    def thumb(self, obj):
-        return render_to_string('admin/thumb.html', {
-            'image_url': obj.get_flickr_thumbnail()
-        })
-    thumb.allow_tags = True
+    readonly_fields = ('image_tag',)
 admin.site.register(FlickrImage, FlickrImageAdmin)
 
 
@@ -28,6 +23,7 @@ class FlickrSearchAdmin(admin.ModelAdmin):
     list_display_links = ('tags',)
     list_filter = ('tag_mode', 'user_id', 'created_at', 'updated_at',)
     filter_horizontal = ('images',)
+    readonly_fields = ('tags', 'tag_mode', 'licenses',)
     # exclude = ('images',)
 
     def image_count(self, obj):

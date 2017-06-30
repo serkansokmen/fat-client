@@ -39,7 +39,7 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlickrSearch
-        fields = ('tags', 'tag_mode', 'user_id', 'licenses', 'images', 'created_at', 'updated_at')
+        fields = ('id', 'tags', 'tag_mode', 'user_id', 'licenses', 'images')
         read_only_fields = ('created_at', 'updated_at')
         depth = 1
 

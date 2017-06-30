@@ -15,14 +15,14 @@ def make_search_query(request, page=1):
     per_page = request.GET.get('per_page', '20')
     tags = request.GET.get('tags', '')
     tag_mode = request.GET.get('tag_mode', 'all')
-    license = request.GET.get('license')
+    licenses = request.GET.get('licenses')
     req = requests.get('https://api.flickr.com/services/rest/?method=flickr.photos.search',
         params={
             'api_key': settings.FLICKR_API_KEY,
             'api_secret': settings.FLICKR_API_SECRET,
             'format': 'json',
             'nojsoncallback': 1,
-            'license': license,
+            'license': licenses,
             'safe_search': 3,
             'sort' : 'relevance',
             'media': 'photos',
@@ -36,13 +36,6 @@ def make_search_query(request, page=1):
     if req.json()['stat'] == 'ok':
 
         data = req.json()['photos']
-
-        try:
-            search = FlickrSearch.objects.get(tags=tags)
-            print(search.tags, search.pk)
-        except ObjectDoesNotExist:
-            search = None
-
         images = [{
             # 'id': photo_data['id'],
             'flickr_id': photo_data['id'],
@@ -61,26 +54,41 @@ def make_search_query(request, page=1):
         pages = int(data['pages'])
         page = int(data['page'])
         per_page = int(per_page)
-        # import ipdb; ipdb.set_trace()
+
         if (len(images) == 0 and len(images) < per_page) and pages > page:
             return make_search_query(request, page=page+1)
         else:
+            search_serializer = FlickrSearchSerializer(data=request.GET)
+            print(search_serializer.initial_data)
+            # FlickrSearchSerializer(data={
+            #         'tags': tags,
+            #         'tag_mode': tag_mode,
+            #         'licenses': licenses
+            #         }).initial_data
+            # search, created = FlickrSearch.objects.get_or_create(tags__iexact=tags)
+
             return Response({
                 'page': data['page'],
                 'pages': data['pages'],
                 'perpage': data['perpage'],
                 'total': data['total'],
-                'search_id': search.pk if search is not None else None,
+                'search': search_serializer.initial_data,
                 'images': images
             })
     else:
         return Response({'message': 'No results'})
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def search_flickr(request):
-    return make_search_query(request,
-        page=int(request.GET.get('page', 1)))
+    if request.method == 'GET':
+        return make_search_query(request,
+            page=int(request.GET.get('page', 1)))
+    elif request.method == 'POST':
+        return Response({'request_type': 'post'})
+    return Response({
+        'message': 'GET or POST required'
+        })
 
 
 class FlickrSearchQueryView(views.APIView):
