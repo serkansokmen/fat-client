@@ -38,7 +38,7 @@ def make_search_query(request, page=1):
         data = req.json()['photos']
         images = [{
             # 'id': photo_data['id'],
-            'flickr_id': photo_data['id'],
+            'id': photo_data['id'],
             'title': photo_data['title'],
             'owner': photo_data['owner'],
             'secret': photo_data['secret'],
@@ -49,7 +49,7 @@ def make_search_query(request, page=1):
             'ispublic': photo_data['ispublic'],
             'isfriend': photo_data['isfriend'],
             'isfamily': photo_data['isfamily'],
-        } for photo_data in data['photo'] if FlickrImage.objects.filter(flickr_id=photo_data['id']).count() == 0 ]
+        } for photo_data in data['photo'] if FlickrImage.objects.filter(id=photo_data['id']).count() == 0 ]
 
         pages = int(data['pages'])
         page = int(data['page'])

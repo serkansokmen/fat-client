@@ -33,7 +33,7 @@ class FlickrImage(models.Model):
 
     state = models.IntegerField(choices=IMAGE_STATES, blank=True, null=True)
 
-    flickr_id = models.CharField(max_length=255, primary_key=True)
+    id = models.CharField(max_length=255, primary_key=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     image = ImageField(upload_to='flickr_images', blank=True, null=True)
     owner = models.CharField(max_length=255)
@@ -61,11 +61,11 @@ class FlickrImage(models.Model):
         ordering = ['-created_at', '-updated_at',]
 
     def __str__(self):
-        return '{}'.format(self.flickr_id)
+        return '{}'.format(self.id)
 
     def get_flickr_image_base(self):
         return 'https://farm{}.staticflickr.com/{}/{}_{}'.format(
-            self.farm, self.server, self.flickr_id, self.secret)
+            self.farm, self.server, self.id, self.secret)
 
     def get_flickr_url(self):
         return '{}.jpg'.format(self.get_flickr_image_base())

@@ -22,7 +22,7 @@ class FlickrImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlickrImage
         queryset=FlickrImage.objects.all()
-        fields = ('flickr_id', 'secret', 'title',
+        fields = ('id', 'secret', 'title',
             'owner', 'secret', 'server', 'farm',
             'license', 'tags',
             'image', 'license',
@@ -58,7 +58,7 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
         return instance
         # for image in validated_data.get('images'):
         #     image, created = FlickrImage.objects.get_or_create(
-        #         flickr_id=photo.get('id'),
+        #         id=photo.get('id'),
         #         title=photo.get('title'),
         #         owner=photo.get('owner'),
         #         secret=photo.get('secret'),
