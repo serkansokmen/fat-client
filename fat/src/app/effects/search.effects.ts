@@ -32,6 +32,7 @@ export class SearchEffects {
           page: result.page,
           perpage: result.perpage,
           total: result.total,
+          search_id: result.search_id,
           images: result.images.map(data => new Image(data))
         }
       })

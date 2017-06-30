@@ -16,17 +16,6 @@ export class SearchActions {
     }
   }
 
-  static REQUEST_PAGE_COMPLETE = '[Search] Request Page';
-  requestPageComplete(search: Search, images: Image[]): Action {
-    return {
-      type: SearchActions.REQUEST_PAGE_COMPLETE,
-      payload: {
-        search,
-        images
-      }
-    }
-  }
-
   static REQUEST_SEARCH = '[Search] Request Search';
   requestSearch(search: Search, licenses: License[], perpage: number, page: number): Action {
     return {

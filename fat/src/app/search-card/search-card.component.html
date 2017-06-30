@@ -11,6 +11,7 @@
       }">
     </div> -->
     <div class="meta" *ngSwitchCase="0">
+      <strong>Flickr ID:</strong> {{ image.flickr_id }} <br>
       <strong>Tags:</strong> {{ image.tags }} <br>
       <strong>License:</strong> <a [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
     </div>

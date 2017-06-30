@@ -16,6 +16,7 @@ class FlickrImage(models.Model):
         (0, _('Discarded')),
         (1, _('Approved')),
         (2, _('Processed')),
+        (3, _('Indeterminate')),
     )
 
     LICENSES = (
@@ -78,7 +79,7 @@ class FlickrSearch(models.Model):
         ('any', 'OR'),
     )
 
-    tags = models.CharField(max_length=255)
+    tags = models.TextField(unique=True)
     slug = AutoSlugField(populate_from='tags', max_length=255)
     tag_mode = models.CharField(
         max_length=3, choices=TAG_MODES, default=TAG_MODES[0])

@@ -2,6 +2,7 @@ import requests
 import json
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from rest_framework import viewsets, parsers, views
 from rest_framework.response import Response
@@ -12,13 +13,16 @@ from .serializers import FlickrSearchSerializer, FlickrImageSerializer
 
 def make_search_query(request, page=1):
     per_page = request.GET.get('per_page', '20')
+    tags = request.GET.get('tags', '')
+    tag_mode = request.GET.get('tag_mode', 'all')
+    license = request.GET.get('license')
     req = requests.get('https://api.flickr.com/services/rest/?method=flickr.photos.search',
         params={
             'api_key': settings.FLICKR_API_KEY,
             'api_secret': settings.FLICKR_API_SECRET,
             'format': 'json',
             'nojsoncallback': 1,
-            'license': request.GET.get('license'),
+            'license': license,
             'safe_search': 3,
             'sort' : 'relevance',
             'media': 'photos',
@@ -26,12 +30,18 @@ def make_search_query(request, page=1):
             'extras': 'license,tags',
             'per_page': per_page,
             'page': str(page),
-            'tags': request.GET.get('tags', ''),
-            'tag_mode': request.GET.get('tag_mode', 'all')})
+            'tags': tags,
+            'tag_mode': tag_mode})
 
     if req.json()['stat'] == 'ok':
 
         data = req.json()['photos']
+
+        try:
+            search = FlickrSearch.objects.get(tags=tags)
+            print(search.tags, search.pk)
+        except ObjectDoesNotExist:
+            search = None
 
         images = [{
             # 'id': photo_data['id'],
@@ -51,9 +61,8 @@ def make_search_query(request, page=1):
         pages = int(data['pages'])
         page = int(data['page'])
         per_page = int(per_page)
-
+        # import ipdb; ipdb.set_trace()
         if (len(images) == 0 and len(images) < per_page) and pages > page:
-            # import ipdb; ipdb.set_trace()
             return make_search_query(request, page=page+1)
         else:
             return Response({
@@ -61,6 +70,7 @@ def make_search_query(request, page=1):
                 'pages': data['pages'],
                 'perpage': data['perpage'],
                 'total': data['total'],
+                'search_id': search.pk if search is not None else None,
                 'images': images
             })
     else:
@@ -69,7 +79,8 @@ def make_search_query(request, page=1):
 
 @api_view(['GET'])
 def search_flickr(request):
-    return make_search_query(request, page=int(request.GET.get('page', 1)))
+    return make_search_query(request,
+        page=int(request.GET.get('page', 1)))
 
 
 class FlickrSearchQueryView(views.APIView):

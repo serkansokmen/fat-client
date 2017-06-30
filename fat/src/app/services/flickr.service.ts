@@ -49,6 +49,15 @@ export class FlickrService {
       });
   };
 
+  getSearch(id: number): Observable<any> {
+    let url = `${this.endpoint}search/${id}`;
+    return this.http.get(url, this.jwt())
+      .map((response: Response) => response.json())
+      .map((result: any) => {
+        return Observable.of(new Search(result));
+      })
+  }
+
 
   saveSearch(search: Search, images: Image[], licenses: License[] = []) {
 

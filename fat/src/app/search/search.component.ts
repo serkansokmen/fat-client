@@ -28,6 +28,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   images: Image[];
   selectedLicenses: License[];
   currentPage: number;
+  currentPerPage: number;
 
   private sub: any;
 
@@ -61,6 +62,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
       this.selectedLicenses = state.selectedLicenses;
       this.images = state.images;
+      this.currentPage = state.page;
+      this.currentPerPage = state.perpage;
 
       if (state.instance.query != this.form.value.query && state.licenses.length > 0) {
         this.form.patchValue(state.instance);
@@ -70,10 +73,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.form.valueChanges
       .debounceTime(500)
       .subscribe(data => {
-        if (this.currentPage != data.page && data.page > 0) {
-          console.log(data.page);
-          this.handleSearch(null);
-        }
+        // if (this.currentPage == data.page) return;
+        // if (this.currentPerPage == data.perPage) return;
+        // console.log(data.page, data.perPage);
+        // this.handleSearch(null);
       });
 
     this.sub = this.route.params.subscribe(params => {

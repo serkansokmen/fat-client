@@ -49,14 +49,6 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         page: action.payload.page
       };
 
-    case SearchActions.REQUEST_PAGE_COMPLETE:
-      return {
-        ...state,
-        isRequesting: false,
-        instance: action.payload.search,
-        images: action.payload.images
-      };
-
     case SearchActions.REQUEST_SEARCH:
       return {
         ...state,
@@ -102,11 +94,19 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         selectedLicenses: without(state.selectedLicenses, action.payload.license)
       };
 
+    // case SearchActions.REQUEST_SEARCH_INSTANCE:
+    //   return {
+    //     ...state,
+    //     isRequesting: true,
+    //     search: state.instance,
+    //     images: state.images
+    //   };
+
     case SearchActions.SAVE_SEARCH:
       return {
         ...state,
         isRequesting: true,
-        search: state.instance,
+        instance: state.instance,
         images: state.images
       };
 
@@ -114,7 +114,7 @@ export function searchReducer(state: SearchState = initialState, action: Action)
       return {
         ...state,
         isRequesting: false,
-        search: action.payload.search,
+        instance: action.payload.search,
         images: action.payload.images
       };
 
