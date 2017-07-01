@@ -13,10 +13,10 @@ from multiselectfield import MultiSelectField
 class FlickrImage(models.Model):
 
     IMAGE_STATES = (
-        (0, _('Discarded')),
-        (1, _('Approved')),
-        (2, _('Processed')),
-        (3, _('Indeterminate')),
+        (0, _('Indeterminate')),
+        (1, _('Discarded')),
+        (2, _('Approved')),
+        (3, _('Processed')),
     )
 
     LICENSES = (
@@ -51,9 +51,6 @@ class FlickrImage(models.Model):
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
-    flickr_url = models.URLField(blank=True, null=True)
-    flickr_thumbnail = models.URLField(blank=True, null=True)
-
     class Meta:
         verbose_name = _('Flickr image')
         verbose_name_plural = _('Flickr images')
@@ -86,7 +83,7 @@ class FlickrSearch(models.Model):
         ('any', 'OR'),
     )
 
-    tags = models.TextField()
+    tags = models.TextField(unique=True)
     slug = AutoSlugField(populate_from='tags', max_length=255)
     tag_mode = models.CharField(
         max_length=3, choices=TAG_MODES, default=TAG_MODES[0])
@@ -101,7 +98,6 @@ class FlickrSearch(models.Model):
         verbose_name_plural = _('Flickr searches')
         get_latest_by = 'updated_at'
         ordering = ['-created_at', '-updated_at']
-        unique_together = (('tags', 'tag_mode'),)
 
     def __str__(self):
         return '{}'.format(self.tags)
@@ -115,8 +111,8 @@ def clean_search_images(sender, instance, **kwargs):
 
 # @receiver(post_save, sender=FlickrImage)
 # def flickr_image_post_save(sender, instance, **kwargs):
-#     img_id = instance.flickr_image_id
-#     img_url = instance.flickr_image_url
+#     img_id = instance.id
+#     img_url = instance.get_flickr_url()
 #     img_temp = NamedTemporaryFile(delete=True)
 #     img_temp.write(urlopen(img_url).read())
 #     img_temp.flush()

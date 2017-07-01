@@ -49,17 +49,22 @@ def make_search_query(request, page=1):
             'ispublic': photo_data['ispublic'],
             'isfriend': photo_data['isfriend'],
             'isfamily': photo_data['isfamily'],
+            'state': {
+                'value': FlickrImage.IMAGE_STATES[0][0],
+                'label': FlickrImage.IMAGE_STATES[0][1],
+            }
         } for photo_data in data['photo'] if FlickrImage.objects.filter(id=photo_data['id']).count() == 0 ]
 
         pages = int(data['pages'])
         page = int(data['page'])
         per_page = int(per_page)
 
-        if (len(images) == 0 and len(images) < per_page) and pages > page:
+        # loop = False
+        if ((len(images) == 0 and len(images) < per_page) and pages > page):
             return make_search_query(request, page=page+1)
         else:
             search_serializer = FlickrSearchSerializer(data=request.GET)
-            print(search_serializer.initial_data)
+            # print(search_serializer.initial_data)
             # FlickrSearchSerializer(data={
             #         'tags': tags,
             #         'tag_mode': tag_mode,

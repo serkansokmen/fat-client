@@ -10,10 +10,10 @@
 <md-sidenav-container>
   <md-sidenav #sidenav mode="side" opened="true">
     <form [formGroup]="form" (ngSubmit)="handleSearch($event, state$?.page)" novalidate>
-      <md-input-container><input [autocomplete]="false" mdInput formControlName="query" type="text" placeholder="Tags"/></md-input-container>
-      <md-input-container><input [autocomplete]="false" mdInput formControlName="exclude" type="text" placeholder="Exclude"/></md-input-container>
+      <md-input-container><input [autocomplete]="false" mdInput formControlName="tags" type="text" placeholder="Tags"/></md-input-container>
+      <!-- <md-input-container><input [autocomplete]="false" mdInput formControlName="exclude" type="text" placeholder="Exclude"/></md-input-container> -->
       <md-select placeholder="Tag mode" formControlName="tagMode">
-        <md-option *ngFor="let mode of (state$ | async)?.tagModes" [value]="mode">{{ mode.label }}</md-option>
+        <md-option *ngFor="let mode of (state$ | async)?.tagModes" [value]="mode">{{ mode }}</md-option>
       </md-select>
       <md-input-container><input [autocomplete]="false" mdInput formControlName="userID" type="text" placeholder="User ID (Optional)"/></md-input-container>
       <div>
@@ -70,7 +70,7 @@
       </md-slider>
     </div>
     <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No more results</div>
-    <div class="thumbnails" [style.flex-direction]="(cardLayout$ | async)?.currentViewMode.id == 0 ? 'row' : 'column'">
+    <div *ngIf="!(state$ | async)?.isRequesting" class="thumbnails" [style.flex-direction]="(cardLayout$ | async)?.currentViewMode.id == 0 ? 'row' : 'column'">
       <fls-search-card *ngFor="let image of (state$ | async)?.images"
         [image]="image"
         [thumbnailScale]="(cardLayout$ | async)?.thumbnailScale"

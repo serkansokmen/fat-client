@@ -28,11 +28,11 @@ export class SearchCardComponent implements OnInit {
   }
 
   getImageURL(image: Image) {
-    return `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`;
+    return Image.getImageURL(image);
   }
 
   getThumbnail(image: Image) {
-    return `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}_q.jpg`;
+    return Image.getThumbnail(image);
   }
 
   handleImageClick(image: Image) {

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Action } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, toPayload } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { Search, Image, License } from '../models/search.models';
 import { SearchActions } from '../actions/search.actions';
 import { FlickrService } from '../services/flickr.service';
+import { SearchState } from '../reducers/search.reducer';
 
 
 @Injectable()
@@ -13,6 +14,7 @@ export class SearchEffects {
   constructor(
     private http: Http,
     private actions$: Actions,
+    private store: Store<SearchState>,
     private service: FlickrService
   ) { }
 
@@ -32,8 +34,8 @@ export class SearchEffects {
           page: result.page,
           perpage: result.perpage,
           total: result.total,
-          search_id: result.search_id,
-          images: result.images.map(data => new Image(data))
+          search: Search.fromJSON(result.search),
+          results: result.images
         }
       })
     });
@@ -46,8 +48,8 @@ export class SearchEffects {
       return Observable.of({
         type: SearchActions.SAVE_SEARCH_COMPLETE,
         payload: {
-          search: new Search(result),
-          images: result.images.map(data => new Image(data))
+          search: JSON.parse(result, Search.reviver),
+          newImages: result.images.map(data => new Image(data))
         }
       })
     });
