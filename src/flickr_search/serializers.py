@@ -43,7 +43,7 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
         (instance, created) = FlickrSearch.objects.get_or_create(**validated_data)
         for image_data in images_data:
             (image, created) = FlickrImage.objects.get_or_create(**image_data)
-            if image not in instance.images.all():
+            if image_data.get('state') != FlickrImage.IMAGE_STATES[1][0] and image not in instance.images.all():
                 instance.images.add(image)
         return instance
 
@@ -64,5 +64,10 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
         #         instance.images.add(image)
         # instance.save()
 
-    # def update(self, instance, validated_data):
-    #     return instance
+    def update(self, instance, validated_data):
+        images_data = validated_data.pop('images')
+        for image_data in images_data:
+            (image, created) = FlickrImage.objects.get_or_create(**image_data)
+            if image_data.get('state') != FlickrImage.IMAGE_STATES[1][0] and image not in instance.images.all():
+                instance.images.add(image)
+        return instance

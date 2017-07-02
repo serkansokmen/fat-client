@@ -9,7 +9,7 @@
 
 <md-sidenav-container>
   <md-sidenav #sidenav mode="side" opened="true">
-    <form [formGroup]="form" (ngSubmit)="handleSearch($event, state$?.page)" novalidate>
+    <form [formGroup]="form" (ngSubmit)="handleSearch($event)" novalidate>
       <md-input-container><input [autocomplete]="false" mdInput formControlName="tags" type="text" placeholder="Tags"/></md-input-container>
       <!-- <md-input-container><input [autocomplete]="false" mdInput formControlName="exclude" type="text" placeholder="Exclude"/></md-input-container> -->
       <md-select placeholder="Tag mode" formControlName="tagMode">
@@ -28,16 +28,16 @@
           </div>
         </md-expansion-panel>
       </div>
-      <p class="pagination-label" [innerHTML]="(state$ | async)?.isRequesting ? 'Loading...' : 'Page ' + (state$ | async)?.page + ' of ' + (state$ | async)?.pages + ' results'"></p>
+      <p class="pagination-label" [innerHTML]="(state$ | async)?.isRequesting ? 'Loading...' : (state$ | async)?.total + ' total results'"></p>
       <md-input-container>
-        <input [autocomplete]="false" mdInput formControlName="perpage" type="number" placeholder="How many per page?"/>
+        <input [autocomplete]="false" mdInput formControlName="perpage" type="number" [max]="100" placeholder="How many per page?"/>
       </md-input-container>
-      <md-input-container>
+      <!-- <md-input-container>
         <input [autocomplete]="false" mdInput formControlName="page"
           [max]="(state$ | async)?.pages"
           [placeholder]="'Page ' + (state$ | async)?.page"
           [value]="(state$ | async)?.page" type="number"/>
-      </md-input-container>
+      </md-input-container> -->
       <div class="form-controls">
         <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon>search</md-icon> Search</button></p>
         <p><button md-button color="accent" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting"><md-icon>remove_circle</md-icon> Discard all</button></p>

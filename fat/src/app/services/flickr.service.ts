@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { PlatformLocation } from '@angular/common';
 import { CookieService } from 'ngx-cookie';
-import { Search, Image, License, ImageState } from '../models/search.models';
+import { Image, License, ImageState } from '../models/search.models';
 import { map, filter, union } from 'underscore';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
@@ -21,7 +21,7 @@ export class FlickrService {
     this.endpoint = environment.apiURL;
   }
 
-  search(search: Search, licenses: License[], perpage: number, page: number): Observable<any> {
+  search(search: any, licenses: License[], perpage: number): Observable<any> {
     // search.query = search.query || '';
     // search.exclude = search.exclude || '';
     // var query = search.query.replace(' ', '');
@@ -33,38 +33,24 @@ export class FlickrService {
     let url = `${this.endpoint}flickr/` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
       `${search.userID ? '&user_id=' + search.userID : ''}` +
-      `&per_page=${perpage}` +
-      `&page=${page}` +
       `&tags=${search.tags}` +
       `&tag_mode=${search.tagMode}`;
     return this.http.get(url, this.jwt())
       .map((response: Response) => response.json())
       .map((result: any) => {
         return {
-          pages: parseInt(result.total, 10),
-          page: result.page,
-          perpage: result.perpage,
           total: result.total,
-          images: result.images.map(photo => new Image(photo)),
-          search: Search.fromJSON(result.search),
+          images: result.images.filter((image, key) => key < perpage).map(photo => new Image(photo)),
+          search: result.search
         };
       });
   };
 
-  // getSearch(id: number): Observable<Search> {
-  //   let url = `${this.endpoint}search/${id}`;
-  //   return this.http.get(url, this.jwt())
-  //     .map((response: Response) => response.json())
-  //     .map((result: SearchJSON) => {
-  //       return Observable.of(new Search(result));
-  //     })
-  // }
-
-
-  saveSearch(search: Search, images: Image[], licenses: License[]) {
-
+  saveSearch(search: any, images: Image[], licenses: License[]) {
     let body = JSON.stringify({
-      ...search,
+      tags: search.tags,
+      tag_mode: search.tagMode,
+      user_id: search.userID || null,
       licenses: licenses.map(license => license.id),
       images: images.map(image => {
         return {
@@ -83,8 +69,13 @@ export class FlickrService {
         'Authorization': `Token ${currentUser.token}`
       });
       let options = new RequestOptions({ headers: headers });
-      return this.http.post(`${this.endpoint}search/`, body, options)
-        .map((response: Response) => response.json());
+      if (search.id == null) {
+        return this.http.post(`${this.endpoint}flickr/`, body, options)
+          .map((response: Response) => response.json());
+      } else {
+        return this.http.put(`${this.endpoint}flickr/`, body, options)
+          .map((response: Response) => response.json());
+      }
     }
   }
 

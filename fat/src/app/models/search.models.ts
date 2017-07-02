@@ -57,45 +57,45 @@ export class License {
   }
 }
 
-export class Search {
+// export class Search {
 
-  public tags: string;
-  public tagMode: string;
-  public userID: string;
+//   public tags: string;
+//   public tagMode: string;
+//   public userID: string;
 
-  toJSON(): any {
-    // let tags = this.query ? this.query.replace(' ', '') : '';
-    // let exclude = this.exclude ? this.exclude.replace(' ', '').split(',').map(str => `-${str.trim()}`).join(',') : '';
-    // if (exclude != '-') {
-    //   tags += `,${exclude}`;
-    // }
-    return Object.assign({}, this, {
-      tags: this.tags,
-      tag_mode: this.tagMode,
-      user_id: this.userID
-    });
-  }
+//   toJSON(): any {
+//     // let tags = this.query ? this.query.replace(' ', '') : '';
+//     // let exclude = this.exclude ? this.exclude.replace(' ', '').split(',').map(str => `-${str.trim()}`).join(',') : '';
+//     // if (exclude != '-') {
+//     //   tags += `,${exclude}`;
+//     // }
+//     return Object.assign({}, this, {
+//       tags: this.tags,
+//       tag_mode: this.tagMode,
+//       user_id: this.userID
+//     });
+//   }
 
-  static fromJSON(json: any): Search {
-    if (typeof json === 'string') {
-      return JSON.parse(json, Search.reviver);
-    } else {
-      let search = Object.create(Search.prototype);
-      let tags = json.tags ? json.tags.split(',').map(str => str.trim()).join(',') : '';
-      return Object.assign({}, search, {
-        // query: tags ? tags.filter(str => str.charAt(0) != '-').join(', ') : '',
-        // exclude: tags ? tags.filter(str => str.charAt(0) == '-').map(str => str.substr(1)).join(', ') : '',
-        tags,
-        tagMode: json.tag_mode,
-        userID: json.user_id || null
-      });
-    }
-  }
+//   static fromJSON(json: any): Search {
+//     if (typeof json === 'string') {
+//       return JSON.parse(json, Search.reviver);
+//     } else {
+//       let search = Object.create(Search.prototype);
+//       let tags = json.tags ? json.tags.split(',').map(str => str.trim()).join(',') : '';
+//       return Object.assign({}, search, {
+//         // query: tags ? tags.filter(str => str.charAt(0) != '-').join(', ') : '',
+//         // exclude: tags ? tags.filter(str => str.charAt(0) == '-').map(str => str.substr(1)).join(', ') : '',
+//         tags,
+//         tagMode: json.tag_mode,
+//         userID: json.user_id || null
+//       });
+//     }
+//   }
 
-  static reviver(key: string, value: any): any {
-    return key === '' ? Search.fromJSON(value) : value;
-  }
-}
+//   static reviver(key: string, value: any): any {
+//     return key === '' ? Search.fromJSON(value) : value;
+//   }
+// }
 
 export class Image {
   public id: string;
