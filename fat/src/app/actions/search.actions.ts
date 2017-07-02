@@ -29,12 +29,13 @@ export class SearchActions {
   }
 
   static REQUEST_SEARCH_COMPLETE = '[Search] Request Search Complete';
-  requestSearchComplete(search: any, results: Image[]): Action {
+  requestSearchComplete(search: any, results: Image[], total: number): Action {
     return {
       type: SearchActions.REQUEST_SEARCH_COMPLETE,
       payload: {
         search,
-        results
+        results,
+        total
       }
     }
   }

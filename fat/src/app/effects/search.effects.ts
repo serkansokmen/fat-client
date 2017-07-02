@@ -39,8 +39,6 @@ export class SearchEffects {
       return Observable.of({
         type: SearchActions.REQUEST_SEARCH_COMPLETE,
         payload: {
-          pages: result.pages,
-          perpage: result.perpage,
           total: result.total,
           search: result.search,
           results: result.images

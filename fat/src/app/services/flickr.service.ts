@@ -43,6 +43,10 @@ export class FlickrService {
           images: result.images.filter((image, key) => key < perpage).map(photo => new Image(photo)),
           search: result.search
         };
+      })
+      .catch(error => {
+        console.error('Error at search', error);
+        return Observable.empty();
       });
   };
 
@@ -71,9 +75,17 @@ export class FlickrService {
       let options = new RequestOptions({ headers: headers });
       if (search.id == null) {
         return this.http.post(`${this.endpoint}flickr/`, body, options)
-          .map((response: Response) => response.json());
+          .catch(error => {
+            console.error('Error at search', error);
+            return Observable.empty();
+          })
+          .map((response: Response) => response.json())
       } else {
         return this.http.put(`${this.endpoint}flickr/`, body, options)
+          .catch(error => {
+            console.error('Error at search', error);
+            return Observable.empty();
+          })
           .map((response: Response) => response.json());
       }
     }

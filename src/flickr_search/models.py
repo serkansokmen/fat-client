@@ -55,7 +55,7 @@ class FlickrImage(models.Model):
         verbose_name = _('Flickr image')
         verbose_name_plural = _('Flickr images')
         get_latest_by = 'updated_at'
-        ordering = ['-created_at', '-updated_at',]
+        ordering = ['state', '-created_at', '-updated_at',]
 
     def __str__(self):
         return '{}'.format(self.id)
@@ -106,7 +106,7 @@ class FlickrSearch(models.Model):
 @receiver(post_delete, sender=FlickrSearch)
 def clean_search_images(sender, instance, **kwargs):
     for image in FlickrImage.objects.all():
-        if image.search.count() == 0:
+        if image.search.count() == 0 and image.state == FlickrImage.IMAGE_STATES[0][0]:
             image.delete()
 
 # @receiver(post_save, sender=FlickrImage)

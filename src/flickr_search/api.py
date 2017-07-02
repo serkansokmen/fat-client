@@ -13,13 +13,14 @@ from .serializers import FlickrSearchSerializer, FlickrImageSerializer
 
 def make_search_query(request, page=1):
 
-    data = request.GET if request.method == 'GET' else request.data
+    flickr_per_page = 500
 
-    tags = data.get('tags', None)
-    tag_mode = data.get('tag_mode')
-    licenses = data.get('licenses')
-    user_id = data.get('user_id')
-    per_page = 500
+    req_data = request.GET if request.method == 'GET' else request.data
+    tags = req_data.get('tags', None)
+    tag_mode = req_data.get('tag_mode')
+    licenses = req_data.get('licenses')
+    user_id = req_data.get('user_id')
+    per_page = int(req_data.get('per_page', '10'))
 
     if tags is None:
         return Response({
@@ -40,7 +41,7 @@ def make_search_query(request, page=1):
             'media': 'photos',
             'content_type': 7,
             'extras': 'license,tags',
-            'per_page': per_page,
+            'per_page': flickr_per_page,
             'page': str(page),
             'tags': tags,
             'tag_mode': tag_mode})
@@ -48,6 +49,7 @@ def make_search_query(request, page=1):
     if req.json()['stat'] == 'ok':
 
         data = req.json()['photos']
+
         images = [{
             # 'id': photo_data['id'],
             'id': photo_data['id'],
@@ -67,12 +69,19 @@ def make_search_query(request, page=1):
             }
         } for photo_data in data['photo'] if FlickrImage.objects.filter(id=photo_data['id']).count() == 0 ]
 
-        pages = int(data['pages'])
-        page = int(data['page'])
+        flickr_pages = int(data['pages'])
+        flickr_page = int(data['page'])
+        flickr_total = int(data['total'])
 
-        # loop = False
-        if ((len(images) == 0 and len(images) < per_page) and pages > page):
-            return make_search_query(request, page=page + 1)
+        if len(images) < per_page and flickr_total > per_page * page:
+            if flickr_page < flickr_pages and flickr_total > flickr_per_page * flickr_page:
+                import ipdb; ipdb.set_trace()
+                return make_search_query(request, page=flickr_page + 1)
+            else:
+                import ipdb; ipdb.set_trace()
+                flickr_page = 1
+                return make_search_query(request, page=flickr_page)
+
         else:
             try:
                 search = FlickrSearch.objects.get(tags=tags)
@@ -84,7 +93,7 @@ def make_search_query(request, page=1):
                     user_id=user_id)
             search_serializer = FlickrSearchSerializer(search)
             return Response({
-                'total': data['total'],
+                'total': flickr_total - search.images.count(),
                 'search': search_serializer.data,
                 'images': images
             })
@@ -112,10 +121,15 @@ def search_flickr(request):
 
         for image_data in images_data:
             (image, created) = FlickrImage.objects.get_or_create(**image_data)
-            if image_data.get('state') != FlickrImage.IMAGE_STATES[1][0] and image not in search.images.all():
+            if image_data.get('state') != FlickrImage.IMAGE_STATES[1][0] and search.images.filter(id=image.id).count() == 0:
                 search.images.add(image)
         search.save()
-        return make_search_query(request)
+
+        return Response({
+            'search': response.data.get('search'),
+            'images': response.data.get('images'),
+            'total': response.data.get('total'),
+        })
 
     return Response({'message': 'GET or POST required'})
 

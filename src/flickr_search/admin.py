@@ -12,7 +12,7 @@ from .models import FlickrSearch, FlickrImage
 
 class FlickrImageAdmin(AdminImageMixin, admin.ModelAdmin):
     list_display = ('image_tag', 'id', 'secret', 'license', 'tags', 'search')
-    list_filter = ('state', 'license', 'server', 'farm', 'owner',
+    list_filter = ('state', 'license', 'owner',
         'ispublic', 'isfriend', 'isfamily')
     readonly_fields = ('image_tag', 'ispublic', 'isfriend', 'isfamily')
 admin.site.register(FlickrImage, FlickrImageAdmin)
