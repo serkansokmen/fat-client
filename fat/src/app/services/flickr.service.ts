@@ -22,14 +22,6 @@ export class FlickrService {
   }
 
   search(search: any, licenses: License[], perpage: number): Observable<any> {
-    // search.query = search.query || '';
-    // search.exclude = search.exclude || '';
-    // var query = search.query.replace(' ', '');
-    // let exclude = search.exclude.replace(' ', '').split(',').map(str => `-${str.trim()}`).join(',');
-    // if (exclude != '-') {
-    //   query += `,${exclude}`;
-    // }
-
     let url = `${this.endpoint}flickr/` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
       `${search.userID ? '&user_id=' + search.userID : ''}` +
@@ -89,6 +81,39 @@ export class FlickrService {
           .map((response: Response) => response.json());
       }
     }
+  }
+
+  getImages(state: ImageState) {
+    let url = `${this.endpoint}images/?state=${state.value}`;
+    return this.http.get(url, this.jwt())
+      .map((response: Response) => response.json())
+      .map((result: any) => {
+        return {
+          total: result.count,
+          next: result.next,
+          previous: result.previous,
+          images: result.results.map(photo => new Image(photo))
+        };
+      })
+      .catch(error => {
+        console.error('Error at search', error);
+        return Observable.empty();
+      });
+  }
+
+  getImage(id: number): Observable<Image> {
+    let url = `${this.endpoint}images/${id}/`;
+    return this.http.get(url, this.jwt())
+      .map((response: Response) => response.json())
+      .map((image: any) => {
+        return {
+          image: new Image(image)
+        };
+      })
+      .catch(error => {
+        console.error('Error at search', error);
+        return Observable.empty();
+      });
   }
 
   private jwt() {

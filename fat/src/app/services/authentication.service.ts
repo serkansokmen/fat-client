@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 
 import 'rxjs/add/operator/map'
 
@@ -22,7 +22,6 @@ export class AuthenticationService {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
   }
-
 
   login(username: string, password: string): Observable<boolean> {
     let body = JSON.stringify({ username: username, password: password });

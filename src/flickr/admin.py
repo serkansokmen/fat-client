@@ -9,12 +9,29 @@ from django.utils.translation import ugettext as _
 from sorl.thumbnail.admin import AdminImageMixin
 from .models import Search, Image
 
+def set_images_indeterminate(modeladmin, request, queryset):
+    queryset.update(state=Image.IMAGE_STATES[0][0])
+set_images_indeterminate.short_description = "Make selected images `Indeterminate`"
+
+def set_images_discarded(modeladmin, request, queryset):
+    queryset.update(state=Image.IMAGE_STATES[1][0])
+set_images_discarded.short_description = "Make selected images `Discarded`"
+
+def set_images_approved(modeladmin, request, queryset):
+    queryset.update(state=Image.IMAGE_STATES[2][0])
+set_images_approved.short_description = "Make selected images `Approved`"
+
+def set_images_processed(modeladmin, request, queryset):
+    queryset.update(state=Image.IMAGE_STATES[3][0])
+set_images_processed.short_description = "Make selected images `Completed`"
+
 
 class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
     list_display = ('image_tag', 'id', 'secret', 'license', 'tags', 'search')
     list_filter = ('state', 'license', 'owner',
         'ispublic', 'isfriend', 'isfamily')
     readonly_fields = ('image_tag', 'ispublic', 'isfriend', 'isfamily')
+    actions = [set_images_approved]
 admin.site.register(Image, ImageAdmin)
 
 

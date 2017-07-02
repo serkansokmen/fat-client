@@ -16,7 +16,7 @@ class Image(models.Model):
         (0, _('Indeterminate')),
         (1, _('Discarded')),
         (2, _('Approved')),
-        (3, _('Processed')),
+        (3, _('Completed')),
     )
 
     LICENSES = (

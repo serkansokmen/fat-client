@@ -1,0 +1,21 @@
+:host {
+  .content {
+    height: 100%;
+    margin: 65px auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+
+    fat-search-card {
+      break-inside: avoid;
+      width: 25%;
+    }
+  }
+}

@@ -1,0 +1,54 @@
+import { Component,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+  HostListener,
+  ChangeDetectionStrategy
+} from '@angular/core';
+import {
+  fabric,
+  Canvas,
+  StaticCanvas,
+  Image
+} from 'fabric';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+
+import { NudityCheckState } from '../../../reducers/nudity-check.reducer';
+import { NudityCheckActions } from '../../../actions/nudity-check.actions';
+import { ObjectX, Gender, DrawMode } from '../../../models/object-x.models';
+
+@Component({
+  selector: 'fat-nudity-check',
+  templateUrl: './nudity-check.component.html',
+  styleUrls: ['./nudity-check.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [NudityCheckActions]
+})
+export class NudityCheckComponent implements AfterViewInit, OnDestroy {
+
+  state$: Observable<NudityCheckState>;
+
+  private subscription;
+
+  constructor(
+    public store: Store<NudityCheckState>,
+    public actions: NudityCheckActions,
+  )
+  {
+    this.state$ = store.select('nudityCheck');
+  }
+
+  ngAfterViewInit() {
+    this.subscription = this.state$.subscribe((state: NudityCheckState) => {
+      console.log(state);
+      // this.canvas.clear();
+      // this.canvas.renderAll();
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+}
