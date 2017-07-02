@@ -29,18 +29,15 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.actions.requestImages(ImageState.approved));
     this.sub = this.route.params.subscribe(params => {
       if (params.id) {
-        console.log(params.id);
+        this.store.dispatch(this.actions.requestImage(params.id));
+      } else {
+        this.store.dispatch(this.actions.selectImage(null));
       }
-      this.store.dispatch(this.actions.selectImage(null));
     });
   }
 
   ngOnDestroy() {
     this.sub.unsubscribe();
-  }
-
-  handleSelectImage(image: Image) {
-    this.store.dispatch(this.actions.selectImage(image));
   }
 
 }

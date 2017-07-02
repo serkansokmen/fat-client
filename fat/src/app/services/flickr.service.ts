@@ -89,8 +89,25 @@ export class FlickrService {
       .map((response: Response) => response.json())
       .map((result: any) => {
         return {
-          total: result.total,
+          total: result.count,
+          next: result.next,
+          previous: result.previous,
           images: result.results.map(photo => new Image(photo))
+        };
+      })
+      .catch(error => {
+        console.error('Error at search', error);
+        return Observable.empty();
+      });
+  }
+
+  getImage(id: number): Observable<Image> {
+    let url = `${this.endpoint}images/${id}/`;
+    return this.http.get(url, this.jwt())
+      .map((response: Response) => response.json())
+      .map((image: any) => {
+        return {
+          image: new Image(image)
         };
       })
       .catch(error => {

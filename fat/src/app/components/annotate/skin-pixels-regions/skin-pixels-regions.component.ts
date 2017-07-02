@@ -24,6 +24,7 @@ import { ArtboardActions } from '../../../actions/artboard.actions';
 import { ArtboardService } from '../../../services/artboard.service';
 import { ArtboardTool } from '../../../models/artboard.models';
 import { ImageService } from '../../../services/image.service';
+import { AnnotateState } from '../../../reducers/annotate.reducer';
 
 @Component({
   selector: 'fat-skin-pixels-regions',
@@ -38,6 +39,9 @@ import { ImageService } from '../../../services/image.service';
 export class SkinPixelsRegionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   state$: Observable<any>;
+  annotate$: Observable<any>;
+  private image: Image;
+
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
   @ViewChild('drawCanvas') drawCanvas: ElementRef;
@@ -46,13 +50,15 @@ export class SkinPixelsRegionsComponent implements OnInit, AfterViewInit, OnDest
   private subscription;
 
   constructor(
-    public store: Store<ArtboardState>,
+    public artboardStore: Store<ArtboardState>,
+    public annotateStore: Store<AnnotateState>,
     public actions: ArtboardActions,
     private imageService: ImageService,
     private zone: NgZone
   )
   {
-    this.state$ = store.select('artboard');
+    this.state$ = artboardStore.select('artboard');
+    this.annotate$ = annotateStore.select('annotate');
   }
 
   ngOnInit() {
@@ -60,9 +66,29 @@ export class SkinPixelsRegionsComponent implements OnInit, AfterViewInit, OnDest
 
   ngAfterViewInit() {
 
+    this.annotate$.subscribe((state: AnnotateState) => {
+      this.image = state.selectedImage;
+      if (state.selectedImage && this.image.id != state.selectedImage.id) {
+        this.initCanvas();
+      }
+    });
+
+    this.subscription = this.state$.subscribe((state: ArtboardState) => {
+
+      this.initCanvas(state);
+
+    });
+  }
+
+  initCanvas(state?) {
+
+    if (state.selectedImage == null) {
+      return;
+    }
     var canvas: Canvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
       // backgroundColor: 'white'
     });
+    canvas.clear();
     canvas.isDrawingMode = true;
     canvas.on('mouse:down', (options) => {
       this.refreshMask();
@@ -73,7 +99,7 @@ export class SkinPixelsRegionsComponent implements OnInit, AfterViewInit, OnDest
       backgroundColor: 'black'
     });
 
-    fabric.Image.fromURL('https://c1.staticflickr.com/6/5595/14907092716_3223a57239_b.jpg', (img) => {
+    fabric.Image.fromURL(Image.getImageURL(state.selectedImage), (img) => {
       img.lockRotation = true;
       img.lockUniScaling = true;
       bgCanvas.setWidth(img.width)
@@ -85,79 +111,75 @@ export class SkinPixelsRegionsComponent implements OnInit, AfterViewInit, OnDest
       canvas.setHeight(img.height);
     });
 
-    fabric.Image.fromURL('/assets/photo_2017-06-06_06-45-14.png', (img) => {
+    fabric.Image.fromURL(Image.getThumbnail(state.selectedImage), (img) => {
       canvas.add(img);
       setTimeout(() => {
         this.refreshMask();
       });
     });
 
-    this.subscription = this.state$.subscribe((state: ArtboardState) => {
+    // this.zone.runOutsideAngular(() => {
+    canvas.setZoom(state.zoom);
+    bgCanvas.setZoom(state.zoom);
+    canvas.off('path:created');
+    // canvas.off('mouse:up');
 
-      // this.zone.runOutsideAngular(() => {
-      canvas.setZoom(state.zoom);
-      bgCanvas.setZoom(state.zoom);
-      canvas.off('path:created');
-      // canvas.off('mouse:up');
+    // if (state.isDragging) {
+    //   canvas.on('mouse:down', (options) => {
+    //     console.log(options);
+    //   });
+    //   canvas.on('mouse:move', (options) => {
+    //     console.log(options);
+    //   });
+    //   canvas.on('mouse:up', (options) => {
+    //     console.log(options);
+    //   });
+    // }
 
-      // if (state.isDragging) {
-      //   canvas.on('mouse:down', (options) => {
-      //     console.log(options);
-      //   });
-      //   canvas.on('mouse:move', (options) => {
-      //     console.log(options);
-      //   });
-      //   canvas.on('mouse:up', (options) => {
-      //     console.log(options);
-      //   });
-      // }
+    canvas.isDrawingMode = state.currentTool != ArtboardTool.polygon;
 
-      canvas.isDrawingMode = state.currentTool != ArtboardTool.polygon;
+    switch (state.currentTool) {
 
-      switch (state.currentTool) {
+      case ArtboardTool.polygon:
+        break;
 
-        case ArtboardTool.polygon:
-          break;
-
-        case ArtboardTool.lasso:
-          canvas.freeDrawingBrush.color = 'rgba(0,255,0,1)';
-          canvas.freeDrawingBrush.width = 1.0;
-          canvas.on('path:created', (options) => {
-            // this.store.dispatch(this.actions.lassoPathCreated(options.path));
-            let path = options.path;
-            path.lockRotation = true;
-            path.lockUniScaling = true;
-            path.selectable = false;
-            if (state.isAdding == true) {
-              path.set({ fill: 'rgba(0,255,0,150)', stroke: 'transparent' });
-            } else {
-              path.set({ fill: 'black', stroke: 'transparent' });
-            }
-            canvas.add(path);
-            this.refreshMask();
-          });
-          break;
-
-        case ArtboardTool.brush:
-          canvas.freeDrawingBrush.width = state.brushRadius;
+      case ArtboardTool.lasso:
+        canvas.freeDrawingBrush.color = 'rgba(0,255,0,1)';
+        canvas.freeDrawingBrush.width = 1.0;
+        canvas.on('path:created', (options) => {
+          // this.store.dispatch(this.actions.lassoPathCreated(options.path));
+          let path = options.path;
+          path.lockRotation = true;
+          path.lockUniScaling = true;
+          path.selectable = false;
           if (state.isAdding == true) {
-            canvas.freeDrawingBrush.color = 'rgba(0,255,0,150)';
-            canvas.set({ fill: 'transparent', stroke: 'rgba(0,255,0,150)' });
+            path.set({ fill: 'rgba(0,255,0,150)', stroke: 'transparent' });
           } else {
-            canvas.freeDrawingBrush.color = 'black';
+            path.set({ fill: 'black', stroke: 'transparent' });
           }
-          canvas.on('path:created', (options) => {
-            this.refreshMask();
-          });
-          break;
+          canvas.add(path);
+          this.refreshMask();
+        });
+        break;
 
-        default:
-          break;
-      }
-      // this.refreshMask();
-      // });
+      case ArtboardTool.brush:
+        canvas.freeDrawingBrush.width = state.brushRadius;
+        if (state.isAdding == true) {
+          canvas.freeDrawingBrush.color = 'rgba(0,255,0,150)';
+          canvas.set({ fill: 'transparent', stroke: 'rgba(0,255,0,150)' });
+        } else {
+          canvas.freeDrawingBrush.color = 'black';
+        }
+        canvas.on('path:created', (options) => {
+          this.refreshMask();
+        });
+        break;
 
-    });
+      default:
+        break;
+    }
+    // this.refreshMask();
+    // });
   }
 
   ngOnDestroy() {

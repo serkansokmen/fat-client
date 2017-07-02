@@ -49,7 +49,7 @@ import { NudityCheckComponent } from './components/annotate/nudity-check/nudity-
 import { ObjectXComponent } from './components/annotate/object-x/object-x.component';
 import { AttributesComponent } from './components/annotate/attributes/attributes.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import { NavigationComponent } from './components/annotate/navigation/navigation.component';
+import { AnnotateStepsComponent } from './components/annotate/annotate-steps/annotate-steps.component';
 import { AnnotateComponent } from './components/annotate/annotate.component';
 
 
@@ -65,7 +65,7 @@ import { AnnotateComponent } from './components/annotate/annotate.component';
     NudityCheckComponent,
     ObjectXComponent,
     AttributesComponent,
-    NavigationComponent,
+    AnnotateStepsComponent,
     AnnotateComponent,
   ],
   imports: [

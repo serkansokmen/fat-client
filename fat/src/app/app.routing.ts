@@ -13,13 +13,8 @@ const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'search', component: SearchComponent, canActivate: [AuthGuard] },
     { path: 'annotate', canActivate: [AuthGuard], component: AnnotateComponent},
-    {
-      path: 'annotate',
-      canActivate: [AuthGuard],
-      component: AnnotateComponent,
+    { path: 'annotate/:id', canActivate: [AuthGuard], component: AnnotateComponent,
       children: [{
-        path: ':id', children: []
-      }, {
         path: 'step-1',
         component: SkinPixelsRegionsComponent
       }, {

@@ -1,9 +1,15 @@
-<fat-navigation [items]="(state$ | async)?.navItems"></fat-navigation>
+<fat-annotate-steps *ngIf="(state$ | async)?.selectedImage" [items]="(state$ | async)?.navItems"></fat-annotate-steps>
 <div class="content" [class.is-loading]="(state$ | async)?.isRequesting">
+  <div *ngIf="(state$ | async)?.previous">
+    <button md-button>{{ (state$ | async)?.previous }}</button>
+  </div>
+  <div *ngIf="(state$ | async)?.previous">
+    <button md-button>{{ (state$ | async)?.previous }}</button>
+  </div>
   <div *ngIf="!(state$ | async)?.isRequesting && !(state$ | async)?.selectedImage" class="thumbnails">
     <fat-search-card *ngFor="let image of (state$ | async)?.images"
       [image]="image"
-      (click)="handleSelectImage(image)"
+      [routerLink]="['/annotate/' + image.id + '/step-1']"
       [thumbnailScale]="(cardLayout$ | async)?.thumbnailScale"
       [viewMode]="(cardLayout$ | async)?.currentViewMode"
       [style.width]="(cardLayout$ | async)?.currentViewMode?.id == 0 ? '100%' : (cardLayout$ | async)?.thumbnailScale + '%'"></fat-search-card>

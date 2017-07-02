@@ -8,6 +8,9 @@
     {{ item?.isDisabled }}
     {{ item?.label }} <md-icon fontSet="fontawesome" [fontIcon]="item?.iconName"></md-icon>
   </button>
+  <button md-raised-button [routerLink]="['/annotate']">
+    <md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon>
+  </button>
   <button md-raised-button (click)="saveImage()">
     Save <md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon>
   </button>
