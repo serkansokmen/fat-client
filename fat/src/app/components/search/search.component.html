@@ -64,7 +64,7 @@
         (input)="handleThumbnailScale($event)">
       </md-slider>
     </div>
-    <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No more results</div>
+    <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
     <div *ngIf="!(state$ | async)?.isRequesting" class="thumbnails" [style.flex-direction]="(cardLayout$ | async)?.currentViewMode.id == 0 ? 'row' : 'column'">
       <fat-search-card *ngFor="let image of (state$ | async)?.images"
         [image]="image"

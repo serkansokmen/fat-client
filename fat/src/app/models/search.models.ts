@@ -8,7 +8,7 @@ export class ImageState {
   static indeterminate = new ImageState(0, 'Indeterminate');
   static discarded = new ImageState(1, 'Discarded');
   static approved = new ImageState(2, 'Approved');
-  static processed = new ImageState(3, 'Processed');
+  static processed = new ImageState(3, 'Completed');
 
   static statesAvailable = [
     ImageState.discarded,

@@ -1,4 +1,14 @@
 <fat-navigation [items]="(state$ | async)?.navItems"></fat-navigation>
-<div class="container">
+<div class="content" [class.is-loading]="(state$ | async)?.isRequesting">
+  <div *ngIf="!(state$ | async)?.isRequesting && !(state$ | async)?.selectedImage" class="thumbnails">
+    <fat-search-card *ngFor="let image of (state$ | async)?.images"
+      [image]="image"
+      (click)="handleSelectImage(image)"
+      [thumbnailScale]="(cardLayout$ | async)?.thumbnailScale"
+      [viewMode]="(cardLayout$ | async)?.currentViewMode"
+      [style.width]="(cardLayout$ | async)?.currentViewMode?.id == 0 ? '100%' : (cardLayout$ | async)?.thumbnailScale + '%'"></fat-search-card>
+  </div>
+  <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
+  <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
   <router-outlet></router-outlet>
 </div>

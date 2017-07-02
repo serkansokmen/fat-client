@@ -1,0 +1,15 @@
+:host {
+  .thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+
+    fat-search-card {
+      break-inside: avoid;
+      width: 25%;
+    }
+  }
+}

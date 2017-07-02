@@ -12,8 +12,14 @@ import { AuthGuard } from './guards/auth.guard';
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'search', component: SearchComponent, canActivate: [AuthGuard] },
-    { path: 'search/:slug', component: SearchComponent, canActivate: [AuthGuard] },
-    { path: 'annotate', canActivate: [AuthGuard], component: AnnotateComponent, children: [{
+    { path: 'annotate', canActivate: [AuthGuard], component: AnnotateComponent},
+    {
+      path: 'annotate',
+      canActivate: [AuthGuard],
+      component: AnnotateComponent,
+      children: [{
+        path: ':id', children: []
+      }, {
         path: 'step-1',
         component: SkinPixelsRegionsComponent
       }, {
@@ -25,8 +31,8 @@ const appRoutes: Routes = [
       }, {
         path: 'step-4',
         component: AttributesComponent
-      }
-    ]},
+      }]
+    },
     { path: '404', component: PageNotFoundComponent },
     { path: '**', redirectTo: '/404' }
     // otherwise redirect to home

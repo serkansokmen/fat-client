@@ -44,10 +44,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.state$ = store.select('search');
     this.cardLayout$ = store.select('cardLayout');
     this.imageStates = [
-      { key: 'Discarded', value: 0 },
-      { key: 'Approved', value: 1 },
-      { key: 'Processed', value: 2 },
-      { key: 'Indeterminate', value: 3 },
+      { key: 'Indeterminate', value: 0 },
+      { key: 'Discarded', value: 1 },
+      { key: 'Approved', value: 2 },
+      { key: 'Completed', value: 3 },
     ];
     this.images = [];
     this.currentPage = 0;

@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from rest_framework import viewsets, parsers, views
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django_filters import rest_framework as filters
 from .models import Search, Image
 from .serializers import SearchSerializer, ImageSerializer
 
@@ -155,11 +156,20 @@ class SearchViewSet(viewsets.ModelViewSet):
     queryset = Search.objects.all()
 
 
+
 class ImageViewSet(viewsets.ModelViewSet):
 
-    serializer_class = ImageSerializer
     queryset = Image.objects.all()
-    # parser_classes = [parsers.FileUploadParser,]
+    serializer_class = ImageSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('state', 'license')
+
+    # def get_queryset(self):
+    #     queryset = Image.objects.all()
+    #     state = self.request.query_params.get('state', None)
+    #     if state is not None:
+    #         queryset = queryset.filter(state=Image.IMAGE_STATES[2][0])
+    #     return queryset
 
 
 class LicenseView(views.APIView):

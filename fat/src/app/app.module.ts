@@ -25,8 +25,12 @@ import { ImageService } from './services/image.service';
 
 // Actions
 import { SearchActions } from './actions/search.actions';
-import { SearchEffects } from './effects/search.effects';
+import { AnnotateActions } from './actions/annotate.actions';
 import { CardLayoutActions } from './actions/card-layout.actions';
+
+// Effects
+import { SearchEffects } from './effects/search.effects';
+import { AnnotateEffects } from './effects/annotate.effects';
 
 // Reducers
 import { searchReducer } from './reducers/search.reducer';
@@ -84,6 +88,7 @@ import { AnnotateComponent } from './components/annotate/annotate.component';
     }),
     RouterStoreModule.connectRouter(),
     EffectsModule.runAfterBootstrap(SearchEffects),
+    EffectsModule.runAfterBootstrap(AnnotateEffects),
     StoreDevtoolsModule.instrumentOnlyWithExtension()
   ],
   providers: [
@@ -92,8 +97,9 @@ import { AnnotateComponent } from './components/annotate/annotate.component';
     SearchActions,
     FlickrService,
     CookieService,
-    CardLayoutActions,
     ImageService,
+    AnnotateActions,
+    CardLayoutActions,
   ],
   bootstrap: [AppComponent]
 })
