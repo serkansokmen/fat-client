@@ -1,22 +1,22 @@
 import requests
 from django.conf import settings
 from rest_framework import serializers, permissions, response
-from .models import FlickrSearch, FlickrImage
+from .models import Search, Image
 
 
-class FlickrImageSerializer(serializers.ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
 
-    state = serializers.ChoiceField(choices=FlickrImage.IMAGE_STATES, allow_null=True)
+    state = serializers.ChoiceField(choices=Image.IMAGE_STATES, allow_null=True)
 
     def create(self, validated_data):
         state_val = validated_data.pop('state', '')
         if state_val is not None:
-            state = FlickrImage.IMAGE_STATES[state_val]
-        return FlickrImage.objects.create(**validated_data, state=state)
+            state = Image.IMAGE_STATES[state_val]
+        return Image.objects.create(**validated_data, state=state)
 
     class Meta:
-        model = FlickrImage
-        queryset = FlickrImage.objects.all()
+        model = Image
+        queryset = Image.objects.all()
         fields = ('id', 'secret', 'title',
             'owner', 'secret', 'server', 'farm',
             'license', 'tags',
@@ -26,29 +26,29 @@ class FlickrImageSerializer(serializers.ModelSerializer):
         read_only_fields = ('image',)
 
 
-class FlickrSearchSerializer(serializers.ModelSerializer):
+class SearchSerializer(serializers.ModelSerializer):
 
-    licenses = serializers.MultipleChoiceField(choices=FlickrImage.LICENSES, allow_blank=True)
-    tag_mode = serializers.ChoiceField(choices=FlickrSearch.TAG_MODES, allow_blank=False, default=FlickrSearch.TAG_MODES[0])
-    images = FlickrImageSerializer(many=True)
+    licenses = serializers.MultipleChoiceField(choices=Image.LICENSES, allow_blank=True)
+    tag_mode = serializers.ChoiceField(choices=Search.TAG_MODES, allow_blank=False, default=Search.TAG_MODES[0])
+    images = ImageSerializer(many=True)
 
     class Meta:
-        model = FlickrSearch
+        model = Search
         fields = ('id', 'tags', 'tag_mode', 'user_id', 'licenses', 'images')
         read_only_fields = ('created_at', 'updated_at')
         depth = 1
 
     def create(self, validated_data):
         images_data = validated_data.pop('images')
-        (instance, created) = FlickrSearch.objects.get_or_create(**validated_data)
+        (instance, created) = Search.objects.get_or_create(**validated_data)
         for image_data in images_data:
-            (image, created) = FlickrImage.objects.get_or_create(**image_data)
-            if image_data.get('state') != FlickrImage.IMAGE_STATES[1][0] and image not in instance.images.all():
+            (image, created) = Image.objects.get_or_create(**image_data)
+            if image_data.get('state') != Image.IMAGE_STATES[1][0] and image not in instance.images.all():
                 instance.images.add(image)
         return instance
 
         # for image in validated_data.get('images'):
-        #     image, created = FlickrImage.objects.get_or_create(
+        #     image, created = Image.objects.get_or_create(
         #         id=photo.get('id'),
         #         title=photo.get('title'),
         #         owner=photo.get('owner'),
@@ -67,7 +67,7 @@ class FlickrSearchSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         images_data = validated_data.pop('images')
         for image_data in images_data:
-            (image, created) = FlickrImage.objects.get_or_create(**image_data)
-            if image_data.get('state') != FlickrImage.IMAGE_STATES[1][0] and image not in instance.images.all():
+            (image, created) = Image.objects.get_or_create(**image_data)
+            if image_data.get('state') != Image.IMAGE_STATES[1][0] and image not in instance.images.all():
                 instance.images.add(image)
         return instance

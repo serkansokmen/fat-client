@@ -7,8 +7,8 @@ from django.http import JsonResponse
 from rest_framework import viewsets, parsers, views
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import FlickrSearch, FlickrImage
-from .serializers import FlickrSearchSerializer, FlickrImageSerializer
+from .models import Search, Image
+from .serializers import SearchSerializer, ImageSerializer
 
 
 def make_search_query(request, page=1):
@@ -64,10 +64,10 @@ def make_search_query(request, page=1):
             'isfriend': photo_data['isfriend'],
             'isfamily': photo_data['isfamily'],
             'state': {
-                'value': FlickrImage.IMAGE_STATES[0][0],
-                'label': FlickrImage.IMAGE_STATES[0][1],
+                'value': Image.IMAGE_STATES[0][0],
+                'label': Image.IMAGE_STATES[0][1],
             }
-        } for photo_data in data['photo'] if FlickrImage.objects.filter(id=photo_data['id']).count() == 0 ]
+        } for photo_data in data['photo'] if Image.objects.filter(id=photo_data['id']).count() == 0 ]
 
         flickr_pages = int(data['pages'])
         flickr_page = int(data['page'])
@@ -84,14 +84,14 @@ def make_search_query(request, page=1):
 
         else:
             try:
-                search = FlickrSearch.objects.get(tags=tags)
-            except FlickrSearch.DoesNotExist:
-                search = FlickrSearch.objects.create(
+                search = Search.objects.get(tags=tags)
+            except Search.DoesNotExist:
+                search = Search.objects.create(
                     tags=tags,
                     tag_mode=tag_mode,
                     licenses=licenses,
                     user_id=user_id)
-            search_serializer = FlickrSearchSerializer(search)
+            search_serializer = SearchSerializer(search)
             return Response({
                 'total': flickr_total - search.images.count(),
                 'search': search_serializer.data,
@@ -102,7 +102,7 @@ def make_search_query(request, page=1):
 
 
 @api_view(['GET', 'POST', 'PUT'])
-def search_flickr(request):
+def flickr(request):
 
     if request.method == 'GET':
         # return make_search_query(request,
@@ -117,11 +117,11 @@ def search_flickr(request):
             return Response({'message': 'Some images are required'})
 
         response = make_search_query(request)
-        search = FlickrSearch.objects.get(id=response.data.get('search')['id'])
+        search = Search.objects.get(id=response.data.get('search')['id'])
 
         for image_data in images_data:
-            (image, created) = FlickrImage.objects.get_or_create(**image_data)
-            if image_data.get('state') != FlickrImage.IMAGE_STATES[1][0] and search.images.filter(id=image.id).count() == 0:
+            (image, created) = Image.objects.get_or_create(**image_data)
+            if image_data.get('state') != Image.IMAGE_STATES[1][0] and search.images.filter(id=image.id).count() == 0:
                 search.images.add(image)
         search.save()
 
@@ -134,39 +134,39 @@ def search_flickr(request):
     return Response({'message': 'GET or POST required'})
 
 
-class FlickrSearchQueryView(views.APIView):
+class SearchQueryView(views.APIView):
 
     def post(self, request, format=None):
-        # search, created = FlickrSearch.objects.get_or_create(tags=request.data['tags'])
+        # search, created = Search.objects.get_or_create(tags=request.data['tags'])
         # if created:
         #     pass
         # else:
         #     pass
-        serializer = FlickrSearchSerializer(data=request.data)
+        serializer = SearchSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FlickrSearchViewSet(viewsets.ModelViewSet):
+class SearchViewSet(viewsets.ModelViewSet):
 
-    serializer_class = FlickrSearchSerializer
-    queryset = FlickrSearch.objects.all()
+    serializer_class = SearchSerializer
+    queryset = Search.objects.all()
 
 
-class FlickrImageViewSet(viewsets.ModelViewSet):
+class ImageViewSet(viewsets.ModelViewSet):
 
-    serializer_class = FlickrImageSerializer
-    queryset = FlickrImage.objects.all()
+    serializer_class = ImageSerializer
+    queryset = Image.objects.all()
     # parser_classes = [parsers.FileUploadParser,]
 
 
-class FlickrLicenseView(views.APIView):
+class LicenseView(views.APIView):
 
     def get(self, request, format=None):
         return Response([{
             'id': license[0],
             'name': license[1],
-        } for license in FlickrImage.LICENSES])
+        } for license in Image.LICENSES])
 

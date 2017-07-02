@@ -7,18 +7,18 @@ from django.template.loader import render_to_string
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from sorl.thumbnail.admin import AdminImageMixin
-from .models import FlickrSearch, FlickrImage
+from .models import Search, Image
 
 
-class FlickrImageAdmin(AdminImageMixin, admin.ModelAdmin):
+class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
     list_display = ('image_tag', 'id', 'secret', 'license', 'tags', 'search')
     list_filter = ('state', 'license', 'owner',
         'ispublic', 'isfriend', 'isfamily')
     readonly_fields = ('image_tag', 'ispublic', 'isfriend', 'isfamily')
-admin.site.register(FlickrImage, FlickrImageAdmin)
+admin.site.register(Image, ImageAdmin)
 
 
-class FlickrSearchAdmin(admin.ModelAdmin):
+class SearchAdmin(admin.ModelAdmin):
     list_display = ('image_count', 'tags', 'tag_mode', 'user_id')
     list_display_links = ('tags',)
     list_filter = ('tag_mode', 'user_id', 'created_at', 'updated_at',)
@@ -29,4 +29,4 @@ class FlickrSearchAdmin(admin.ModelAdmin):
     def image_count(self, obj):
         return obj.images.count()
     image_count.short_description = _('Image count')
-admin.site.register(FlickrSearch, FlickrSearchAdmin)
+admin.site.register(Search, SearchAdmin)

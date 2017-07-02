@@ -10,7 +10,7 @@ from sorl.thumbnail import ImageField
 from multiselectfield import MultiSelectField
 
 
-class FlickrImage(models.Model):
+class Image(models.Model):
 
     IMAGE_STATES = (
         (0, _('Indeterminate')),
@@ -52,8 +52,8 @@ class FlickrImage(models.Model):
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     class Meta:
-        verbose_name = _('Flickr image')
-        verbose_name_plural = _('Flickr images')
+        verbose_name = _('Image')
+        verbose_name_plural = _('Images')
         get_latest_by = 'updated_at'
         ordering = ['state', '-created_at', '-updated_at',]
 
@@ -76,7 +76,7 @@ class FlickrImage(models.Model):
     image_tag.allow_tags = True
 
 
-class FlickrSearch(models.Model):
+class Search(models.Model):
 
     TAG_MODES = (
         ('all', 'AND'),
@@ -90,12 +90,12 @@ class FlickrSearch(models.Model):
     user_id = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
-    licenses = MultiSelectField(max_length=20, choices=FlickrImage.LICENSES)
-    images = models.ManyToManyField(FlickrImage, related_name='search', blank=True)
+    licenses = MultiSelectField(max_length=20, choices=Image.LICENSES)
+    images = models.ManyToManyField(Image, related_name='search', blank=True)
 
     class Meta:
-        verbose_name = _('Flickr search')
-        verbose_name_plural = _('Flickr searches')
+        verbose_name = _('Search')
+        verbose_name_plural = _('Searches')
         get_latest_by = 'updated_at'
         ordering = ['-created_at', '-updated_at']
 
@@ -103,13 +103,13 @@ class FlickrSearch(models.Model):
         return '{}'.format(self.tags)
 
 
-@receiver(post_delete, sender=FlickrSearch)
+@receiver(post_delete, sender=Search)
 def clean_search_images(sender, instance, **kwargs):
-    for image in FlickrImage.objects.all():
-        if image.search.count() == 0 and image.state == FlickrImage.IMAGE_STATES[0][0]:
+    for image in Image.objects.all():
+        if image.search.count() == 0 and image.state == Image.IMAGE_STATES[0][0]:
             image.delete()
 
-# @receiver(post_save, sender=FlickrImage)
+# @receiver(post_save, sender=Image)
 # def flickr_image_post_save(sender, instance, **kwargs):
 #     img_id = instance.id
 #     img_url = instance.get_flickr_url()
