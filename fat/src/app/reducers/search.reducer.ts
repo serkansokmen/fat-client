@@ -38,6 +38,12 @@ export function searchReducer(state: SearchState = initialState, action: Action)
 
   switch (action.type) {
 
+    case SearchActions.SET_PER_PAGE:
+      return {
+        ...state,
+        perpage: action.payload.perpage
+      };
+
     case SearchActions.REQUEST_SEARCH:
       return {
         ...state,

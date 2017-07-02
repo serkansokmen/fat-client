@@ -29,8 +29,12 @@
         </md-expansion-panel>
       </div>
       <p class="pagination-label" [innerHTML]="(state$ | async)?.isRequesting ? 'Loading...' : (state$ | async)?.total + ' total results'"></p>
-      <md-input-container>
-        <input [autocomplete]="false" mdInput formControlName="perpage" type="number" [max]="100" placeholder="How many per page?"/>
+      <md-input-container [dividerColor]="(state$ | async)?.perpage > maxPerPage ? 'warn' : 'primary'">
+        <input mdInput
+          (keyup.enter)="handlePerpageKeypress($event)" [autocomplete]="false" formControlName="perpage"
+          type="number"
+          [value]="(state$ | async)?.perpage"
+          [placeholder]="'How many per batch? (max 100)'"/>
       </md-input-container>
       <!-- <md-input-container>
         <input [autocomplete]="false" mdInput formControlName="page"

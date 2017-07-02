@@ -30,6 +30,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   form: FormGroup;
   currentPage: number;
   currentPerPage: number;
+  maxPerPage: number = 100;
 
   private sub: any;
 
@@ -61,8 +62,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       tags: ['train, child, -drawing, -sketch', Validators.required],
       userID: [''],
       tagMode: ['all', Validators.required],
-      perpage: [10, Validators.required],
-      page: [1, Validators.required],
+      perpage: [10, Validators.required]
     });
 
     this.state$.subscribe(state => {
@@ -70,7 +70,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.images = state.images;
       this.currentPerPage = state.perpage;
 
-      if (state.search.id != this.form.value.id) {
+      if (state.search && state.search.id != this.form.value.id) {
         this.form.patchValue(state.search);
       }
     });
@@ -127,6 +127,15 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   handleViewMode(event) {
     this.store.dispatch(this.cardLayoutActions.selectViewMode(event.value));
+  }
+
+  handlePerpageKeypress(event) {
+    event.preventDefault();
+    let perpage = parseInt(event.target.value, 10);
+    if (event.keyCode == 13 && perpage > this.maxPerPage) {
+      perpage = this.maxPerPage;
+    }
+    this.store.dispatch(this.searchActions.setPerpage(perpage));
   }
 
   handleDiscardAll(event) {

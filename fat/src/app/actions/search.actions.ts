@@ -6,6 +6,16 @@ import { Image, License } from '../models/search.models';
 @Injectable()
 export class SearchActions {
 
+  static SET_PER_PAGE = '[Search] Set Per Page';
+  setPerpage(perpage: number): Action {
+    return {
+      type: SearchActions.SET_PER_PAGE,
+      payload: {
+        perpage
+      }
+    }
+  }
+
   static REQUEST_SEARCH = '[Search] Request Search';
   requestSearch(search: any, licenses: License[], perpage: number): Action {
     return {

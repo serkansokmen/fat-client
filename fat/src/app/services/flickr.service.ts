@@ -33,7 +33,7 @@ export class FlickrService {
     let url = `${this.endpoint}flickr/` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
       `${search.userID ? '&user_id=' + search.userID : ''}` +
-      `&tags=${search.tags}` +
+      `&tags=${search.tags.split(',').map(str => str.trim()).join(',')}` +
       `&tag_mode=${search.tagMode}`;
     return this.http.get(url, this.jwt())
       .map((response: Response) => response.json())
@@ -48,7 +48,7 @@ export class FlickrService {
 
   saveSearch(search: any, images: Image[], licenses: License[]) {
     let body = JSON.stringify({
-      tags: search.tags,
+      tags: search.tags.split(',').map(str => str.trim()).join(','),
       tag_mode: search.tagMode,
       user_id: search.userID || null,
       licenses: licenses.map(license => license.id),
