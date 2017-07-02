@@ -1,2 +1,4 @@
-## Flickr Search Tool
-0.0.0
+## fat
+
+Flickr search and annotation tool
+0.0.1
