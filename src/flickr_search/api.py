@@ -12,7 +12,7 @@ from .serializers import FlickrSearchSerializer, FlickrImageSerializer
 
 
 def make_search_query(request, page=1):
-    per_page = request.GET.get('per_page', '20')
+    per_page = request.GET.get('per_page', 500)
     tags = request.GET.get('tags', '')
     tag_mode = request.GET.get('tag_mode', 'all')
     licenses = request.GET.get('licenses')
@@ -38,7 +38,7 @@ def make_search_query(request, page=1):
         data = req.json()['photos']
         images = [{
             # 'id': photo_data['id'],
-            'flickr_id': photo_data['id'],
+            'id': photo_data['id'],
             'title': photo_data['title'],
             'owner': photo_data['owner'],
             'secret': photo_data['secret'],
@@ -49,17 +49,29 @@ def make_search_query(request, page=1):
             'ispublic': photo_data['ispublic'],
             'isfriend': photo_data['isfriend'],
             'isfamily': photo_data['isfamily'],
-        } for photo_data in data['photo'] if FlickrImage.objects.filter(flickr_id=photo_data['id']).count() == 0 ]
+            'state': {
+                'value': FlickrImage.IMAGE_STATES[0][0],
+                'label': FlickrImage.IMAGE_STATES[0][1],
+            }
+        } for photo_data in data['photo'] if FlickrImage.objects.filter(id=photo_data['id']).count() == 0 ]
 
         pages = int(data['pages'])
         page = int(data['page'])
         per_page = int(per_page)
 
-        if (len(images) == 0 and len(images) < per_page) and pages > page:
+        # loop = False
+        if ((len(images) == 0 and len(images) < per_page) and pages > page):
             return make_search_query(request, page=page+1)
         else:
-            search_serializer = FlickrSearchSerializer(data=request.GET)
-            print(search_serializer.initial_data)
+            # search_serializer = FlickrSearchSerializer(data=request.GET)
+            try:
+                search = FlickrSearch.objects.get(tags=tags)
+            except FlickrSearch.DoesNotExist:
+                search = None
+            if search is not None:
+                search_serializer = FlickrSearchSerializer(search)
+            else:
+                search_serializer = FlickrSearchSerializer(data=request.GET)
             # FlickrSearchSerializer(data={
             #         'tags': tags,
             #         'tag_mode': tag_mode,
@@ -68,27 +80,55 @@ def make_search_query(request, page=1):
             # search, created = FlickrSearch.objects.get_or_create(tags__iexact=tags)
 
             return Response({
-                'page': data['page'],
-                'pages': data['pages'],
-                'perpage': data['perpage'],
                 'total': data['total'],
-                'search': search_serializer.initial_data,
+                'search': search_serializer.data if search is not None else search_serializer.initial_data,
                 'images': images
             })
     else:
         return Response({'message': 'No results'})
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PUT'])
 def search_flickr(request):
+
     if request.method == 'GET':
-        return make_search_query(request,
-            page=int(request.GET.get('page', 1)))
+        # return make_search_query(request,
+        #     page=int(request.GET.get('page', 1)))
+        return make_search_query(request, page=1)
+
     elif request.method == 'POST':
-        return Response({'request_type': 'post'})
-    return Response({
-        'message': 'GET or POST required'
-        })
+
+        (search, created) = FlickrSearch.objects.get_or_create(request.data)
+        images_data = request.data.get('images', None)
+
+        if images_data is None:
+            return Response({'message': 'Some images are required'})
+
+        for image_data in images_data:
+            (image, created) = FlickrImage.objects.get_or_create(**image_data)
+            if image_data.get('state') != FlickrImage.IMAGE_STATES[1][0] and image not in search.images.all():
+                search.images.add(image)
+
+        search.save()
+        return make_search_query(request, page=1)
+
+    elif request.method == 'PUT':
+
+        (search, created) = FlickrSearch.objects.get_or_create(request.data)
+        images_data = request.data.get('images', None)
+
+        if images_data is None:
+            return Response({'message': 'Some images are required'})
+
+        for image_data in images_data:
+            (image, created) = FlickrImage.objects.get_or_create(**image_data)
+            if image_data.get('state') != FlickrImage.IMAGE_STATES[1][0] and image not in search.images.all():
+                search.images.add(image)
+
+        search.save()
+        return make_search_query(request, page=1)
+
+    return Response({'message': 'GET or POST required'})
 
 
 class FlickrSearchQueryView(views.APIView):

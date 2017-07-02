@@ -26,7 +26,7 @@ urlpatterns += [
     url(r'^auth/', include('rest_auth.urls')),
     url(r'^api/v1/licenses/', flickr_search_api.FlickrLicenseView.as_view()),
     url(r'^api/v1/schema/$', schema_view),
-    url(r'^api/v1/search-flickr/', search_flickr, name='search_flickr'),
+    url(r'^api/v1/flickr/', search_flickr, name='search_flickr'),
     url(r'^$', TemplateView.as_view(template_name='flickr_search/app.html')),
     url(r'^flickr_search/', include('flickr_search.urls')),
 ]

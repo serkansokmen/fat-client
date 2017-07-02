@@ -1,41 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Search, Image, License } from '../models/search.models';
+import { Image, License } from '../models/search.models';
 
 
 @Injectable()
 export class SearchActions {
 
-  static REQUEST_PAGE = '[Search] Set Page';
-  requestPage(page: number): Action {
-    return {
-      type: SearchActions.REQUEST_PAGE,
-      payload: {
-        page
-      }
-    }
-  }
-
   static REQUEST_SEARCH = '[Search] Request Search';
-  requestSearch(search: Search, licenses: License[], perpage: number, page: number): Action {
+  requestSearch(search: any, licenses: License[], perpage: number): Action {
     return {
       type: SearchActions.REQUEST_SEARCH,
       payload: {
         search,
         licenses,
-        perpage,
-        page
+        perpage
       }
     }
   }
 
   static REQUEST_SEARCH_COMPLETE = '[Search] Request Search Complete';
-  requestSearchComplete(search: Search, images: Image[]): Action {
+  requestSearchComplete(search: any, results: Image[]): Action {
     return {
       type: SearchActions.REQUEST_SEARCH_COMPLETE,
       payload: {
         search,
-        images
+        results
       }
     }
   }
@@ -70,18 +59,8 @@ export class SearchActions {
     }
   }
 
-  static REQUEST_SEARCH_PAGE = '[Search] Search Set Page';
-  setSearchPage(page: number): Action {
-    return {
-      type: SearchActions.REQUEST_SEARCH,
-      payload: {
-        page
-      }
-    }
-  }
-
   static SAVE_SEARCH = '[Search] Save Search';
-  saveSearch(search: Search, images: Image[], licenses: License[]): Action {
+  saveSearch(search: any, images: Image[], licenses: License[]): Action {
     return {
       type: SearchActions.SAVE_SEARCH,
       payload: {
@@ -93,13 +72,12 @@ export class SearchActions {
   }
 
   static SAVE_SEARCH_COMPLETE = '[Search] Save Search Complete';
-  saveSearchComplete(search: Search, images: Image[], page: number): Action {
+  saveSearchComplete(search: any, newImages: Image[], page: number): Action {
     return {
       type: SearchActions.SAVE_SEARCH_COMPLETE,
       payload: {
         search,
-        images,
-        page
+        newImages
       }
     }
   }

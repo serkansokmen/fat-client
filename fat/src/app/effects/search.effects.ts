@@ -1,20 +1,32 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Action } from '@ngrx/store';
+import { Router } from '@angular/router';
+import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, toPayload } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import { Search, Image, License } from '../models/search.models';
+import { Image, License, ImageState } from '../models/search.models';
 import { SearchActions } from '../actions/search.actions';
 import { FlickrService } from '../services/flickr.service';
-
+import { SearchState } from '../reducers/search.reducer';
+import 'rxjs/add/operator/withLatestFrom';
 
 @Injectable()
 export class SearchEffects {
   constructor(
     private http: Http,
     private actions$: Actions,
-    private service: FlickrService
+    private store: Store<SearchState>,
+    private service: FlickrService,
+    private router: Router,
   ) { }
+
+  @Effect() errorStatus401$ = this.actions$
+    .map(action => action.payload)
+    .filter(payload => payload && payload.errorStatus === 401)
+    .switchMap(payload => {
+        this.router.navigate(['/login']);
+        return Observable.empty();
+    });
 
   @Effect() searchPage$ = this.actions$
     .ofType(SearchActions.REQUEST_SEARCH)
@@ -22,18 +34,16 @@ export class SearchEffects {
     .switchMap(payload => this.service.search(
       payload.search,
       payload.licenses,
-      payload.perpage,
-      payload.page))
+      payload.perpage))
     .switchMap(result => {
       return Observable.of({
         type: SearchActions.REQUEST_SEARCH_COMPLETE,
         payload: {
           pages: result.pages,
-          page: result.page,
           perpage: result.perpage,
           total: result.total,
-          search_id: result.search_id,
-          images: result.images.map(data => new Image(data))
+          search: result.search,
+          results: result.images
         }
       })
     });
@@ -46,8 +56,8 @@ export class SearchEffects {
       return Observable.of({
         type: SearchActions.SAVE_SEARCH_COMPLETE,
         payload: {
-          search: new Search(result),
-          images: result.images.map(data => new Image(data))
+          search: result,
+          newImages: result.images ? result.images.map(data => new Image(data)) : []
         }
       })
     });
