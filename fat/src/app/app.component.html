@@ -1,1 +1,28 @@
-<router-outlet></router-outlet>
+<md-toolbar color="primary">
+  <button *ngIf="isLoggedIn()" md-mini-fab (click)="sidenav.toggle()">
+    <md-icon>more_horizontal</md-icon>
+  </button>
+  <span class="spacer"></span>
+  <span>FAT - Flickr Annotation Tool</span>
+  <button *ngIf="isLoggedIn()" [style.margin-left]="'20px'" md-button (click)="logout($event)"><md-icon>exit_to_app</md-icon> Logout</button>
+</md-toolbar>
+
+<md-sidenav-container>
+  <md-sidenav #sidenav mode="over" opened="true">
+    <div *ngIf="!isLoggedIn()">
+      <a [routerLink]="['/login']">Login</a>
+      <br>
+    </div>
+    <div *ngIf="isLoggedIn()">
+      Modules
+      <br>
+      <a [routerLink]="['/search']">Search</a>
+      <br>
+      <a [routerLink]="['/annotate/step-1']">Annotate</a>
+      <br>
+      <a [routerLink]="['/review']" disabled="disabled">Review</a>
+    </div>
+  </md-sidenav>
+
+  <router-outlet></router-outlet>
+</md-sidenav-container>

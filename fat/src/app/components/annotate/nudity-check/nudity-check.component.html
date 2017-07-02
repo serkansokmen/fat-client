@@ -1,0 +1,28 @@
+<md-card>
+  <md-card-title>
+    <h1>Step 2: Semantic Nudity Percentage</h1>
+  </md-card-title>
+  <md-card-content>
+    <div class="row">
+      <div class="col-xs-12 col-sm-3">
+        <hr>
+        <div *ngFor="let type of (state$ | async).checkTypes">
+          <md-checkbox [checked]="type?.isActive" (change)="store.dispatch(actions.toggleTypeActive(type))">
+          </md-checkbox>
+          <span>{{ type?.label }}</span>
+          <md-slider thumbLabel
+            (change)="store.dispatch(actions.setWeight(type, $event.value))"
+            [disabled]="!type?.isActive"
+            [value]="type?.weight" min="0" max="100"></md-slider>
+          <hr>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-9">
+        <div class="draw-view">
+          <img src="https://c1.staticflickr.com/6/5595/14907092716_3223a57239_b.jpg"/>
+        </div>
+      </div>
+    </div>
+
+  </md-card-content>
+</md-card>

@@ -1,12 +1,3 @@
-<md-toolbar color="primary">
-  <button md-mini-fab (click)="sidenav.toggle()">
-    <md-icon>more_horizontal</md-icon>
-  </button>
-  <span class="spacer"></span>
-  <span>Flickr Search Tool</span>
-  <button [style.margin-left]="'20px'" md-button (click)="logout($event)"><md-icon>exit_to_app</md-icon> Logout</button>
-</md-toolbar>
-
 <md-sidenav-container>
   <md-sidenav #sidenav mode="side" opened="true">
     <form [formGroup]="form" (ngSubmit)="handleSearch($event)" novalidate>
@@ -75,11 +66,11 @@
     </div>
     <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No more results</div>
     <div *ngIf="!(state$ | async)?.isRequesting" class="thumbnails" [style.flex-direction]="(cardLayout$ | async)?.currentViewMode.id == 0 ? 'row' : 'column'">
-      <fls-search-card *ngFor="let image of (state$ | async)?.images"
+      <fat-search-card *ngFor="let image of (state$ | async)?.images"
         [image]="image"
         [thumbnailScale]="(cardLayout$ | async)?.thumbnailScale"
         [viewMode]="(cardLayout$ | async)?.currentViewMode"
-        [style.width]="(cardLayout$ | async)?.currentViewMode?.id == 0 ? '100%' : (cardLayout$ | async)?.thumbnailScale + '%'"></fls-search-card>
+        [style.width]="(cardLayout$ | async)?.currentViewMode?.id == 0 ? '100%' : (cardLayout$ | async)?.thumbnailScale + '%'"></fat-search-card>
     </div>
   </div>
 </md-sidenav-container>

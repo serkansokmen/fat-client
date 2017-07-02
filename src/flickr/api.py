@@ -13,7 +13,6 @@ from .serializers import SearchSerializer, ImageSerializer
 
 def make_search_query(request, page=1):
 
-    flickr_per_page = 500
 
     req_data = request.GET if request.method == 'GET' else request.data
     tags = req_data.get('tags', None)
@@ -21,6 +20,7 @@ def make_search_query(request, page=1):
     licenses = req_data.get('licenses')
     user_id = req_data.get('user_id')
     per_page = int(req_data.get('per_page', '10'))
+    flickr_per_page =  req_data.get('perpage', 500)
 
     if tags is None:
         return Response({

@@ -1,21 +1,20 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { AuthenticationService } from '../authentication.service';
-import { FlickrService } from '../services/flickr.service';
+import { FlickrService } from '../../services/flickr.service';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { SearchState } from '../reducers/search.reducer';
-import { SearchActions } from '../actions/search.actions';
-import { Image, License, ImageState } from '../models/search.models';
-import { CardLayoutActions } from '../actions/card-layout.actions';
-import { CardLayoutState } from '../reducers/card-layout.reducer';
-import { ViewMode } from '../models/card-layout.models';
-import { maxValue } from '../validators/max-value.validator';
+import { SearchState } from '../../reducers/search.reducer';
+import { SearchActions } from '../../actions/search.actions';
+import { Image, License, ImageState } from '../../models/search.models';
+import { CardLayoutActions } from '../../actions/card-layout.actions';
+import { CardLayoutState } from '../../reducers/card-layout.reducer';
+import { ViewMode } from '../../models/card-layout.models';
+import { maxValue } from '../../validators/max-value.validator';
 
 
 @Component({
-  selector: 'fls-search',
+  selector: 'fat-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -35,7 +34,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   private sub: any;
 
   constructor(
-    private authenticationService: AuthenticationService,
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -153,13 +151,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.form.value,
       this.images,
       this.selectedLicenses));
-  }
-
-  logout(event) {
-    this.authenticationService.logout()
-      .subscribe(result => {
-        this.router.navigate(['/login']);
-      });
   }
 
 }

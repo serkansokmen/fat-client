@@ -1,0 +1,15 @@
+<md-toolbar>
+  <!-- <button md-button (click)="sidenav.open()">Annotation Tool</button> -->
+  <!-- <button md-button [mdMenuTriggerFor]="appMenu">
+    Annotation Tool
+  </button> -->
+  <!-- <md-menu #appMenu="mdMenu"> -->
+  <button md-button *ngFor="let item of items" [routerLink]="item.routerLink" routerLinkActive="active">
+    {{ item?.isDisabled }}
+    {{ item?.label }} <md-icon fontSet="fontawesome" [fontIcon]="item?.iconName"></md-icon>
+  </button>
+  <button md-raised-button (click)="saveImage()">
+    Save <md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon>
+  </button>
+  <!-- </md-menu> -->
+</md-toolbar>

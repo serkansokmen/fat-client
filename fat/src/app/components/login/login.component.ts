@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthenticationService } from '../authentication.service';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
-  selector: 'fls-login',
+  selector: 'fat-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
       .subscribe(result => {
         if (result === true) {
           // login successful
-          this.router.navigate(['/']);
+          this.router.navigate(['/search']);
         } else {
           // login failed
           this.error = 'Username or password is incorrect';
