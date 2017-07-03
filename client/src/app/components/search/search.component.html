@@ -68,7 +68,10 @@
     <fat-card-list *ngIf="!(state$ | async)?.isRequesting"
       [images]="images"
       [viewMode]="(cardLayout$ | async)?.currentViewMode"
-      [cardScale]="(cardLayout$ | async)?.thumbnailScale"
+      [cardOptions]="{
+        cardScale: (cardLayout$ | async)?.thumbnailScale,
+        isActionsVisible: true
+      }"
       (onCardClick)="handleImageDiscarded($event)"></fat-card-list>
   </div>
 </md-sidenav-container>

@@ -70,6 +70,7 @@ export class Image {
   public isFriend: boolean;
   public isFamily: boolean;
   public state: ImageState;
+  public image: string;
 
   constructor(data: any) {
     this.id = data.id;
@@ -84,6 +85,7 @@ export class Image {
     this.isFriend = data.isFriend;
     this.isFamily = data.isFamily;
     this.state = data.state;
+    this.image = data.image;
   }
 
   toJSON(): any {
@@ -108,6 +110,7 @@ export class Image {
         isFriend: json.isfriend == 1 ? true : (json.ispublic == 0 ? false : null),
         isFamily: json.isfamily == 1 ? true : (json.ispublic == 0 ? false : null),
         state: json.state ? ImageState.getState(json.state) : ImageState.indeterminate,
+        image: json.image,
       });
     }
   }

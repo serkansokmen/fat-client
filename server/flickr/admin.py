@@ -26,7 +26,8 @@ def set_images_processed(modeladmin, request, queryset):
 set_images_processed.short_description = "Mark selected as `Completed`"
 
 class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
-    list_display = ('state', 'image_tag', 'id', 'secret', 'license', 'tags',)
+    list_display = ('image_tag', 'state', 'id', 'secret', 'license', 'tags',)
+    list_display_links = ('image_tag', 'id')
     list_filter = ('search', 'state', 'license', 'owner',
         'ispublic', 'isfriend', 'isfamily')
     readonly_fields = ('image_tag', 'ispublic', 'isfriend', 'isfamily')

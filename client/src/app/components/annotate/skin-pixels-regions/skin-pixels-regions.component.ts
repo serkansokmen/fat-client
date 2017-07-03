@@ -48,10 +48,16 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   @Output('image')
   imageEmitter = new EventEmitter<FlickrImage>();
 
+  private image: FlickrImage;
+
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
   @ViewChild('drawCanvas') drawCanvas: ElementRef;
   @ViewChild('bgCanvas') bgCanvas: ElementRef;
+
+  private foregroundCanvas: Canvas;
+  private backgroundCanvas: StaticCanvas;
+
   private context: CanvasRenderingContext2D;
   private subscription;
 
@@ -71,16 +77,17 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
 
     this.subscription = Observable.combineLatest(this.artboard$, this.annotate$,
       (artboard, annotate) => Observable.of({
-        artboard: artboard.value,
-        annotate: annotate.value
+        artboard,
+        annotate
       }))
       .subscribe((state: any) => {
-        console.log(this.artboard$, this.annotate$);
-        console.log(state.value);
-        // this.image = state.selectedImage;
-        // if (state.selectedImage && this.image.id != state.selectedImage.id) {
-        //   this.initCanvas();
-        // }
+        let annotateState = state.value.annotate;
+        let artboardState = state.value.artboard;
+        if (annotateState.selectedImage && (!this.image || this.image.id != annotateState.selectedImage.id)) {
+          this.image = annotateState.selectedImage;
+          this.initCanvas(this.image);
+          this.handleCanvasRefresh(artboardState);
+        }
       });
 
     // this.subscription = this.state$.subscribe((state: ArtboardState) => {
@@ -90,49 +97,47 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
     // });
   }
 
-  initCanvas(state?) {
+  initCanvas(image: FlickrImage) {
 
-    if (state.selectedImage == null) {
-      return;
-    }
-
-    var canvas: Canvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
+    this.foregroundCanvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
       // backgroundColor: 'white'
     });
-    canvas.clear();
-    canvas.isDrawingMode = true;
-    canvas.on('mouse:down', (options) => {
+    this.foregroundCanvas.clear();
+    this.foregroundCanvas.isDrawingMode = true;
+    this.foregroundCanvas.on('mouse:down', (options) => {
       this.refreshMask();
     });
-    this.context = canvas.getContext('2d');
+    this.context = this.foregroundCanvas.getContext('2d');
 
-    var bgCanvas: StaticCanvas = new fabric.StaticCanvas(this.bgCanvas.nativeElement, {
+    this.backgroundCanvas = new fabric.StaticCanvas(this.bgCanvas.nativeElement, {
       backgroundColor: 'black'
     });
 
-    fabric.Image.fromURL(Image.getImageURL(state.selectedImage), (img) => {
+    fabric.Image.fromURL(image.image, (img) => {
       img.lockRotation = true;
       img.lockUniScaling = true;
-      bgCanvas.setWidth(img.width)
-      bgCanvas.setHeight(img.height);
-      bgCanvas.setBackgroundImage(img);
-      bgCanvas.renderAll();
+      this.backgroundCanvas.setWidth(img.width)
+      this.backgroundCanvas.setHeight(img.height);
+      this.backgroundCanvas.setBackgroundImage(img);
+      this.backgroundCanvas.renderAll();
 
-      canvas.setWidth(img.width);
-      canvas.setHeight(img.height);
-    });
+      this.foregroundCanvas.setWidth(img.width);
+      this.foregroundCanvas.setHeight(img.height);
+    }, { crossOrigin: 'Anonymous' });
 
-    fabric.Image.fromURL(Image.getThumbnail(state.selectedImage), (img) => {
-      canvas.add(img);
+    fabric.Image.fromURL(image.image, (img) => {
+      this.foregroundCanvas.add(img);
       setTimeout(() => {
         this.refreshMask();
       });
-    });
+    }, { crossOrigin: 'Anonymous' });
+  }
 
+  handleCanvasRefresh(state: ArtboardState) {
     // this.zone.runOutsideAngular(() => {
-    canvas.setZoom(state.zoom);
-    bgCanvas.setZoom(state.zoom);
-    canvas.off('path:created');
+    this.foregroundCanvas.setZoom(state.zoom);
+    this.backgroundCanvas.setZoom(state.zoom);
+    this.foregroundCanvas.off('path:created');
     // canvas.off('mouse:up');
 
     // if (state.isDragging) {
@@ -147,7 +152,7 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
     //   });
     // }
 
-    canvas.isDrawingMode = state.currentTool != ArtboardTool.polygon;
+    this.foregroundCanvas.isDrawingMode = state.currentTool != ArtboardTool.polygon;
 
     switch (state.currentTool) {
 
@@ -155,9 +160,9 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
         break;
 
       case ArtboardTool.lasso:
-        canvas.freeDrawingBrush.color = 'rgba(0,255,0,1)';
-        canvas.freeDrawingBrush.width = 1.0;
-        canvas.on('path:created', (options) => {
+        this.foregroundCanvas.freeDrawingBrush.color = 'rgba(0,255,0,1)';
+        this.foregroundCanvas.freeDrawingBrush.width = 1.0;
+        this.foregroundCanvas.on('path:created', (options) => {
           // this.store.dispatch(this.artboardActions.lassoPathCreated(options.path));
           let path = options.path;
           path.lockRotation = true;
@@ -168,20 +173,20 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
           } else {
             path.set({ fill: 'black', stroke: 'transparent' });
           }
-          canvas.add(path);
+          this.foregroundCanvas.add(path);
           this.refreshMask();
         });
         break;
 
       case ArtboardTool.brush:
-        canvas.freeDrawingBrush.width = state.brushRadius;
+        this.foregroundCanvas.freeDrawingBrush.width = state.brushRadius;
         if (state.isAdding == true) {
-          canvas.freeDrawingBrush.color = 'rgba(0,255,0,150)';
-          canvas.set({ fill: 'transparent', stroke: 'rgba(0,255,0,150)' });
+          this.foregroundCanvas.freeDrawingBrush.color = 'rgba(0,255,0,150)';
+          this.foregroundCanvas.set({ fill: 'transparent', stroke: 'rgba(0,255,0,150)' });
         } else {
-          canvas.freeDrawingBrush.color = 'black';
+          this.foregroundCanvas.freeDrawingBrush.color = 'black';
         }
-        canvas.on('path:created', (options) => {
+        this.foregroundCanvas.on('path:created', (options) => {
           this.refreshMask();
         });
         break;
@@ -200,13 +205,13 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   refreshMask() {
     let imgData = this.context.getImageData(
       0, 0,
-      this.drawCanvas.nativeElement.width,
-      this.drawCanvas.nativeElement.height
+      this.foregroundCanvas.width,
+      this.foregroundCanvas.height
     );
     let pixels: Uint8ClampedArray = imgData.data;
     let resultData = this.imageService.analyzePixels(pixels,
-      this.drawCanvas.nativeElement.width,
-      this.drawCanvas.nativeElement.height);
+      this.foregroundCanvas.width,
+      this.foregroundCanvas.height);
     this.context.putImageData(resultData, 0, 0);
   }
 

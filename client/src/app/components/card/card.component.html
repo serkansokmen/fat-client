@@ -1,6 +1,7 @@
 <md-card [class.is-discarded]="image?.state?.value == 1"
   [ngClass]="viewMode?.containerClassName"
   [ngSwitch]="viewMode.id">
+
   <md-card-content (click)="handleImageClick(image)">
     <img md-card-image [src]="getImageURL(image)" [alt]="image.id" />
     <div class="meta" *ngSwitchCase="0">
@@ -14,7 +15,7 @@
     </button>
   </md-card-content>
 
-  <md-card-actions>
+  <md-card-actions *ngIf="isActionsVisible">
     <div *ngSwitchCase="1">
       <div class="meta" *ngIf="cardScale >= 50">
         <strong>Tags:</strong> {{ image.tags }} <br>

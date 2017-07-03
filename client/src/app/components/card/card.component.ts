@@ -16,6 +16,7 @@ export class CardComponent implements OnChanges {
   @Input() image: Image;
   @Input() viewMode: ViewMode;
   @Input() cardScale: number;
+  @Input() isActionsVisible: boolean;
 
   @HostBinding('style.width') cssThumbWidth: string;
 

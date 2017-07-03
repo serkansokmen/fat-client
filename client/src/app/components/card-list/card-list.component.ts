@@ -13,7 +13,7 @@ export class CardListComponent implements OnChanges {
   @HostBinding('style.flex-direction') direction = 'column';
 
   @Input() viewMode: ViewMode;
-  @Input() cardScale: number;
+  @Input() cardOptions: any;
   @Input() images: Image[];
 
   @Output('onCardClick')

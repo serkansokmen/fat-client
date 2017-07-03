@@ -2,10 +2,12 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { MdDialog, MdDialogRef } from '@angular/material';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
 import { Image, ImageState } from '../../models/search.models';
 import { ViewMode } from '../../models/card-layout.models';
+
 
 @Component({
   selector: 'fat-annotate',
@@ -21,6 +23,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   viewMode = ViewMode.thumbnails;
 
   constructor(
+    public dialog: MdDialog,
     public store: Store<AnnotateState>,
     private actions: AnnotateActions,
     private router: Router,
@@ -45,8 +48,12 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   }
 
   handleCardSelect(image: Image) {
-    this.store.dispatch(this.actions.selectImage(image));
-    this.router.navigate([`/annotate/${image.id}/step-1`]);
+    if (image.image) {
+      this.store.dispatch(this.actions.selectImage(image));
+      this.router.navigate([`/annotate/${image.id}/step-1`]);
+    } else {
+
+    }
   }
 
 }

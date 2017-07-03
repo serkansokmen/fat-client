@@ -2,4 +2,5 @@
   [image]="image"
   (onImageClick)="handleCardClick($event)"
   [viewMode]="viewMode"
-  [cardScale]="cardScale"></fat-card>
+  [cardScale]="cardOptions?.cardScale"
+  [isActionsVisible]="cardOptions?.isActionsVisible"></fat-card>
