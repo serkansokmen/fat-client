@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -9,7 +9,8 @@ import { Image, ImageState } from '../../models/search.models';
 @Component({
   selector: 'fat-annotate',
   templateUrl: './annotate.component.html',
-  styleUrls: ['./annotate.component.scss']
+  styleUrls: ['./annotate.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnotateComponent implements OnInit, OnDestroy {
 
@@ -29,15 +30,19 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.actions.requestImages(ImageState.approved));
     this.sub = this.route.params.subscribe(params => {
       if (params.id) {
-        this.store.dispatch(this.actions.requestImage(params.id));
+        // this.store.dispatch(this.actions.requestImage(params.id));
       } else {
-        this.store.dispatch(this.actions.selectImage(null));
+        // this.store.dispatch(this.actions.selectImage(null));
       }
     });
   }
 
   ngOnDestroy() {
     this.sub.unsubscribe();
+  }
+
+  handleCardSelect(image: Image) {
+    console.log(image);
   }
 
 }

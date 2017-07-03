@@ -60,25 +60,35 @@ export class SearchComponent implements OnInit, OnDestroy {
       tags: ['train, child, -drawing, -sketch', Validators.required],
       userID: [''],
       tagMode: ['all', Validators.required],
-      perpage: [10, Validators.required]
+      perpage: [10, Validators.required],
+      page: [1, Validators.required],
+      cursor: [0, Validators.required],
     });
 
     this.state$.subscribe(state => {
+      if (this.images != state.images && state.images.length == 0 && state.total > 0) {
+        this.handleSearch(null);
+      }
+
+      if (state.search && state.search.id != this.form.value.id) {
+        this.form.patchValue({
+          ...state.search,
+          cursor: (state.perpage * (state.page - 1)) * state.images.length
+        });
+      }
+
       this.selectedLicenses = state.selectedLicenses;
       this.images = state.images;
       this.currentPerPage = state.perpage;
 
-      if (state.search && state.search.id != this.form.value.id) {
-        this.form.patchValue(state.search);
-      }
     });
 
     // this.form.valueChanges
     //   .debounceTime(100)
     //   .subscribe(data => {
         // if (this.currentPage == data.page) return;
-        // if (this.currentPerPage == data.perPage) return;
-        // console.log(data.page, data.perPage);
+        // if (this.currentPerPage == data.perpage) return;
+        // console.log(data.page, data.perpage);
         // this.handleSearch(null);
     // });
 
@@ -96,6 +106,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
+  handleImageDiscarded(image) {
+    this.store.dispatch(this.searchActions.toggleImageDiscarded(image));
+  }
+
   handleSearch(event) {
     if (!this.form.value) {
       return;
@@ -104,7 +118,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.searchActions.requestSearch(
         this.form.value,
         this.selectedLicenses,
-        this.form.value.perpage));
+        this.form.value.perpage,
+        this.form.value.page,
+        this.form.value.cursor));
   }
 
   handleToggleLicense(license: License, isChecked: boolean) {

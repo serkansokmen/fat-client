@@ -27,16 +27,21 @@
           </div>
         </md-expansion-panel>
       </div>
-      <!-- <md-input-container>
+      <md-input-container>
         <input [autocomplete]="'off'" mdInput formControlName="page"
           [max]="(state$ | async)?.pages"
           [placeholder]="'Page ' + (state$ | async)?.page"
           [value]="(state$ | async)?.page" type="number"/>
-      </md-input-container> -->
+      </md-input-container>
+      <md-input-container>
+        <input [autocomplete]="'off'" mdInput formControlName="cursor"
+          placeholder="Cursor"
+          [value]="(state$ | async)?.cursor" type="number"/>
+      </md-input-container>
       <div class="form-controls">
-        <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon>search</md-icon> Search</button></p>
-        <p><button md-button color="accent" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon>remove_circle</md-icon> Discard all</button></p>
-        <p><button md-button color="primary" type="button" (click)="handleSave($event, state$?.page)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon>save</md-icon> Save</button></p>
+        <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon> Search</button></p>
+        <p><button md-button color="accent" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-refresh"></md-icon> Discard all</button></p>
+        <p><button md-button color="primary" type="button" (click)="handleSave($event, state$?.page)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Save</button></p>
       </div>
     </form>
   </md-sidenav>
@@ -49,7 +54,7 @@
         (change)="handleViewMode($event)">
         <md-button-toggle *ngFor="let viewMode of (cardLayout$ | async)?.viewModes" [value]="viewMode"
           [checked]="(cardLayout$ | async)?.currentViewMode.id == viewMode?.id">
-          <md-icon>{{ viewMode?.iconName }}</md-icon>
+          <md-icon fontSet="fontawesome" fontIcon="fa-{{ viewMode?.iconName }}"></md-icon>
         </md-button-toggle>
       </md-button-toggle-group>
       <md-slider
@@ -65,12 +70,11 @@
       </md-slider>
     </div>
     <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
-    <div *ngIf="!(state$ | async)?.isRequesting" class="thumbnails" [style.flex-direction]="(cardLayout$ | async)?.currentViewMode.id == 0 ? 'row' : 'column'">
-      <fat-search-card *ngFor="let image of (state$ | async)?.images"
-        [image]="image"
-        [thumbnailScale]="(cardLayout$ | async)?.thumbnailScale"
-        [viewMode]="(cardLayout$ | async)?.currentViewMode"
-        [style.width]="(cardLayout$ | async)?.currentViewMode?.id == 0 ? '100%' : (cardLayout$ | async)?.thumbnailScale + '%'"></fat-search-card>
-    </div>
+    <fat-card-list *ngIf="!(state$ | async)?.isRequesting"
+      [style.flex-direction]="(cardLayout$ | async)?.currentViewMode?.id == 0 ? 'row' : 'column'"
+      [viewMode]="(cardLayout$ | async)?.currentViewMode"
+      [cardScale]="(cardLayout$ | async)?.thumbnailScale"
+      (onCardClick)="handleImageDiscarded($event)"
+      [images]="images"></fat-card-list>
   </div>
 </md-sidenav-container>

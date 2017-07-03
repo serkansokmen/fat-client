@@ -11,7 +11,7 @@
     </md-input-container>
 
     <div class="form-group">
-      <button md-raised-button [disabled]="loading">Login</button>
+      <button md-raised-button [disabled]="loading"><md-icon fontSet="fontawesome" fontIcon="fa-sign-in"></md-icon> Login</button>
     </div>
     <div *ngIf="error" class="alert alert-danger">{{error}}</div>
   </form>

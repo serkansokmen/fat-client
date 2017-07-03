@@ -6,6 +6,9 @@ img[md-card-image],
 }
 
 :host {
+  break-inside: avoid;
+  width: 25%;
+
   md-card {
 
     display: flex;

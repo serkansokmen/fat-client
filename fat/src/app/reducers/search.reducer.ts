@@ -12,6 +12,8 @@ export interface SearchState {
   imageStates: number[],
   licenses: License[],
   perpage: number,
+  page: number,
+  cursor: number,
   total: number
 };
 
@@ -31,6 +33,8 @@ const initialState: SearchState = {
   tagModes: ['all', 'any'],
   licenses: License.availableLicenses,
   perpage: 10,
+  page: 1,
+  cursor: 0,
   total: 0,
 };
 
@@ -50,17 +54,22 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         isRequesting: true,
         search: action.payload.search,
         perpage: action.payload.perpage,
+        page: action.payload.page,
+        cursor: action.payload.cursor,
         total: 0,
       };
 
     case SearchActions.REQUEST_SEARCH_COMPLETE:
+      console.log(action.payload);
       return {
         ...state,
         isRequesting: false,
         search: action.payload.search,
+        images: action.payload.images,
+        perpage: action.payload.perpage,
+        page: action.payload.page,
+        cursor: action.payload.cursor,
         total: action.payload.total,
-        images: action.payload.results
-          .map(image => new Image(image))
       };
 
     case SearchActions.TOGGLE_IMAGE_DISCARDED:
@@ -94,12 +103,11 @@ export function searchReducer(state: SearchState = initialState, action: Action)
       };
 
     case SearchActions.SAVE_SEARCH_COMPLETE:
+      console.log(action.payload);
       return {
         ...state,
         isRequesting: false,
         images: action.payload.newImages
-          .filter((image, key) => key < state.perpage)
-          .map(image => new Image(image))
       };
 
     default: {

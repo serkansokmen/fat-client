@@ -2,8 +2,9 @@
 html,
 body {
   height: 100%;
-  // font-size: 14px;
+  font-size: 14px;
 }
+
 body {
   padding-top: 64px;
 }
@@ -36,7 +37,11 @@ md-sidenav-container {
     padding-top: 120px;
   }
 }
-
+.mat-icon.fa {
+  display: inline-flex;
+  vertical-align: middle;
+  // align-items: center;
+}
 md-toolbar {
   .spacer {
     flex: 1 1 auto;

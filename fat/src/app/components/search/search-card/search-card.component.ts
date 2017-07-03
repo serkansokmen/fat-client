@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ElementRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { SearchState } from '../../../reducers/search.reducer';
 import { SearchActions } from '../../../actions/search.actions';
@@ -11,21 +11,14 @@ import { ViewMode } from '../../../models/card-layout.models';
   styleUrls: ['./search-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchCardComponent implements OnInit {
+export class SearchCardComponent {
 
   @Input() image: Image;
   @Input() viewMode: ViewMode;
-  @Input() thumbnailScale: number;
+  @Input() cardScale: number;
 
-  constructor(
-    private store: Store<SearchState>,
-    private actions: SearchActions,
-    private elementRef: ElementRef,
-  ) {}
-
-  ngOnInit() {
-
-  }
+  @Output('onImageClick')
+  clickEmitter = new EventEmitter<Image>();
 
   getImageURL(image: Image) {
     return Image.getImageURL(image);
@@ -36,7 +29,7 @@ export class SearchCardComponent implements OnInit {
   }
 
   handleImageClick(image: Image) {
-    this.store.dispatch(this.actions.toggleImageDiscarded(image));
+    this.clickEmitter.emit(image);
   }
 
 }

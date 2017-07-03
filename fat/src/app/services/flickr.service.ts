@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { PlatformLocation } from '@angular/common';
 import { CookieService } from 'ngx-cookie';
-import { Image, License, ImageState } from '../models/search.models';
+import { License, ImageState } from '../models/search.models';
+import { Image as FlickrImage } from '../models/search.models';
 import { map, filter, union } from 'underscore';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
@@ -21,28 +22,31 @@ export class FlickrService {
     this.endpoint = environment.apiURL;
   }
 
-  search(search: any, licenses: License[], perpage: number): Observable<any> {
+  search(search: any, licenses: License[], perpage: number, page: number, cursor: number): Observable<any> {
+
     let url = `${this.endpoint}flickr/` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
       `${search.userID ? '&user_id=' + search.userID : ''}` +
       `&tags=${search.tags.split(',').map(str => str.trim()).join(',')}` +
-      `&tag_mode=${search.tagMode}`;
+      `&tag_mode=${search.tagMode}` +
+      `&perpage=${perpage}` +
+      `&page=${page}` +
+      `&cursor=${cursor}`;
     return this.http.get(url, this.jwt())
       .map((response: Response) => response.json())
       .map((result: any) => {
         return {
           total: result.total,
-          images: result.images.filter((image, key) => key < perpage).map(photo => new Image(photo)),
-          search: result.search
+          images: result.images.map(photo => new FlickrImage(photo)),
+          search: result.search,
+          perpage: result.perpage,
+          page: result.page,
+          cursor: result.cursor,
         };
-      })
-      .catch(error => {
-        console.error('Error at search', error);
-        return Observable.empty();
       });
   };
 
-  saveSearch(search: any, images: Image[], licenses: License[]) {
+  saveSearch(search: any, images: FlickrImage[], licenses: License[]) {
     let body = JSON.stringify({
       tags: search.tags.split(',').map(str => str.trim()).join(','),
       tag_mode: search.tagMode,
@@ -78,7 +82,12 @@ export class FlickrService {
             console.error('Error at search', error);
             return Observable.empty();
           })
-          .map((response: Response) => response.json());
+          .map((response: Response) => response.json())
+          .switchMap(result => Observable.of({
+            total: result.total,
+            search: result.search,
+            images: result.images.map(image => new FlickrImage(image))
+          }));
       }
     }
   }
@@ -92,7 +101,7 @@ export class FlickrService {
           total: result.count,
           next: result.next,
           previous: result.previous,
-          images: result.results.map(photo => new Image(photo))
+          images: result.results.map(photo => new FlickrImage(photo))
         };
       })
       .catch(error => {
@@ -101,19 +110,13 @@ export class FlickrService {
       });
   }
 
-  getImage(id: number): Observable<Image> {
+  getImage(id: number) {
+    if (!id) {
+      return;
+    }
     let url = `${this.endpoint}images/${id}/`;
     return this.http.get(url, this.jwt())
-      .map((response: Response) => response.json())
-      .map((image: any) => {
-        return {
-          image: new Image(image)
-        };
-      })
-      .catch(error => {
-        console.error('Error at search', error);
-        return Observable.empty();
-      });
+      .map((response: Response) => new FlickrImage(response.json()));
   }
 
   private jwt() {

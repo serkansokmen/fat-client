@@ -15,19 +15,19 @@ export interface AnnotateState {
 
 const initialState: AnnotateState = {
   navItems: [{
-    routerLink: '/annotate/step-1',
+    routerLink: '/step-1',
     label: 'Skin Pixel Regions',
     iconName: 'fa-chevron-right'
    }, {
-    routerLink: '/annotate/step-2',
+    routerLink: '/step-2',
     label: 'Semantic Nudity Percentage',
     iconName: 'fa-chevron-right'
    }, {
-    routerLink: '/annotate/step-3',
+    routerLink: '/step-3',
     label: 'Mark Objects',
     iconName: 'fa-chevron-right'
    }, {
-    routerLink: '/annotate/step-4',
+    routerLink: '/step-4',
     label: 'Gender and Age Group',
     iconName: 'fa-check'
    }],
@@ -54,7 +54,7 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
       return {
         ...state,
         isRequesting: false,
-        images: action.payload.images,
+        images: action.payload.images.map(image => new Image(image)),
         total: action.payload.total,
         previous: action.payload.previous,
         next: action.payload.next,
@@ -63,7 +63,7 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
     case AnnotateActions.SELECT_IMAGE:
       return {
         ...state,
-        selectedImage: action.payload.image
+        selectedImage: new Image(action.payload.image)
       };
 
     case AnnotateActions.REQUEST_IMAGE:

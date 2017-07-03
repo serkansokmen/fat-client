@@ -10,6 +10,6 @@ export class ViewMode {
     public thumbMaxHeight: string,
   ) {}
 
-  static list = new ViewMode(0, 'List', 'view-mode-list', 'view_list', '120px', '120px', '120px', '120px');
-  static thumbnails = new ViewMode(1, 'Thumbnails', 'view-mode-thumbnails', 'dashboard', '200px', '600px', '200px', '600px');
+  static list = new ViewMode(0, 'List', 'view-mode-list', 'th-list', '120px', '120px', '120px', '120px');
+  static thumbnails = new ViewMode(1, 'Thumbnails', 'view-mode-thumbnails', 'th-large', '200px', '600px', '200px', '600px');
 }

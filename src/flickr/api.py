@@ -3,33 +3,38 @@ import json
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import ugettext_lazy as _
 from django.http import JsonResponse
 from django_filters import rest_framework as filters
 from rest_framework import viewsets, parsers, views
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import status
 from .models import Search, Image
 from .serializers import SearchSerializer, ImageSerializer
 
 
-def make_search_query(request, page=1):
+def make_search_query(request, flickr_page=1):
 
     req_data = request.GET if request.method == 'GET' else request.data
+    req_page = int(req_data.get('page', '1'))
+    req_perpage = int(req_data.get('perpage', '10'))
+    req_cursor = int(req_data.get('cursor', req_perpage))
+
     tags = req_data.get('tags', None)
     tag_mode = req_data.get('tag_mode')
     licenses = req_data.get('licenses')
     user_id = req_data.get('user_id')
-    per_page = int(req_data.get('per_page', '10'))
-    flickr_per_page =  req_data.get('perpage', 500)
+
+    flickr_perpage =  req_data.get('flickr_perpage', 500)
 
     if tags is None:
         return Response({
-            'message': '`tags` field is required to make a query.'
-        })
-    else:
-        tags = tags.replace(' ', '')
+            'message': _('`tags` field is required to make a query.')
+        }, status=status.HTTP_400_BAD_REQUEST)
 
+    tags = tags.replace(' ', '')
     req = requests.get('https://api.flickr.com/services/rest/?method=flickr.photos.search',
         params={
             'api_key': settings.FLICKR_API_KEY,
@@ -42,97 +47,151 @@ def make_search_query(request, page=1):
             'media': 'photos',
             'content_type': 7,
             'extras': 'license,tags',
-            'per_page': flickr_per_page,
-            'page': str(page),
+            'per_page': flickr_perpage,
+            'page': str(flickr_page),
             'tags': tags,
             'tag_mode': tag_mode})
-
     if req.json()['stat'] == 'ok':
-
-        data = req.json()['photos']
-
-        images = [{
-            # 'id': photo_data['id'],
-            'id': photo_data['id'],
-            'title': photo_data['title'],
-            'owner': photo_data['owner'],
-            'secret': photo_data['secret'],
-            'server': photo_data['server'],
-            'farm': photo_data['farm'],
-            'license': photo_data['license'],
-            'tags': photo_data['tags'],
-            'ispublic': photo_data['ispublic'],
-            'isfriend': photo_data['isfriend'],
-            'isfamily': photo_data['isfamily'],
-            'state': {
-                'value': Image.IMAGE_STATES[0][0],
-                'label': Image.IMAGE_STATES[0][1],
-            }
-        } for photo_data in data['photo'] if Image.objects.filter(id=photo_data['id']).count() == 0 ]
-
-        flickr_pages = int(data['pages'])
-        flickr_page = int(data['page'])
-        flickr_total = int(data['total'])
-
-        if len(images) < per_page and flickr_total > per_page * page:
-            if flickr_page < flickr_pages and flickr_total > flickr_per_page * flickr_page:
-                import ipdb; ipdb.set_trace()
-                return make_search_query(request, page=flickr_page + 1)
-            else:
-                import ipdb; ipdb.set_trace()
-                flickr_page = 1
-                return make_search_query(request, page=flickr_page)
-
-        else:
-            try:
-                search = Search.objects.get(tags=tags)
-            except Search.DoesNotExist:
-                search = Search.objects.create(
-                    tags=tags,
-                    tag_mode=tag_mode,
-                    licenses=licenses,
-                    user_id=user_id)
-            search_serializer = SearchSerializer(search)
-            return Response({
-                'total': flickr_total - search.images.count(),
-                'search': search_serializer.data,
-                'images': images
-            })
-    else:
-        return Response({'message': 'No results'})
+        return req.json()
+    return None
 
 
 @api_view(['GET', 'POST', 'PUT'])
 def flickr(request):
 
+    req_data = request.GET if request.method == 'GET' else request.data
+
+    req_page = int(req_data.get('page', '1'))
+    req_perpage = int(req_data.get('perpage', '10'))
+    req_cursor = int(req_data.get('cursor', req_perpage))
+
+    tags = req_data.get('tags', None)
+    tag_mode = req_data.get('tag_mode')
+    licenses = req_data.get('licenses')
+    user_id = req_data.get('user_id')
+
+    json = make_search_query(request)
+
+    if json is not None:
+        results = json['photos']
+        flickr_pages = int(results['pages'])
+        flickr_page = int(results['page'])
+        flickr_total = int(results['total'])
+        photos_results = results['photo']
+
+        (search, created) = Search.objects.get_or_create(
+            tags=tags,
+            defaults={
+                'tag_mode': tag_mode,
+                'licenses': licenses,
+                'user_id': user_id,
+            }
+        )
+
     if request.method == 'GET':
-        # return make_search_query(request,
-        #     page=int(request.GET.get('page', 1)))
-        return make_search_query(request)
+        # return if all added already
+        if flickr_total == search.images.all() or flickr_total == 0:
+            return Response({
+                'message': _('No results.')
+            }, status=status.HTTP_404_NOT_FOUND)
+        # we have new images
+        else:
+            # import ipdb; ipdb.set_trace()
+            new_images = [{
+                'id': image['id'],
+                'title': image['title'],
+                'owner': image['owner'],
+                'secret': image['secret'],
+                'server': image['server'],
+                'farm': image['farm'],
+                'license': image['license'],
+                'tags': image['tags'],
+                'ispublic': image['ispublic'],
+                'isfriend': image['isfriend'],
+                'isfamily': image['isfamily'],
+                'state': {
+                    'value': Image.IMAGE_STATES[0][0],
+                    'label': Image.IMAGE_STATES[0][1],
+                }
+            } for image in photos_results
+                if not Image.objects.filter(id=image['id']).exists()
+            ][req_cursor:req_cursor + req_perpage]
+
+            if len(new_images) > 0:
+                search_serializer = SearchSerializer(search)
+                return Response({
+                    'total': max(flickr_total - search.images.count(), 0),
+                    'search': search_serializer.data,
+                    'images': new_images,
+                    'page': req_page,
+                    'perpage': req_perpage,
+                    'cursor': (req_page - 1) * req_perpage,
+                })
+            else:
+                if flickr_page < flickr_pages:
+                    return make_search_query(request, flickr_page=flickr_page+1)
+                else:
+                    return Response({
+                        'message': _('No results.')
+                    }, status=status.HTTP_404_NOT_FOUND)
+
+            # if search.images.count() < flickr_total and flickr_total > 0:
+
+
+            # if req_cursor < flickr_total:
+            # import ipdb; ipdb.set_trace()
+                # return
+
+                # if len(images)  req_perpage
+            # if len(images) < perpage and flickr_total > perpage * page:
+            #     if flickr_page < flickr_pages and flickr_total > flickr_perpage * flickr_page:
+            #         import ipdb; ipdb.set_trace()
+            #         return make_search_query(request, page=flickr_page + 1)
+            #     else:
+            #         import ipdb; ipdb.set_trace()
+            #         flickr_page = 1
+            #         return make_search_query(request, page=flickr_page)
+
+            # else:
+        # else:
+        #     return Response({'message': _('No results.')}, status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST' or request.method == 'PUT':
 
+        if json is not None:
+            results = json['photos']
+            flickr_pages = int(results['pages'])
+            flickr_page = int(results['page'])
+            flickr_total = int(results['total'])
+            photos_results = results['photo']
+
         images_data = request.data.get('images', None)
-
         if images_data is None:
-            return Response({'message': 'Some images are required'})
+            return Response({'message': _('Some images are required')}, status=status.HTTP_400_BAD_REQUEST)
 
-        response = make_search_query(request)
-        search = Search.objects.get(id=response.data.get('search')['id'])
+        (search, created) = Search.objects.get_or_create(
+            tags=request.data.get('tags'), defaults=request.data)
+        search_serializer = SearchSerializer(search)
 
         for image_data in images_data:
             (image, created) = Image.objects.get_or_create(**image_data)
-            if image_data.get('state') != Image.IMAGE_STATES[1][0] and search.images.filter(id=image.id).count() == 0:
+            # import ipdb; ipdb.set_trace()
+            if image.state != Image.IMAGE_STATES[1][0] and image not in search.images.all():
                 search.images.add(image)
         search.save()
 
+        # query = make_search_query(request)
+        # import ipdb; ipdb.set_trace()
         return Response({
-            'search': response.data.get('search'),
-            'images': response.data.get('images'),
-            'total': response.data.get('total'),
+            'total': max(flickr_total - search.images.count(), 0),
+            'search': search_serializer.data,
+            'images': [],
+            'page': req_page,
+            'perpage': req_perpage,
+            'cursor': (req_page - 1) * req_perpage,
         })
 
-    return Response({'message': 'GET or POST required'})
+    return Response({'message': _('GET, POST or PUT required.')}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class LargeResultsSetPagination(PageNumberPagination):

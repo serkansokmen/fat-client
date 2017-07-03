@@ -1,28 +1,29 @@
 <md-toolbar color="primary">
-  <button *ngIf="isLoggedIn()" md-mini-fab (click)="sidenav.toggle()">
-    <md-icon>more_horizontal</md-icon>
+
+  <button md-icon-button [mdMenuTriggerFor]="menu">
+    <md-icon fontSet="fontawesome" fontIcon="fa-bars"></md-icon>
   </button>
+
+  <md-menu #menu="mdMenu">
+    <button md-menu-item *ngIf="!isLoggedIn()" [routerLink]="['/login']"><md-icon fontSet="fontawesome" fontIcon="fa-sign-in"></md-icon> Login</button>
+    <button md-menu-item *ngIf="isLoggedIn()" [routerLink]="['/search']">
+      <md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon>
+      <span>Search for images</span>
+    </button>
+    <button md-menu-item *ngIf="isLoggedIn()" [routerLink]="['/annotate']">
+      <md-icon fontSet="fontawesome" fontIcon="fa-paint-brush"></md-icon>
+      <span>Annotate Images</span>
+    </button>
+    <button md-menu-item *ngIf="isLoggedIn()" [routerLink]="['/review']" disabled>
+      <md-icon fontSet="fontawesome" fontIcon="fa-thumbs-o-up"></md-icon>
+      <span>Review annotated images</span>
+    </button>
+    <hr *ngIf="isLoggedIn()">
+    <button md-menu-item *ngIf="isLoggedIn()" (click)="logout($event)"><md-icon fontSet="fontawesome" fontIcon="fa-sign-out"></md-icon> Logout</button>
+  </md-menu>
+
   <span class="spacer"></span>
-  <span>FAT - Flickr Annotation Tool</span>
-  <button *ngIf="isLoggedIn()" [style.margin-left]="'20px'" md-button (click)="logout($event)"><md-icon>exit_to_app</md-icon> Logout</button>
+  <span>FAT</span>
 </md-toolbar>
 
-<md-sidenav-container>
-  <md-sidenav #sidenav mode="over" opened="true">
-    <div *ngIf="!isLoggedIn()">
-      <a [routerLink]="['/login']">Login</a>
-      <br>
-    </div>
-    <div *ngIf="isLoggedIn()">
-      Modules
-      <br>
-      <a [routerLink]="['/search']">Search</a>
-      <br>
-      <a [routerLink]="['/annotate']">Annotate</a>
-      <br>
-      <a [routerLink]="['/review']" disabled="disabled">Review</a>
-    </div>
-  </md-sidenav>
-
-  <router-outlet></router-outlet>
-</md-sidenav-container>
+<router-outlet></router-outlet>

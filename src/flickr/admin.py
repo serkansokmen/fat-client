@@ -11,19 +11,19 @@ from .models import Search, Image
 
 def set_images_indeterminate(modeladmin, request, queryset):
     queryset.update(state=Image.IMAGE_STATES[0][0])
-set_images_indeterminate.short_description = "Make selected images `Indeterminate`"
+set_images_indeterminate.short_description = "Mark selected as `Indeterminate`"
 
 def set_images_discarded(modeladmin, request, queryset):
     queryset.update(state=Image.IMAGE_STATES[1][0])
-set_images_discarded.short_description = "Make selected images `Discarded`"
+set_images_discarded.short_description = "Mark selected as `Discarded`"
 
 def set_images_approved(modeladmin, request, queryset):
     queryset.update(state=Image.IMAGE_STATES[2][0])
-set_images_approved.short_description = "Make selected images `Approved`"
+set_images_approved.short_description = "Mark selected as `Approved`"
 
 def set_images_processed(modeladmin, request, queryset):
     queryset.update(state=Image.IMAGE_STATES[3][0])
-set_images_processed.short_description = "Make selected images `Completed`"
+set_images_processed.short_description = "Mark selected as `Completed`"
 
 
 class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
@@ -31,7 +31,12 @@ class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
     list_filter = ('state', 'license', 'owner',
         'ispublic', 'isfriend', 'isfamily')
     readonly_fields = ('image_tag', 'ispublic', 'isfriend', 'isfamily')
-    actions = [set_images_approved]
+    actions = [
+        set_images_indeterminate,
+        set_images_discarded,
+        set_images_approved,
+        set_images_processed
+    ]
 admin.site.register(Image, ImageAdmin)
 
 

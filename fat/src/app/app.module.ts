@@ -51,6 +51,7 @@ import { AttributesComponent } from './components/annotate/attributes/attributes
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { AnnotateStepsComponent } from './components/annotate/annotate-steps/annotate-steps.component';
 import { AnnotateComponent } from './components/annotate/annotate.component';
+import { CardListComponent } from './components/card-list/card-list.component';
 
 
 @NgModule({
@@ -67,6 +68,7 @@ import { AnnotateComponent } from './components/annotate/annotate.component';
     AttributesComponent,
     AnnotateStepsComponent,
     AnnotateComponent,
+    CardListComponent,
   ],
   imports: [
     BrowserModule,

@@ -17,25 +17,31 @@ export class SearchActions {
   }
 
   static REQUEST_SEARCH = '[Search] Request Search';
-  requestSearch(search: any, licenses: License[], perpage: number): Action {
+  requestSearch(search: any, licenses: License[], perpage: number,
+    page: number, cursor: number): Action {
     return {
       type: SearchActions.REQUEST_SEARCH,
       payload: {
         search,
         licenses,
-        perpage
+        perpage,
+        page,
+        cursor,
       }
     }
   }
 
   static REQUEST_SEARCH_COMPLETE = '[Search] Request Search Complete';
-  requestSearchComplete(search: any, results: Image[], total: number): Action {
+  requestSearchComplete(search: any, images: Image[], total: number, perpage: number,
+    page: number, cursor: number): Action {
     return {
       type: SearchActions.REQUEST_SEARCH_COMPLETE,
       payload: {
         search,
-        results,
-        total
+        images,
+        total,
+        page,
+        cursor,
       }
     }
   }
@@ -83,12 +89,13 @@ export class SearchActions {
   }
 
   static SAVE_SEARCH_COMPLETE = '[Search] Save Search Complete';
-  saveSearchComplete(search: any, newImages: Image[], page: number): Action {
+  saveSearchComplete(search: any, newImages: Image[], total: number): Action {
     return {
       type: SearchActions.SAVE_SEARCH_COMPLETE,
       payload: {
         search,
-        newImages
+        newImages,
+        total
       }
     }
   }

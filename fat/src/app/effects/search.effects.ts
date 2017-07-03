@@ -34,14 +34,20 @@ export class SearchEffects {
     .switchMap(payload => this.service.search(
       payload.search,
       payload.licenses,
-      payload.perpage))
+      payload.perpage,
+      payload.page,
+      payload.cursor))
     .switchMap(result => {
+      console.log(result);
       return Observable.of({
         type: SearchActions.REQUEST_SEARCH_COMPLETE,
         payload: {
-          total: result.total,
           search: result.search,
-          results: result.images
+          images: result.images,
+          total: result.total,
+          perpage: result.perpage,
+          page: result.page,
+          cursor: result.cursor,
         }
       })
     });
@@ -50,14 +56,13 @@ export class SearchEffects {
     .ofType(SearchActions.SAVE_SEARCH)
     .map(toPayload)
     .switchMap(payload => this.service.saveSearch(payload.search, payload.images, payload.licenses))
-    .switchMap(result => {
-      return Observable.of({
+    .switchMap(result => Observable.of({
         type: SearchActions.SAVE_SEARCH_COMPLETE,
         payload: {
-          search: result,
-          newImages: result.images ? result.images.map(data => new Image(data)) : []
+          search: result.search,
+          total: result.total,
+          newImages: result.images
         }
-      })
-    });
+      }));
 
 }
