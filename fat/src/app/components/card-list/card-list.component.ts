@@ -12,16 +12,7 @@ export class CardListComponent implements OnInit {
 
   @HostBinding('style.flex-direction') direction = 'column';
 
-  _viewMode: ViewMode;
-  get viewMode(): ViewMode {
-    return this._viewMode;
-  }
-
-  @Input('viewMode')
-  set viewMode(value: ViewMode) {
-    this._viewMode = value.id == 0 ? ViewMode.list : ViewMode.thumbnails;
-  }
-
+  @Input() viewMode: ViewMode;
   @Input() cardScale: number;
   @Input() images: Image[];
 
@@ -31,7 +22,7 @@ export class CardListComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.direction = this._viewMode && this.viewMode.id == 0 ? 'column' : 'row';
+    this.direction = this.viewMode && this.viewMode && this.viewMode.id == 0 ? 'column' : 'row';
   }
 
   handleCardClick(image: Image) {

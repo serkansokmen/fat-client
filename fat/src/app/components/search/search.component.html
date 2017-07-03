@@ -66,9 +66,9 @@
     </div>
     <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
     <fat-card-list *ngIf="!(state$ | async)?.isRequesting"
+      [images]="images"
       [viewMode]="(cardLayout$ | async)?.currentViewMode"
       [cardScale]="(cardLayout$ | async)?.thumbnailScale"
-      (onCardClick)="handleImageDiscarded($event)"
-      [images]="images"></fat-card-list>
+      (onCardClick)="handleImageDiscarded($event)"></fat-card-list>
   </div>
 </md-sidenav-container>

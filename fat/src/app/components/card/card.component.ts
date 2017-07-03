@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, EventEmitter, ChangeDetectionStrategy, HostBinding } from '@angular/core';
+import { Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ChangeDetectionStrategy, HostBinding } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { SearchState } from '../../reducers/search.reducer';
 import { SearchActions } from '../../actions/search.actions';
@@ -11,19 +11,27 @@ import { ViewMode } from '../../models/card-layout.models';
   styleUrls: ['./card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardComponent implements OnInit {
-
-  @HostBinding('style.width') cssThumbWidth: string;
+export class CardComponent implements OnChanges {
 
   @Input() image: Image;
   @Input() viewMode: ViewMode;
   @Input() cardScale: number;
 
+  @HostBinding('style.width') cssThumbWidth: string;
+
   @Output('onImageClick')
   clickEmitter = new EventEmitter<Image>();
 
-  ngOnInit() {
-    this.viewMode.id == 0 ? this.cssThumbWidth = '100%' : this.cssThumbWidth = this.cardScale + '%';
+  ngOnChanges(changes: SimpleChanges) {
+    const viewMode = changes.viewMode;
+    if (viewMode && viewMode.previousValue != viewMode.currentValue) {
+      this.cssThumbWidth = viewMode.currentValue.id == 0 ? '100%' : this.cardScale + '%';
+    }
+
+    const cardScale = changes.cardScale;
+    if (cardScale && cardScale.previousValue != cardScale.currentValue) {
+      this.cssThumbWidth = this.viewMode.id == 0 ? '100%' : changes.cardScale.currentValue + '%';
+    }
   }
 
   getImageURL(image: Image) {

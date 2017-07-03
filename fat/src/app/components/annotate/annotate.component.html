@@ -11,10 +11,10 @@
     <button md-button>{{ (state$ | async)?.previous }}</button>
   </div>
   <fat-card-list *ngIf="!(state$ | async)?.isRequesting && !(state$ | async)?.selectedImage"
+      [images]="(state$ | async)?.images"
       [viewMode]="viewMode"
       [cardScale]="25"
-      (onCardClick)="handleCardSelect($event)"
-      [images]="(state$ | async)?.images"></fat-card-list>
+      (onCardClick)="handleCardSelect($event)"></fat-card-list>
   <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
   <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
   <router-outlet></router-outlet>

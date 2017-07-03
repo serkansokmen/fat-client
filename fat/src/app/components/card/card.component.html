@@ -1,7 +1,6 @@
 <md-card [class.is-discarded]="image?.state?.value == 1"
   [ngClass]="viewMode?.containerClassName"
-  [ngSwitch]="viewMode?.id">
-
+  [ngSwitch]="viewMode.id">
   <md-card-content (click)="handleImageClick(image)">
     <img md-card-image [src]="getImageURL(image)" [alt]="image.id" />
     <div class="meta" *ngSwitchCase="0">

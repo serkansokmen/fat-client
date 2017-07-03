@@ -18,7 +18,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   state$: Observable<any>;
   private sub: any;
 
-  viewMode: ViewMode = ViewMode.thumbnails;
+  viewMode = ViewMode.thumbnails;
 
   constructor(
     public store: Store<AnnotateState>,
