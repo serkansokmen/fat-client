@@ -60,7 +60,6 @@ export function searchReducer(state: SearchState = initialState, action: Action)
       };
 
     case SearchActions.REQUEST_SEARCH_COMPLETE:
-      console.log(action.payload);
       return {
         ...state,
         isRequesting: false,

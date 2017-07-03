@@ -37,9 +37,7 @@ export class SearchEffects {
       payload.perpage,
       payload.page,
       payload.cursor))
-    .switchMap(result => {
-      console.log(result);
-      return Observable.of({
+    .switchMap(result => Observable.of({
         type: SearchActions.REQUEST_SEARCH_COMPLETE,
         payload: {
           search: result.search,
@@ -49,8 +47,7 @@ export class SearchEffects {
           page: result.page,
           cursor: result.cursor,
         }
-      })
-    });
+      }));
 
   @Effect() save$ = this.actions$
     .ofType(SearchActions.SAVE_SEARCH)

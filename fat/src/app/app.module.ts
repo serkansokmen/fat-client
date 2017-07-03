@@ -43,7 +43,7 @@ import { nudityCheckReducer } from './reducers/nudity-check.reducer';
 // Components
 import { LoginComponent } from './components/login/login.component';
 import { SearchComponent } from './components/search/search.component';
-import { SearchCardComponent } from './components/search/search-card/search-card.component';
+import { CardComponent } from './components/card/card.component';
 import { SkinPixelsRegionsComponent } from './components/annotate/skin-pixels-regions/skin-pixels-regions.component';
 import { NudityCheckComponent } from './components/annotate/nudity-check/nudity-check.component';
 import { ObjectXComponent } from './components/annotate/object-x/object-x.component';
@@ -60,7 +60,7 @@ import { CardListComponent } from './components/card-list/card-list.component';
     LoginComponent,
     SearchComponent,
     SafeStylePipe,
-    SearchCardComponent,
+    CardComponent,
     SkinPixelsRegionsComponent,
     PageNotFoundComponent,
     NudityCheckComponent,

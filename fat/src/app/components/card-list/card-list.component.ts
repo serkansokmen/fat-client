@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ViewMode } from '../../models/card-layout.models';
 import { Image } from '../../models/search.models';
 
@@ -8,7 +8,7 @@ import { Image } from '../../models/search.models';
   styleUrls: ['./card-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardListComponent implements AfterViewInit {
+export class CardListComponent {
 
   @Input() viewMode: ViewMode;
   @Input() cardScale: number;
@@ -18,10 +18,6 @@ export class CardListComponent implements AfterViewInit {
   clickEmitter = new EventEmitter<Image>();
 
   constructor() { }
-
-  ngAfterViewInit() {
-    console.log(this.images);
-  }
 
   handleCardClick(image: Image) {
     this.clickEmitter.emit(image);

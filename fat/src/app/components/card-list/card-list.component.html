@@ -1,6 +1,6 @@
-<fat-search-card *ngFor="let image of images"
+<fat-card *ngFor="let image of images"
   [image]="image"
   (onImageClick)="handleCardClick($event)"
   [cardScale]="cardScale"
   [viewMode]="viewMode"
-  [style.width]="viewMode?.id == 0 ? '100%' : cardScale + '%'"></fat-search-card>
+  [style.width]="viewMode?.id == 0 ? '100%' : cardScale + '%'"></fat-card>
