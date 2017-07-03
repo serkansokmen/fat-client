@@ -41,7 +41,7 @@ admin.site.register(Image, ImageAdmin)
 
 class SearchAdmin(admin.ModelAdmin):
     list_display = (
-        'tags', 'tag_mode', 'user_id',
+        'tags',
         'image_count_indeterminate',
         'image_count_discarded',
         'image_count_approved',
