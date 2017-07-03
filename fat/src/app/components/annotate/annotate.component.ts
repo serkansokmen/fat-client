@@ -32,7 +32,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
       if (params.id) {
         // this.store.dispatch(this.actions.requestImage(params.id));
       } else {
-        // this.store.dispatch(this.actions.selectImage(null));
+        this.store.dispatch(this.actions.deselectImage());
       }
     });
   }

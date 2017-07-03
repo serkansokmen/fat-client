@@ -46,7 +46,6 @@ img[md-card-image],
       padding: 5px;
       cursor: pointer;
 
-
       img[md-card-image] {
         width: 100%;
         flex: 0 1 auto;
@@ -83,11 +82,6 @@ img[md-card-image],
       justify-content: flex-start;
       flex-direction: row !important;
 
-      // .card-image-wrapper {
-      //   width: 120px;
-      //   height: 120px;
-      //   background-size: contain !important;
-      // }
       img[md-card-image] {
         max-width: 120px;
       }
@@ -95,11 +89,8 @@ img[md-card-image],
         display: block !important;
       }
     }
-    // &.view-mode-thumbnails {
-    //   align-items: flex-start;
-    //   justify-content: flex-start;
-    //   margin: 15px;
-    // }
+    &.view-mode-thumbnails {
+    }
 
   }
 

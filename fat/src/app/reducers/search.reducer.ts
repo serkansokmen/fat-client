@@ -98,7 +98,6 @@ export function searchReducer(state: SearchState = initialState, action: Action)
       };
 
     case SearchActions.SAVE_SEARCH_COMPLETE:
-      console.log(action.payload);
       return {
         ...state,
         isRequesting: false,

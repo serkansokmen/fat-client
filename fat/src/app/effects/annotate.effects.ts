@@ -32,27 +32,21 @@ export class AnnotateEffects {
     .ofType(AnnotateActions.REQUEST_IMAGES)
     .map(toPayload)
     .switchMap(payload => this.service.getImages(payload.state))
-    .switchMap(result => {
-      console.log(result);
-      return Observable.of({
+    .switchMap(result => Observable.of({
         type: AnnotateActions.REQUEST_IMAGES_COMPLETE,
         payload: {
           ...result
         }
-      });
-    });
+      }));
 
   @Effect() requestImage$ = this.actions$
     .ofType(AnnotateActions.REQUEST_IMAGE)
     .map(toPayload)
     .switchMap(payload => this.service.getImage(payload.id))
-    .switchMap(result => {
-      console.log(result);
-      return Observable.of({
+    .switchMap(result => Observable.of({
         type: AnnotateActions.REQUEST_IMAGE_COMPLETE,
         payload: {
           image: result
         }
-      })
-    });
+      }));
 }

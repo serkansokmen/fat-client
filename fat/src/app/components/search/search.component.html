@@ -66,7 +66,6 @@
     </div>
     <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
     <fat-card-list *ngIf="!(state$ | async)?.isRequesting"
-      [style.flex-direction]="(cardLayout$ | async)?.currentViewMode?.id == 0 ? 'row' : 'column'"
       [viewMode]="(cardLayout$ | async)?.currentViewMode"
       [cardScale]="(cardLayout$ | async)?.thumbnailScale"
       (onCardClick)="handleImageDiscarded($event)"

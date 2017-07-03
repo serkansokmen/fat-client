@@ -37,6 +37,14 @@ export class AnnotateActions {
     }
   }
 
+  static DESELECT_IMAGE = '[Annotate] Deselect Image';
+  deselectImage(): Action {
+    return {
+      type: AnnotateActions.DESELECT_IMAGE,
+      payload: {}
+    }
+  }
+
   static REQUEST_IMAGE = '[Annotate] Request Image';
   requestImage(id: number): Action {
     return {
