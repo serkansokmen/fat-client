@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
 import { Image, ImageState } from '../../models/search.models';
+import { ViewMode } from '../../models/card-layout.models';
 
 @Component({
   selector: 'fat-annotate',
@@ -16,6 +17,8 @@ export class AnnotateComponent implements OnInit, OnDestroy {
 
   state$: Observable<any>;
   private sub: any;
+
+  viewMode: ViewMode = ViewMode.thumbnails;
 
   constructor(
     public store: Store<AnnotateState>,

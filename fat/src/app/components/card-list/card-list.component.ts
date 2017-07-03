@@ -10,14 +10,16 @@ import { Image } from '../../models/search.models';
 })
 export class CardListComponent implements OnInit {
 
+  @HostBinding('style.flex-direction') direction = 'column';
+
   _viewMode: ViewMode;
-  get viewMode(): number {
-    return this._viewMode.id;
+  get viewMode(): ViewMode {
+    return this._viewMode;
   }
 
   @Input('viewMode')
-  set viewMode(value: number) {
-    this._viewMode = value == 0 ? ViewMode.list : ViewMode.thumbnails;
+  set viewMode(value: ViewMode) {
+    this._viewMode = value.id == 0 ? ViewMode.list : ViewMode.thumbnails;
   }
 
   @Input() cardScale: number;
@@ -26,12 +28,10 @@ export class CardListComponent implements OnInit {
   @Output('onCardClick')
   clickEmitter = new EventEmitter<Image>();
 
-  @HostBinding('style.flex-direction') direction = 'column';
-
   constructor() {}
 
   ngOnInit() {
-    this.direction = this.viewMode == 0 ? 'column' : 'row';
+    this.direction = this._viewMode && this.viewMode.id == 0 ? 'column' : 'row';
   }
 
   handleCardClick(image: Image) {

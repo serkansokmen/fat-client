@@ -11,7 +11,7 @@
     <button md-button>{{ (state$ | async)?.previous }}</button>
   </div>
   <fat-card-list *ngIf="!(state$ | async)?.isRequesting && !(state$ | async)?.selectedImage"
-      [viewMode]="1"
+      [viewMode]="viewMode"
       [cardScale]="25"
       (onCardClick)="handleCardSelect($event)"
       [images]="(state$ | async)?.images"></fat-card-list>
