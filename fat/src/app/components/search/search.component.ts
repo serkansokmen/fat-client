@@ -62,7 +62,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       tagMode: ['all', Validators.required],
       perpage: [10, Validators.required],
       page: [1, Validators.required],
-      cursor: [0, Validators.required],
     });
 
     this.state$.subscribe(state => {
@@ -71,10 +70,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       }
 
       if (state.search && state.search.id != this.form.value.id) {
-        this.form.patchValue({
-          ...state.search,
-          cursor: (state.perpage * (state.page - 1)) * state.images.length
-        });
+        this.form.patchValue(state.search);
       }
 
       this.selectedLicenses = state.selectedLicenses;
@@ -119,8 +115,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.form.value,
         this.selectedLicenses,
         this.form.value.perpage,
-        this.form.value.page,
-        this.form.value.cursor));
+        this.form.value.page));
   }
 
   handleToggleLicense(license: License, isChecked: boolean) {

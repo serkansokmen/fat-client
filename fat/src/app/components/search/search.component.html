@@ -33,11 +33,6 @@
           [placeholder]="'Page ' + (state$ | async)?.page"
           [value]="(state$ | async)?.page" type="number"/>
       </md-input-container>
-      <md-input-container>
-        <input [autocomplete]="'off'" mdInput formControlName="cursor"
-          placeholder="Cursor"
-          [value]="(state$ | async)?.cursor" type="number"/>
-      </md-input-container>
       <div class="form-controls">
         <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon> Search</button></p>
         <p><button md-button color="accent" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-refresh"></md-icon> Discard all</button></p>

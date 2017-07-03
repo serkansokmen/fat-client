@@ -17,8 +17,7 @@ export class SearchActions {
   }
 
   static REQUEST_SEARCH = '[Search] Request Search';
-  requestSearch(search: any, licenses: License[], perpage: number,
-    page: number, cursor: number): Action {
+  requestSearch(search: any, licenses: License[], perpage: number, page: number): Action {
     return {
       type: SearchActions.REQUEST_SEARCH,
       payload: {
@@ -26,14 +25,12 @@ export class SearchActions {
         licenses,
         perpage,
         page,
-        cursor,
       }
     }
   }
 
   static REQUEST_SEARCH_COMPLETE = '[Search] Request Search Complete';
-  requestSearchComplete(search: any, images: Image[], total: number, perpage: number,
-    page: number, cursor: number): Action {
+  requestSearchComplete(search: any, images: Image[], total: number, perpage: number, page: number): Action {
     return {
       type: SearchActions.REQUEST_SEARCH_COMPLETE,
       payload: {
@@ -41,7 +38,6 @@ export class SearchActions {
         images,
         total,
         page,
-        cursor,
       }
     }
   }

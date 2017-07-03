@@ -35,8 +35,7 @@ export class SearchEffects {
       payload.search,
       payload.licenses,
       payload.perpage,
-      payload.page,
-      payload.cursor))
+      payload.page))
     .switchMap(result => Observable.of({
         type: SearchActions.REQUEST_SEARCH_COMPLETE,
         payload: {
@@ -45,7 +44,6 @@ export class SearchEffects {
           total: result.total,
           perpage: result.perpage,
           page: result.page,
-          cursor: result.cursor,
         }
       }));
 

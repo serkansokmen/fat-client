@@ -13,7 +13,6 @@ export interface SearchState {
   licenses: License[],
   perpage: number,
   page: number,
-  cursor: number,
   total: number
 };
 
@@ -34,7 +33,6 @@ const initialState: SearchState = {
   licenses: License.availableLicenses,
   perpage: 10,
   page: 1,
-  cursor: 0,
   total: 0,
 };
 
@@ -55,7 +53,6 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         search: action.payload.search,
         perpage: action.payload.perpage,
         page: action.payload.page,
-        cursor: action.payload.cursor,
         total: 0,
       };
 
@@ -67,7 +64,6 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         images: action.payload.images,
         perpage: action.payload.perpage,
         page: action.payload.page,
-        cursor: action.payload.cursor,
         total: action.payload.total,
       };
 

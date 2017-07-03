@@ -20,7 +20,6 @@ def make_search_query(request, flickr_page=1):
     req_data = request.GET if request.method == 'GET' else request.data
     req_page = int(req_data.get('page', '1'))
     req_perpage = int(req_data.get('perpage', '10'))
-    req_cursor = int(req_data.get('cursor', req_perpage))
 
     tags = req_data.get('tags', None)
     tag_mode = req_data.get('tag_mode')
@@ -63,7 +62,7 @@ def flickr(request):
 
     req_page = int(req_data.get('page', '1'))
     req_perpage = int(req_data.get('perpage', '10'))
-    req_cursor = int(req_data.get('cursor', req_perpage))
+    req_cursor = req_perpage * (req_page - 1)
 
     tags = req_data.get('tags', None)
     tag_mode = req_data.get('tag_mode')
@@ -134,27 +133,6 @@ def flickr(request):
                     return Response({
                         'message': _('No results.')
                     }, status=status.HTTP_404_NOT_FOUND)
-
-            # if search.images.count() < flickr_total and flickr_total > 0:
-
-
-            # if req_cursor < flickr_total:
-            # import ipdb; ipdb.set_trace()
-                # return
-
-                # if len(images)  req_perpage
-            # if len(images) < perpage and flickr_total > perpage * page:
-            #     if flickr_page < flickr_pages and flickr_total > flickr_perpage * flickr_page:
-            #         import ipdb; ipdb.set_trace()
-            #         return make_search_query(request, page=flickr_page + 1)
-            #     else:
-            #         import ipdb; ipdb.set_trace()
-            #         flickr_page = 1
-            #         return make_search_query(request, page=flickr_page)
-
-            # else:
-        # else:
-        #     return Response({'message': _('No results.')}, status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST' or request.method == 'PUT':
 

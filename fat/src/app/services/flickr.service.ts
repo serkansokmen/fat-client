@@ -22,7 +22,7 @@ export class FlickrService {
     this.endpoint = environment.apiURL;
   }
 
-  search(search: any, licenses: License[], perpage: number, page: number, cursor: number): Observable<any> {
+  search(search: any, licenses: License[], perpage: number, page: number): Observable<any> {
 
     let url = `${this.endpoint}flickr/` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
@@ -30,18 +30,21 @@ export class FlickrService {
       `&tags=${search.tags.split(',').map(str => str.trim()).join(',')}` +
       `&tag_mode=${search.tagMode}` +
       `&perpage=${perpage}` +
-      `&page=${page}` +
-      `&cursor=${cursor}`;
+      `&page=${page}`;
     return this.http.get(url, this.jwt())
       .map((response: Response) => response.json())
+      .catch(error => {
+         return Observable.of({
+           error
+         });
+       })
       .map((result: any) => {
         return {
           total: result.total,
-          images: result.images.map(photo => new FlickrImage(photo)),
+          images: result.images ? result.images.map(photo => new FlickrImage(photo)) : [],
           search: result.search,
           perpage: result.perpage,
           page: result.page,
-          cursor: result.cursor,
         };
       });
   };
