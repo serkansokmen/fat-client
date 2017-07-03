@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, EventEmitter, ChangeDetectionStrategy, HostBinding } from '@angular/core';
+import { Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ChangeDetectionStrategy, HostBinding } from '@angular/core';
 import { ViewMode } from '../../models/card-layout.models';
 import { Image } from '../../models/search.models';
 
@@ -8,7 +8,7 @@ import { Image } from '../../models/search.models';
   styleUrls: ['./card-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardListComponent implements OnInit {
+export class CardListComponent implements OnChanges {
 
   @HostBinding('style.flex-direction') direction = 'column';
 
@@ -21,8 +21,11 @@ export class CardListComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {
-    this.direction = this.viewMode && this.viewMode && this.viewMode.id == 0 ? 'column' : 'row';
+  ngOnChanges(changes: SimpleChanges) {
+    const viewMode = changes.viewMode;
+    if (viewMode && viewMode.previousValue != viewMode.currentValue) {
+      this.direction = viewMode.currentValue.id == 0 ? 'row' : 'column';
+    }
   }
 
   handleCardClick(image: Image) {
