@@ -6,3 +6,4 @@ staticfiles/
 media/
 *.log
 .env
+*.rdb
