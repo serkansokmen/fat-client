@@ -1,12 +1,14 @@
 import { Component,
   ViewChild,
   ElementRef,
-  OnInit,
   AfterViewInit,
   OnDestroy,
   HostListener,
+  Input,
+  Output,
   ChangeDetectionStrategy,
-  NgZone
+  NgZone,
+  EventEmitter
 } from '@angular/core';
 import {
   fabric,
@@ -18,13 +20,15 @@ import {
 } from 'fabric';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-
 import { ArtboardState } from '../../../reducers/artboard.reducer';
 import { ArtboardActions } from '../../../actions/artboard.actions';
 import { ArtboardService } from '../../../services/artboard.service';
 import { ArtboardTool } from '../../../models/artboard.models';
 import { ImageService } from '../../../services/image.service';
+import { Image as FlickrImage } from '../../../models/search.models';
 import { AnnotateState } from '../../../reducers/annotate.reducer';
+
+import 'rxjs/add/observable/combineLatest';
 
 @Component({
   selector: 'fat-skin-pixels-regions',
@@ -36,11 +40,13 @@ import { AnnotateState } from '../../../reducers/annotate.reducer';
     ArtboardService
   ]
 })
-export class SkinPixelsRegionsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
 
-  state$: Observable<any>;
   annotate$: Observable<any>;
-  private image: Image;
+  artboard$: Observable<any>;
+
+  @Output('image')
+  imageEmitter = new EventEmitter<FlickrImage>();
 
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
@@ -52,32 +58,36 @@ export class SkinPixelsRegionsComponent implements OnInit, AfterViewInit, OnDest
   constructor(
     public artboardStore: Store<ArtboardState>,
     public annotateStore: Store<AnnotateState>,
-    public actions: ArtboardActions,
+    public artboardActions: ArtboardActions,
     private imageService: ImageService,
     private zone: NgZone
   )
   {
-    this.state$ = artboardStore.select('artboard');
+    this.artboard$ = artboardStore.select('artboard');
     this.annotate$ = annotateStore.select('annotate');
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit() {
 
-    this.annotate$.subscribe((state: AnnotateState) => {
-      this.image = state.selectedImage;
-      if (state.selectedImage && this.image.id != state.selectedImage.id) {
-        this.initCanvas();
-      }
-    });
+    this.subscription = Observable.combineLatest(this.artboard$, this.annotate$,
+      (artboard, annotate) => Observable.of({
+        artboard: artboard.value,
+        annotate: annotate.value
+      }))
+      .subscribe((state: any) => {
+        console.log(this.artboard$, this.annotate$);
+        console.log(state.value);
+        // this.image = state.selectedImage;
+        // if (state.selectedImage && this.image.id != state.selectedImage.id) {
+        //   this.initCanvas();
+        // }
+      });
 
-    this.subscription = this.state$.subscribe((state: ArtboardState) => {
+    // this.subscription = this.state$.subscribe((state: ArtboardState) => {
 
-      this.initCanvas(state);
+    //   this.initCanvas(state);
 
-    });
+    // });
   }
 
   initCanvas(state?) {
@@ -85,6 +95,7 @@ export class SkinPixelsRegionsComponent implements OnInit, AfterViewInit, OnDest
     if (state.selectedImage == null) {
       return;
     }
+
     var canvas: Canvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
       // backgroundColor: 'white'
     });
@@ -147,7 +158,7 @@ export class SkinPixelsRegionsComponent implements OnInit, AfterViewInit, OnDest
         canvas.freeDrawingBrush.color = 'rgba(0,255,0,1)';
         canvas.freeDrawingBrush.width = 1.0;
         canvas.on('path:created', (options) => {
-          // this.store.dispatch(this.actions.lassoPathCreated(options.path));
+          // this.store.dispatch(this.artboardActions.lassoPathCreated(options.path));
           let path = options.path;
           path.lockRotation = true;
           path.lockUniScaling = true;

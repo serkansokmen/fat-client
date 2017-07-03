@@ -7,38 +7,38 @@
     <div class="row">
       <div class="col-xs-12 col-sm-3">
         <hr>
-        <md-radio-group (change)="store.dispatch(actions.selectArtboardTool($event.value))" [value]="(state$ | async)?.currentTool">
+        <md-radio-group (change)="artboardStore.dispatch(artboardActions.selectArtboardTool($event.value))" [value]="(artboard$ | async)?.currentTool">
           <!-- <md-radio-button [value]="artboardTools[0]" selected>Polygon</md-radio-button> -->
           <md-radio-button [value]="artboardTools[1]">Lasso</md-radio-button>
           <md-radio-button [value]="artboardTools[2]">Brush</md-radio-button>
         </md-radio-group>
         <hr>
         <div>
-          Pointer Size <md-slider thumbLabel [disabled]="(state$ | async)?.currentTool != artboardTools[2]"
-          (change)="store.dispatch(actions.setBrushRadius($event.value))"
-          [value]="(state$ | async)?.brushRadius" min="1" max="50"></md-slider>
+          Pointer Size <md-slider thumbLabel [disabled]="(artboard$ | async)?.currentTool != artboardTools[2]"
+          (change)="artboardStore.dispatch(artboardActions.setBrushRadius($event.value))"
+          [value]="(artboard$ | async)?.brushRadius" min="1" max="50"></md-slider>
         </div>
         <hr>
-        <md-radio-group (change)="store.dispatch(actions.setPixelAdding($event.value))" [value]="(state$ | async)?.isAdding">
+        <md-radio-group (change)="artboardStore.dispatch(artboardActions.setPixelAdding($event.value))" [value]="(artboard$ | async)?.isAdding">
           <md-radio-button [value]="true">Add Pixels</md-radio-button>
           <md-radio-button [value]="false">Remove Pixels</md-radio-button>
         </md-radio-group>
         <hr>
-        <md-slide-toggle [checked]="(state$ | async)?.isShowingOriginal"
-          (change)="store.dispatch(actions.setIsShowingOriginal($event.checked))">
-          {{ (state$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
+        <md-slide-toggle [checked]="(artboard$ | async)?.isShowingOriginal"
+          (change)="artboardStore.dispatch(artboardActions.setIsShowingOriginal($event.checked))">
+          {{ (artboard$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
         </md-slide-toggle>
         <hr>
         <!-- <div>
-          Zoom <md-slider thumbLabel (change)="store.dispatch(actions.setZoom($event.value))"
-          [value]="(state$ | async)?.zoom" step="0.1" min="1" max="4"></md-slider>
+          Zoom <md-slider thumbLabel (change)="artboardStore.dispatch(artboardActions.setZoom($event.value))"
+          [value]="(artboard$ | async)?.zoom" step="0.1" min="1" max="4"></md-slider>
         </div> -->
-        <!-- <md-slide-toggle [checked]="(state$ | async)?.isDragging"
-          (change)="store.dispatch(actions.setIsDragging($event.checked))">Drag</md-slide-toggle> -->
+        <!-- <md-slide-toggle [checked]="(artboard$ | async)?.isDragging"
+          (change)="artboardStore.dispatch(artboardActions.setIsDragging($event.checked))">Drag</md-slide-toggle> -->
       </div>
       <div class="col-xs-12 col-sm-9">
         <div class="draw-view">
-          <canvas #bgCanvas class="background" [style.display]="(state$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
+          <canvas #bgCanvas class="background" [style.display]="(artboard$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
           <canvas #drawCanvas></canvas>
         </div>
       </div>
