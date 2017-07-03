@@ -42,7 +42,8 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   }
 
   handleCardSelect(image: Image) {
-    console.log(image);
+    this.store.dispatch(this.actions.selectImage(image));
+    this.router.navigate([`/annotate/${image.id}/step-1`]);
   }
 
 }

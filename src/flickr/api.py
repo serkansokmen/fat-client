@@ -91,7 +91,11 @@ def flickr(request):
         # return if all added already
         if flickr_total == search.images.all() or flickr_total == 0:
             return Response({
-                'message': _('No results.')
+                'total': 0,
+                'search': search_serializer.data,
+                'images': [],
+                'page': req_page,
+                'perpage': req_perpage,
             }, status=status.HTTP_404_NOT_FOUND)
         # we have new images
         else:
@@ -113,13 +117,16 @@ def flickr(request):
                     'label': Image.IMAGE_STATES[0][1],
                 }
             } for image in photos_results
-                if not Image.objects.filter(id=image['id']).exists()
+                if not search.images.filter(id=image.get('id')).exists()
             ][req_cursor:req_cursor + req_perpage]
 
+            search_serializer = SearchSerializer(search)
             if len(new_images) > 0:
-                search_serializer = SearchSerializer(search)
+
+                already_added_images = [image for image in new_images if Image.objects.filter(id=image.get('id')) == 0]
+
                 return Response({
-                    'total': max(flickr_total - search.images.count(), 0),
+                    'total': max(flickr_total - len(already_added_images) - search.images.count(), 0),
                     'search': search_serializer.data,
                     'images': new_images,
                     'page': req_page,
@@ -128,10 +135,14 @@ def flickr(request):
                 })
             else:
                 if flickr_page < flickr_pages:
-                    return make_search_query(request, flickr_page=flickr_page+1)
+                    return make_search_query(request, flickr_page=flickr_page + 1)
                 else:
                     return Response({
-                        'message': _('No results.')
+                        'total': 0,
+                        'search': search_serializer.data,
+                        'images': [],
+                        'page': req_page,
+                        'perpage': req_perpage,
                     }, status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST' or request.method == 'PUT':
@@ -154,7 +165,7 @@ def flickr(request):
         for image_data in images_data:
             (image, created) = Image.objects.get_or_create(**image_data)
             # import ipdb; ipdb.set_trace()
-            if image.state != Image.IMAGE_STATES[1][0] and image not in search.images.all():
+            if image not in search.images.all():
                 search.images.add(image)
         search.save()
 

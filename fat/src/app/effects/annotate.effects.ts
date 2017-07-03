@@ -33,6 +33,7 @@ export class AnnotateEffects {
     .map(toPayload)
     .switchMap(payload => this.service.getImages(payload.state))
     .switchMap(result => {
+      console.log(result);
       return Observable.of({
         type: AnnotateActions.REQUEST_IMAGES_COMPLETE,
         payload: {

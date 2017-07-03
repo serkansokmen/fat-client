@@ -6,7 +6,7 @@ import { Image, ImageState } from '../models/search.models';
 @Injectable()
 export class AnnotateActions {
 
-  static REQUEST_IMAGES = '[Annotate] Request Approved Images';
+  static REQUEST_IMAGES = '[Annotate] Request Images';
   requestImages(state: ImageState): Action {
     return {
       type: AnnotateActions.REQUEST_IMAGES,
@@ -16,7 +16,7 @@ export class AnnotateActions {
     }
   }
 
-  static REQUEST_IMAGES_COMPLETE = '[Annotate] Request Approved Images Complete';
+  static REQUEST_IMAGES_COMPLETE = '[Annotate] Request Images Complete';
   requestImagesComplete(images: Image[], total: number): Action {
     return {
       type: AnnotateActions.REQUEST_IMAGES_COMPLETE,

@@ -79,8 +79,8 @@ class Image(models.Model):
 class Search(models.Model):
 
     TAG_MODES = (
-        ('all', 'AND'),
-        ('any', 'OR'),
+        ('all', 'all'),
+        ('any', 'any'),
     )
 
     tags = models.TextField(unique=True)
@@ -101,6 +101,9 @@ class Search(models.Model):
 
     def __str__(self):
         return '{}'.format(self.tags)
+
+    def get_images_of_state(self, state):
+        return self.images.filter(state=state[0])
 
 
 @receiver(post_delete, sender=Search)

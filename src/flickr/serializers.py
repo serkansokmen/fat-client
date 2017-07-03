@@ -43,7 +43,7 @@ class SearchSerializer(serializers.ModelSerializer):
         (instance, created) = Search.objects.get_or_create(**validated_data)
         for image_data in images_data:
             (image, created) = Image.objects.get_or_create(**image_data)
-            if image_data.get('state') != Image.IMAGE_STATES[1][0] and image not in instance.images.all():
+            if image not in instance.images.all():
                 instance.images.add(image)
         return instance
 
