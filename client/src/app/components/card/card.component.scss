@@ -7,6 +7,9 @@ img[md-card-image],
 
 :host {
   break-inside: avoid;
+  flex: 0 1 auto;
+  position: relative;
+  box-sizing: border-box;
 
   md-card {
 
@@ -14,7 +17,7 @@ img[md-card-image],
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
-    flex: 1 0 auto;
+    // flex: 1 0 auto;
     padding: 5px;
     position: relative;
     display: block;

@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { FlickrService } from '../../services/flickr.service';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { SearchState } from '../../reducers/search.reducer';
