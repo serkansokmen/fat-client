@@ -2,6 +2,7 @@
   *ngIf="(annotate$ | async)?.selectedImage"
   [selectedImage]="(annotate$ | async)?.selectedImage"
   [items]="(annotate$ | async)?.steps"
+  [step]="(annotate$ | async)?.selectedStep"
   (onStepSelect)="handleStepChange($event)"></fat-annotate-steps>
 
 <md-card>

@@ -11,8 +11,8 @@ from .models import Search, Image
 
 
 def download_approved_images(modeladmin, request, queryset):
-    for image in queryset:
-        if image.state == Image.IMAGE_STATES[2][0]:
+    for image in Image.objects.filter(state=Image.IMAGE_STATES[2][0]):
+        if not image.image:
             image.download_image()
 
 def set_images_indeterminate(modeladmin, request, queryset):

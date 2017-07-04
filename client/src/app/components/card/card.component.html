@@ -15,7 +15,7 @@
     </button>
   </md-card-content>
 
-  <md-card-actions *ngIf="isActionsVisible">
+  <md-card-actions *ngIf="cardOptions.isActionsVisible">
     <div *ngSwitchCase="1">
       <div class="meta" *ngIf="cardOptions.cardScale >= 50">
         <strong>Tags:</strong> {{ image.tags }} <br>

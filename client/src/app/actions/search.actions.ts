@@ -11,7 +11,7 @@ export class SearchActions {
     return {
       type: SearchActions.SET_PER_PAGE,
       payload: {
-        perpage
+        perpage,
       }
     }
   }
@@ -30,12 +30,13 @@ export class SearchActions {
   }
 
   static REQUEST_SEARCH_COMPLETE = '[Search] Request Search Complete';
-  requestSearchComplete(search: any, images: Image[], total: number, perpage: number, page: number): Action {
+  requestSearchComplete(search: any, images: Image[], left: number, total: number, perpage: number, page: number): Action {
     return {
       type: SearchActions.REQUEST_SEARCH_COMPLETE,
       payload: {
         search,
         images,
+        left,
         total,
         page,
       }
@@ -47,7 +48,7 @@ export class SearchActions {
     return {
       type: SearchActions.SELECT_LICENCE,
       payload: {
-        license
+        license,
       }
     }
   }
@@ -57,7 +58,7 @@ export class SearchActions {
     return {
       type: SearchActions.DESELECT_LICENCE,
       payload: {
-        license
+        license,
       }
     }
   }
@@ -67,7 +68,7 @@ export class SearchActions {
     return {
       type: SearchActions.TOGGLE_IMAGE_DISCARDED,
       payload: {
-        image
+        image,
       }
     }
   }
@@ -79,19 +80,20 @@ export class SearchActions {
       payload: {
         search,
         images,
-        licenses
+        licenses,
       }
     }
   }
 
   static SAVE_SEARCH_COMPLETE = '[Search] Save Search Complete';
-  saveSearchComplete(search: any, newImages: Image[], total: number): Action {
+  saveSearchComplete(search: any, newImages: Image[], left: number, total: number): Action {
     return {
       type: SearchActions.SAVE_SEARCH_COMPLETE,
       payload: {
         search,
         newImages,
-        total
+        left,
+        total,
       }
     }
   }

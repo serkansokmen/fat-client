@@ -17,22 +17,22 @@ export interface AnnotateState {
 const initialState: AnnotateState = {
   steps: [{
     id: 1,
-    iconName: 'fa-chevron-right',
+    iconName: 'fa-paint-brush',
     title: 'Fine Tune Marked Skin Pixels',
     description: 'Please use the lasso & brush tool to remove or fully include regions and pixels. Try to get pixel perfect results.',
    }, {
     id: 2,
-    iconName: 'fa-chevron-right',
+    iconName: 'fa-sliders',
     title: 'Semantic Nudity Percentage',
     description: '',
    }, {
     id: 3,
-    iconName: 'fa-chevron-right',
+    iconName: 'fa-pencil-square-o',
     title: 'Mark Objects',
     description: 'Please select an object type and add related rectangles on top of the image by dragging and drawing the smallest bounding rectangle around each object. You can edit and remove later by selecting from the options.',
    }, {
     id: 4,
-    iconName: 'fa-check',
+    iconName: 'fa-filter',
     title: 'Gender and Age Group',
     description: 'Please select gender and age group for each of the objects. You can edit and remove later by selecting from the options.',
   }],
@@ -69,13 +69,15 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
     case AnnotateActions.SELECT_IMAGE:
       return {
         ...state,
-        selectedImage: new Image(action.payload.image)
+        selectedImage: new Image(action.payload.image),
+        selectedStep: 1
       };
 
     case AnnotateActions.DESELECT_IMAGE:
       return {
         ...state,
-        selectedImage: null
+        selectedImage: null,
+        selectedStep: null
       };
 
     case AnnotateActions.REQUEST_IMAGE:
@@ -90,6 +92,7 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         ...state,
         isRequesting: false,
         selectedImage: new Image(action.payload.result),
+        selectedStep: 1
       };
 
     case AnnotateActions.SELECT_STEP:

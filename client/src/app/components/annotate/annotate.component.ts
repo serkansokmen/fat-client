@@ -7,6 +7,7 @@ import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
 import { Image, ImageState } from '../../models/search.models';
 import { CardLayoutOptions } from '../../models/card-layout.models';
+import { CardLayoutActions } from '../../actions/card-layout.actions';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     public dialog: MdDialog,
     public store: Store<AnnotateState>,
     private actions: AnnotateActions,
+    private cardLayoutActions: CardLayoutActions,
     private router: Router,
     private route: ActivatedRoute,
   ) {
@@ -34,6 +36,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.dispatch(this.actions.requestImages(ImageState.approved));
+    this.store.dispatch(this.cardLayoutActions.setActionsVisible(false));
 
     this.sub = this.route.params.subscribe(params => {
       if (!params.id) {

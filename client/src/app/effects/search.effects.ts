@@ -41,6 +41,7 @@ export class SearchEffects {
         payload: {
           search: result.search,
           images: result.images,
+          left: result.left,
           total: result.total,
           perpage: result.perpage,
           page: result.page,
@@ -55,6 +56,7 @@ export class SearchEffects {
         type: SearchActions.SAVE_SEARCH_COMPLETE,
         payload: {
           search: result.search,
+          left: result.left,
           total: result.total,
           newImages: result.images
         }

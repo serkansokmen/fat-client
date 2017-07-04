@@ -25,4 +25,15 @@ export class CardLayoutActions {
       }
     }
   }
+
+  static SET_ACTIONS_VISIBLE = '[Card Layout] Set Actions Visible';
+  setActionsVisible(isActionsVisible: boolean): Action {
+    return {
+      type: CardLayoutActions.SET_ACTIONS_VISIBLE,
+      payload: {
+        isActionsVisible
+      }
+    }
+  }
+
 }

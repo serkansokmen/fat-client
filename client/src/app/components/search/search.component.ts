@@ -77,6 +77,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.images = state.images;
       this.currentPerPage = state.perpage;
 
+      this.store.dispatch(this.cardLayoutActions.setActionsVisible(true));
+
     });
 
     // this.form.valueChanges

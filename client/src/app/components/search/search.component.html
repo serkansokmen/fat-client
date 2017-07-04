@@ -7,7 +7,7 @@
         <md-option *ngFor="let mode of (state$ | async)?.tagModes" [value]="mode">{{ mode }}</md-option>
       </md-select>
       <md-input-container><input [autocomplete]="'off'" mdInput formControlName="userID" type="text" placeholder="User ID (Optional)"/></md-input-container>
-      <p class="pagination-label" [innerHTML]="(state$ | async)?.isRequesting ? 'Loading...' : (state$ | async)?.total + ' unviewed results'"></p>
+      <p class="pagination-label" [innerHTML]="(state$ | async)?.isRequesting ? 'Loading...' : (state$ | async)?.left + ' unviewed of ' + (state$ | async)?.total + ' images'"></p>
       <md-input-container [dividerColor]="(state$ | async)?.perpage > maxPerPage ? 'warn' : 'primary'">
         <input mdInput
           (keyup.enter)="handlePerpageKeypress($event)" [autocomplete]="'off'" formControlName="perpage"

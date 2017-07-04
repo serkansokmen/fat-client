@@ -36,6 +36,15 @@ export function cardLayoutReducer(state: CardLayoutState = initialState, action:
         }
       };
 
+    case CardLayoutActions.SET_ACTIONS_VISIBLE:
+      return {
+        ...state,
+        currentViewMode: {
+          ...state.currentViewMode,
+          isActionsVisible: action.payload.isActionsVisible
+        }
+      };
+
     default: {
       return state;
     }
