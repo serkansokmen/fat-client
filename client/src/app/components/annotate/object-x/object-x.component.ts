@@ -1,4 +1,5 @@
 import { Component,
+  Input,
   ViewChild,
   ElementRef,
   AfterViewInit,
@@ -18,6 +19,8 @@ import { Store } from '@ngrx/store';
 import { ObjectXState } from '../../../reducers/object-x.reducer';
 import { ObjectXActions } from '../../../actions/object-x.actions';
 import { ObjectX, ObjectXType, DrawMode } from '../../../models/object-x.models';
+import { Image as FlickrImage } from '../../../models/search.models';
+import { AnnotateState } from '../../../reducers/annotate.reducer';
 
 @Component({
   selector: 'fat-object-x',
@@ -27,6 +30,8 @@ import { ObjectX, ObjectXType, DrawMode } from '../../../models/object-x.models'
   providers: [ObjectXActions]
 })
 export class ObjectXComponent implements AfterViewInit, OnDestroy {
+
+  @Input('image') image: FlickrImage;
 
   state$: Observable<ObjectXState>;
   objects: ObjectX[];
@@ -63,7 +68,7 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
     });
     this.context = this.canvas.getContext('2d');
 
-    fabric.Image.fromURL('https://c1.staticflickr.com/6/5595/14907092716_3223a57239_b.jpg', (img) => {
+    fabric.Image.fromURL(this.image.image, (img) => {
       img.lockRotation = true;
       img.lockUniScaling = true;
       bgCanvas.setWidth(img.width)

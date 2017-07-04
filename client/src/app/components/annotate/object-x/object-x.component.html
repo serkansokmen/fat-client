@@ -1,70 +1,57 @@
-<md-card>
-  <md-card-title>
-    <h1>Step 3: Mark {{ (state$ | async)?.selectedObjectType?.pluralName }}</h1>
-    <p>
-      Please select an object type and add related rectangles on top of the image by dragging and drawing the smallest bounding rectangle <br> around each
-      <b [style.color]="(state$ | async)?.selectedObjectType?.color">{{ (state$ | async)?.selectedObjectType?.name }}</b>.
-      You can edit and remove later by selecting from the options.
-    </p>
-  </md-card-title>
-  <md-card-content>
-    <div class="row">
-      <div class="col-xs-12 col-sm-3">
-        <hr>
-        <div>
-          Editing Mode:
-          <button md-raised-button [mdMenuTriggerFor]="appMenu">
-            <span [style.color]="(state$ | async)?.selectedObjectType?.color">{{ (state$ | async)?.selectedObjectType?.pluralName }}</span>
-            <md-icon fontSet="fontawesome" fontIcon="fa-chevron-down"></md-icon>
-          </button>
-          <hr>
-          <md-menu #appMenu="mdMenu">
-            <button md-menu-item *ngFor="let type of (state$ | async)?.objectTypes"
-              (click)="store.dispatch(actions.selectObjectType(type))">
-              <span [style.color]="type.color">{{ type.name }}</span>
-            </button>
-          </md-menu>
-        </div>
-        <hr>
-        <md-radio-group (change)="store.dispatch(actions.setDrawMode($event.value))"
-          [value]="(state$ | async)?.drawMode">
-          <md-radio-button [value]="0">Add</md-radio-button>
-          <md-radio-button [value]="2">Modify</md-radio-button>
-          <md-radio-button [value]="1">Remove</md-radio-button>
-        </md-radio-group>
-        <hr>
-        <md-slide-toggle [checked]="(state$ | async)?.isShowingOriginal"
-          (change)="store.dispatch(actions.setIsShowingOriginal($event.checked))">
-          {{ (state$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
-        </md-slide-toggle>
-        <hr>
-        <div *ngFor="let type of (state$ | async)?.objectTypes">
-          <md-checkbox [disabled]="getTypeCount(type) == 0"
-            [checked]="getTypeCount(type) > 0"
-            (change)="store.dispatch(actions.setVisibleObjectTypes(type, $event?.checked))">
-          </md-checkbox>
-          <span [style.color]="getTypeCount(type) == 0 ? '#ccc' : 'black'">{{ type?.name }} ({{ getTypeCount(type) }})</span>
-          <hr>
-        </div>
-        <hr>
-        <div *ngFor="let object of (state$ | async)?.objects">
-          <button md-button (click)="store.dispatch(actions.selectObject(object))"><small><i>{{ object?.guid }}</i></small><br></button>
-          <div>
-            x: {{ object?.graphics.getLeft() }} <br>
-            y: {{ object?.graphics.getTop() }} <br>
-            width: {{ object?.graphics.getWidth() }} <br>
-            height: {{ object?.graphics.getHeight() }} <br>
-          </div>
-          <hr>
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-9">
-        <div class="draw-view">
-          <canvas #bgCanvas class="background" [style.display]="(state$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
-          <canvas #drawCanvas></canvas>
-        </div>
-      </div>
+<div class="row">
+  <div class="col-xs-12 col-sm-3">
+    <hr>
+    <div>
+      Editing Mode:
+      <button md-raised-button [mdMenuTriggerFor]="appMenu">
+        <span [style.color]="(state$ | async)?.selectedObjectType?.color">{{ (state$ | async)?.selectedObjectType?.pluralName }}</span>
+        <md-icon fontSet="fontawesome" fontIcon="fa-chevron-down"></md-icon>
+      </button>
+      <hr>
+      <md-menu #appMenu="mdMenu">
+        <button md-menu-item *ngFor="let type of (state$ | async)?.objectTypes"
+          (click)="store.dispatch(actions.selectObjectType(type))">
+          <span [style.color]="type.color">{{ type.name }}</span>
+        </button>
+      </md-menu>
     </div>
-
-  </md-card-content>
-</md-card>
+    <hr>
+    <md-radio-group (change)="store.dispatch(actions.setDrawMode($event.value))"
+      [value]="(state$ | async)?.drawMode">
+      <md-radio-button [value]="0">Add</md-radio-button>
+      <md-radio-button [value]="2">Modify</md-radio-button>
+      <md-radio-button [value]="1">Remove</md-radio-button>
+    </md-radio-group>
+    <hr>
+    <md-slide-toggle [checked]="(state$ | async)?.isShowingOriginal"
+      (change)="store.dispatch(actions.setIsShowingOriginal($event.checked))">
+      {{ (state$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
+    </md-slide-toggle>
+    <hr>
+    <div *ngFor="let type of (state$ | async)?.objectTypes">
+      <md-checkbox [disabled]="getTypeCount(type) == 0"
+        [checked]="getTypeCount(type) > 0"
+        (change)="store.dispatch(actions.setVisibleObjectTypes(type, $event?.checked))">
+      </md-checkbox>
+      <span [style.color]="getTypeCount(type) == 0 ? '#ccc' : 'black'">{{ type?.name }} ({{ getTypeCount(type) }})</span>
+      <hr>
+    </div>
+    <hr>
+    <div *ngFor="let object of (state$ | async)?.objects">
+      <button md-button (click)="store.dispatch(actions.selectObject(object))"><small><i>{{ object?.guid }}</i></small><br></button>
+      <div>
+        x: {{ object?.graphics.getLeft() }} <br>
+        y: {{ object?.graphics.getTop() }} <br>
+        width: {{ object?.graphics.getWidth() }} <br>
+        height: {{ object?.graphics.getHeight() }} <br>
+      </div>
+      <hr>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-9">
+    <div class="draw-view">
+      <canvas #bgCanvas class="background" [style.display]="(state$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
+      <canvas #drawCanvas></canvas>
+    </div>
+  </div>
+</div>

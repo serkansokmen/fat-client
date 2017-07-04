@@ -15,7 +15,7 @@ export class AnnotateEffects {
   constructor(
     private http: Http,
     private actions$: Actions,
-    private store: Store<AnnotateState>,
+    private store$: Store<AnnotateState>,
     private service: FlickrService,
     private router: Router,
   ) {}
@@ -49,4 +49,5 @@ export class AnnotateEffects {
           image: result
         }
       }));
+
 }

@@ -65,4 +65,14 @@ export class AnnotateActions {
     }
   }
 
+  static SELECT_STEP = '[Annotate] Select Step';
+  selectStep(step: number): Action {
+    return {
+      type: AnnotateActions.SELECT_STEP,
+      payload: {
+        step
+      }
+    }
+  }
+
 }

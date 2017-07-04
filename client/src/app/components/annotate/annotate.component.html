@@ -1,24 +1,45 @@
 <fat-annotate-steps
-  *ngIf="(state$ | async)?.selectedImage"
-  [selectedImage]="(state$ | async)?.selectedImage"
-  [items]="(state$ | async)?.navItems"></fat-annotate-steps>
+  *ngIf="(annotate$ | async)?.selectedImage"
+  [selectedImage]="(annotate$ | async)?.selectedImage"
+  [items]="(annotate$ | async)?.steps"
+  (onStepSelect)="handleStepChange($event)"></fat-annotate-steps>
 
-<div class="content" [class.is-loading]="(state$ | async)?.isRequesting">
-  <div *ngIf="(state$ | async)?.previous">
-    <button md-button>{{ (state$ | async)?.previous }}</button>
-  </div>
-  <div *ngIf="(state$ | async)?.previous">
-    <button md-button>{{ (state$ | async)?.previous }}</button>
-  </div>
-  <fat-card-list *ngIf="!(state$ | async)?.isRequesting && !(state$ | async)?.selectedImage"
-      [images]="(state$ | async)?.images"
-      [viewMode]="viewMode"
-      [cardOptions]="{
-        cardScale: 25,
-        isActionsVisible: false
-      }"
-      (onCardClick)="handleCardSelect($event)"></fat-card-list>
-  <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
-  <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
-  <router-outlet></router-outlet>
-</div>
+<md-card>
+  <md-card-title>
+    <h1 [innerHTML]="(annotate$ | async)?.stepTitle"></h1>
+    <p [innerHTML]="(annotate$ | async)?.stepDescription"></p>
+  </md-card-title>
+  <md-card-content>
+
+    <div class="content">
+      <div *ngIf="!(annotate$ | async)?.isRequesting && !(annotate$ | async)?.selectedImage && !(annotate$ | async)?.selectedStep">
+        <div *ngIf="(annotate$ | async)?.previous">
+          <button md-button>{{ (annotate$ | async)?.previous }}</button>
+        </div>
+        <div *ngIf="(annotate$ | async)?.previous">
+          <button md-button>{{ (annotate$ | async)?.previous }}</button>
+        </div>
+        <fat-card-list
+            [images]="(annotate$ | async)?.images"
+            [viewMode]="viewMode"
+            [cardOptions]="{
+              cardScale: 25,
+              isActionsVisible: false
+            }"
+            (onCardClick)="handleCardSelect($event)"></fat-card-list>
+        <md-progress-spinner *ngIf="(annotate$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
+        <div *ngIf="!(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">No results.</div>
+      </div>
+
+      <div [ngSwitch]="(annotate$ | async)?.selectedStep">
+
+        <fat-skin-pixels-regions *ngSwitchCase="1" [image]="(annotate$ | async)?.selectedImage"></fat-skin-pixels-regions>
+        <fat-nudity-check *ngSwitchCase="2" [image]="(annotate$ | async)?.selectedImage"></fat-nudity-check>
+        <fat-object-x *ngSwitchCase="3" [image]="(annotate$ | async)?.selectedImage"></fat-object-x>
+        <fat-attributes *ngSwitchCase="4" [image]="(annotate$ | async)?.selectedImage"></fat-attributes>
+
+      </div>
+    </div>
+
+  </md-card-content>
+</md-card>

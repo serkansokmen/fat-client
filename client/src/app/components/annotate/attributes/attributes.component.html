@@ -1,50 +1,37 @@
-<md-card>
-  <md-card-title>
-    <h1>Step 4: Gender and Age Group</h1>
-    <p *ngIf="(state$ | async)?.objects.length == 0">You may want to <a [routerLink]="['/step-3']">add some objects</a> first</p>
-    <p *ngIf="(state$ | async)?.objects.length > 0">
-      Please select gender and age group for each of the <b [style.color]="(state$ | async)?.selectedObjectType?.color">{{ (state$ | async)?.selectedObjectType?.pluralName }}</b>.
-      You can edit and remove later by selecting from the options.
-    </p>
-  </md-card-title>
-  <md-card-content>
-    <div class="row">
-      <div class="col-xs-12 col-sm-3" *ngIf="(state$ | async)?.objects.length > 0 && !(state$ | async)?.selectedObject">
-        Please select one of the {{ (state$ | async)?.selectedObjectType?.pluralName }}
-      </div>
-      <div class="col-xs-12 col-sm-3" *ngIf="(state$ | async)?.selectedObject">
-        <hr>
-        <md-radio-group
-          (change)="store.dispatch(actions.setGender($event.value))"
-          [value]="(state$ | async)?.selectedObject?.gender">
-          <md-radio-button *ngFor="let gender of (state$ | async)?.genders" [value]="gender">{{ gender.toString() }}</md-radio-button>
-        </md-radio-group>
-        <hr>
-        <md-radio-group
-          (change)="store.dispatch(actions.setAgeGroup($event.value))"
-          [value]="(state$ | async)?.selectedObject?.ageGroup">
-          <md-radio-button *ngFor="let ageGroup of (state$ | async)?.ageGroups" [value]="ageGroup">{{ ageGroup.toString() }}</md-radio-button>
-        </md-radio-group>
-        <hr>
-        <div>
-          <label>{{ (state$ | async)?.selectedObject?.guid }}</label>
-          Gender: {{ (state$ | async)?.selectedObject?.gender }} <br>
-          Age Group: {{ (state$ | async)?.selectedObject?.ageGroup }} <br>
-        </div>
-        <hr>
-        <md-slide-toggle [checked]="(state$ | async)?.isShowingOriginal"
-          (change)="store.dispatch(actions.setIsShowingOriginal($event.checked))">
-          {{ (state$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
-        </md-slide-toggle>
-        <hr>
-      </div>
-      <div class="col-xs-12 col-sm-9" [style.display]="(state$ | async)?.objects.length > 0 ? 'block' : 'none'">
-        <div class="draw-view">
-          <canvas #bgCanvas class="background" [style.display]="(state$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
-          <canvas #drawCanvas></canvas>
-        </div>
-      </div>
+<div class="row">
+  <div class="col-xs-12 col-sm-3" *ngIf="(state$ | async)?.objects.length > 0 && !(state$ | async)?.selectedObject">
+    Please select one of the {{ (state$ | async)?.selectedObjectType?.pluralName }}
+  </div>
+  <div class="col-xs-12 col-sm-3" *ngIf="(state$ | async)?.selectedObject">
+    <hr>
+    <md-radio-group
+      (change)="store.dispatch(actions.setGender($event.value))"
+      [value]="(state$ | async)?.selectedObject?.gender">
+      <md-radio-button *ngFor="let gender of (state$ | async)?.genders" [value]="gender">{{ gender.toString() }}</md-radio-button>
+    </md-radio-group>
+    <hr>
+    <md-radio-group
+      (change)="store.dispatch(actions.setAgeGroup($event.value))"
+      [value]="(state$ | async)?.selectedObject?.ageGroup">
+      <md-radio-button *ngFor="let ageGroup of (state$ | async)?.ageGroups" [value]="ageGroup">{{ ageGroup.toString() }}</md-radio-button>
+    </md-radio-group>
+    <hr>
+    <div>
+      <label>{{ (state$ | async)?.selectedObject?.guid }}</label>
+      Gender: {{ (state$ | async)?.selectedObject?.gender }} <br>
+      Age Group: {{ (state$ | async)?.selectedObject?.ageGroup }} <br>
     </div>
-
-  </md-card-content>
-</md-card>
+    <hr>
+    <md-slide-toggle [checked]="(state$ | async)?.isShowingOriginal"
+      (change)="store.dispatch(actions.setIsShowingOriginal($event.checked))">
+      {{ (state$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
+    </md-slide-toggle>
+    <hr>
+  </div>
+  <div class="col-xs-12 col-sm-9" [style.display]="(state$ | async)?.objects.length > 0 ? 'block' : 'none'">
+    <div class="draw-view">
+      <canvas #bgCanvas class="background" [style.display]="(state$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
+      <canvas #drawCanvas></canvas>
+    </div>
+  </div>
+</div>

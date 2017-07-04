@@ -4,7 +4,8 @@ import { Image } from  '../models/search.models';
 
 
 export interface AnnotateState {
-  navItems: any[],
+  steps: any[],
+  selectedStep: any,
   isRequesting: boolean,
   images: Image[],
   selectedImage: Image,
@@ -14,29 +15,34 @@ export interface AnnotateState {
 };
 
 const initialState: AnnotateState = {
-  navItems: [{
-    routerLink: '/step-1',
-    label: 'Skin Pixel Regions',
-    iconName: 'fa-chevron-right'
+  steps: [{
+    id: 1,
+    iconName: 'fa-chevron-right',
+    title: 'Fine Tune Marked Skin Pixels',
+    description: 'Please use the lasso & brush tool to remove or fully include regions and pixels. Try to get pixel perfect results.',
    }, {
-    routerLink: '/step-2',
-    label: 'Semantic Nudity Percentage',
-    iconName: 'fa-chevron-right'
+    id: 2,
+    iconName: 'fa-chevron-right',
+    title: 'Semantic Nudity Percentage',
+    description: '',
    }, {
-    routerLink: '/step-3',
-    label: 'Mark Objects',
-    iconName: 'fa-chevron-right'
+    id: 3,
+    iconName: 'fa-chevron-right',
+    title: 'Mark Objects',
+    description: 'Please select an object type and add related rectangles on top of the image by dragging and drawing the smallest bounding rectangle around each object. You can edit and remove later by selecting from the options.',
    }, {
-    routerLink: '/step-4',
-    label: 'Gender and Age Group',
-    iconName: 'fa-check'
-   }],
-   isRequesting: false,
-   images: [],
-   selectedImage: null,
-   total: 0,
-   previous: null,
-   next: null,
+    id: 4,
+    iconName: 'fa-check',
+    title: 'Gender and Age Group',
+    description: 'Please select gender and age group for each of the objects. You can edit and remove later by selecting from the options.',
+  }],
+  selectedStep: null,
+  isRequesting: false,
+  images: [],
+  selectedImage: null,
+  total: 0,
+  previous: null,
+  next: null,
 };
 
 export function annotateReducer(state: AnnotateState = initialState, action: Action) {
@@ -84,6 +90,12 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         ...state,
         isRequesting: false,
         selectedImage: new Image(action.payload.result),
+      };
+
+    case AnnotateActions.SELECT_STEP:
+      return {
+        ...state,
+        selectedStep: action.payload.step,
       };
 
     default:

@@ -1,7 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { RouterState } from '@ngrx/router-store';
-import { go, replace, search, show, back, forward } from '@ngrx/router-store';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Image } from '../../../models/search.models';
 
 @Component({
@@ -15,14 +12,10 @@ export class AnnotateStepsComponent {
   @Input() items: any[];
   @Input() selectedImage: Image;
 
-  constructor(private routerStore: Store<RouterState>) { }
+  @Output('onStepSelect') step = new EventEmitter<any>();
 
-  navigateTo(routerLink: string) {
-    this.routerStore.dispatch(go(routerLink));
-  }
-
-  saveImage() {
-
+  handleStepClick(data: any) {
+    this.step.emit(data);
   }
 
 }

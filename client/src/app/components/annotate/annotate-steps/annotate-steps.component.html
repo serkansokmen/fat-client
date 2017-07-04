@@ -1,12 +1,12 @@
 <md-toolbar>
-  <button md-button *ngFor="let item of items" [routerLink]="['/annotate/' + selectedImage.id + '/' + item.routerLink]" routerLinkActive="active">
-    {{ item?.isDisabled }}
-    {{ item?.label }} <md-icon fontSet="fontawesome" [fontIcon]="item?.iconName"></md-icon>
+  <button md-button *ngFor="let item of items"
+    (click)="handleStepClick({ image: selectedImage, step: item.id})">
+    {{ item?.title }} <md-icon fontSet="fontawesome" [fontIcon]="item?.iconName"></md-icon>
   </button>
-  <button md-raised-button [routerLink]="['/annotate']">
+  <button md-button [routerLink]="['/annotate']">
     <md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon> Cancel
   </button>
-  <button md-raised-button (click)="saveImage()">
+  <button md-raised-button>
     <md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Save
   </button>
 </md-toolbar>

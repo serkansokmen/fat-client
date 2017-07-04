@@ -96,10 +96,10 @@ import { CardListComponent } from './components/card-list/card-list.component';
   providers: [
     AuthGuard,
     AuthenticationService,
-    SearchActions,
-    FlickrService,
     CookieService,
+    FlickrService,
     ImageService,
+    SearchActions,
     AnnotateActions,
     CardLayoutActions,
   ],

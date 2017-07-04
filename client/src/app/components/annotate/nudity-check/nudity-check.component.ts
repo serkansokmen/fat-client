@@ -1,4 +1,5 @@
 import { Component,
+  Input,
   ViewChild,
   ElementRef,
   AfterViewInit,
@@ -18,6 +19,7 @@ import { Store } from '@ngrx/store';
 import { NudityCheckState } from '../../../reducers/nudity-check.reducer';
 import { NudityCheckActions } from '../../../actions/nudity-check.actions';
 import { ObjectX, Gender, DrawMode } from '../../../models/object-x.models';
+import { Image as FlickrImage } from '../../../models/search.models';
 
 @Component({
   selector: 'fat-nudity-check',
@@ -27,6 +29,8 @@ import { ObjectX, Gender, DrawMode } from '../../../models/object-x.models';
   providers: [NudityCheckActions]
 })
 export class NudityCheckComponent implements AfterViewInit, OnDestroy {
+
+  @Input('image') image: FlickrImage;
 
   state$: Observable<NudityCheckState>;
 
@@ -42,9 +46,6 @@ export class NudityCheckComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.subscription = this.state$.subscribe((state: NudityCheckState) => {
-      console.log(state);
-      // this.canvas.clear();
-      // this.canvas.renderAll();
     });
   }
 

@@ -17,10 +17,10 @@ import { ViewMode } from '../../models/card-layout.models';
 })
 export class AnnotateComponent implements OnInit, OnDestroy {
 
-  state$: Observable<any>;
-  private sub: any;
+  annotate$: Observable<AnnotateState>;
+  viewMode = ViewMode.thumbnails;
 
-  viewMode = ViewMode.list;
+  private sub: any;
 
   constructor(
     public dialog: MdDialog,
@@ -29,15 +29,16 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
   ) {
-    this.state$ = store.select('annotate');
+    this.annotate$ = store.select('annotate');
   }
 
   ngOnInit() {
     this.store.dispatch(this.actions.requestImages(ImageState.approved));
+
     this.sub = this.route.params.subscribe(params => {
-      if (params.id) {
-        // this.store.dispatch(this.actions.requestImage(params.id));
-      } else {
+      if (!params.id) {
+      //   this.store.dispatch(this.actions.requestImage(params.id));
+      // } else {
         this.store.dispatch(this.actions.deselectImage());
       }
     });
@@ -50,10 +51,15 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   handleCardSelect(image: Image) {
     if (image.image) {
       this.store.dispatch(this.actions.selectImage(image));
-      this.router.navigate([`/annotate/${image.id}/step-1`]);
+      this.router.navigate(['/annotate', image.id], {queryParams: {step: 1}});
     } else {
 
     }
+  }
+
+  handleStepChange(data: any) {
+    this.store.dispatch(this.actions.selectStep(data.step));
+    this.router.navigate(['/annotate', data.image.id], { queryParams: { step: data.step }});
   }
 
 }

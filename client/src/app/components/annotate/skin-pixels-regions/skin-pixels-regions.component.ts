@@ -3,6 +3,8 @@ import { Component,
   ElementRef,
   AfterViewInit,
   OnDestroy,
+  SimpleChanges,
+  SimpleChange,
   HostListener,
   Input,
   Output,
@@ -14,7 +16,6 @@ import {
   fabric,
   Canvas,
   StaticCanvas,
-  Image,
   Polygon,
   Group
 } from 'fabric';
@@ -26,9 +27,6 @@ import { ArtboardService } from '../../../services/artboard.service';
 import { ArtboardTool } from '../../../models/artboard.models';
 import { ImageService } from '../../../services/image.service';
 import { Image as FlickrImage } from '../../../models/search.models';
-import { AnnotateState } from '../../../reducers/annotate.reducer';
-
-import 'rxjs/add/observable/combineLatest';
 
 @Component({
   selector: 'fat-skin-pixels-regions',
@@ -42,13 +40,12 @@ import 'rxjs/add/observable/combineLatest';
 })
 export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
 
-  annotate$: Observable<any>;
   artboard$: Observable<any>;
+
+  @Input('image') image: FlickrImage;
 
   @Output('image')
   imageEmitter = new EventEmitter<FlickrImage>();
-
-  private image: FlickrImage;
 
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
@@ -63,17 +60,16 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     public artboardStore: Store<ArtboardState>,
-    public annotateStore: Store<AnnotateState>,
     public artboardActions: ArtboardActions,
     private imageService: ImageService,
     private zone: NgZone
   )
   {
     this.artboard$ = artboardStore.select('artboard');
-    this.annotate$ = annotateStore.select('annotate');
   }
 
   ngAfterViewInit() {
+
     this.foregroundCanvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
       // backgroundColor: 'white'
     });
@@ -82,28 +78,10 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
     this.backgroundCanvas = new fabric.StaticCanvas(this.bgCanvas.nativeElement, {
       backgroundColor: 'black'
     });
-
-    this.subscription = Observable.combineLatest(this.artboard$, this.annotate$,
-      (artboard, annotate) => Observable.of({
-        artboard,
-        annotate
-      }))
-      .subscribe((state: any) => {
-        let annotateState = state.value.annotate;
-        let artboardState = state.value.artboard;
-        if (annotateState.selectedImage && (!this.image || this.image.id != annotateState.selectedImage.id)) {
-          this.image = annotateState.selectedImage;
-          this.initCanvas(this.image);
-          console.log(artboardState);
-        }
-        this.handleCanvasRefresh(artboardState);
-      });
-
-    // this.subscription = this.state$.subscribe((state: ArtboardState) => {
-
-    //   this.initCanvas(state);
-
-    // });
+    this.initCanvas(this.image);
+    this.subscription = this.artboard$.subscribe((state: ArtboardState) => {
+      this.handleCanvasRefresh(state);
+    });
   }
 
   initCanvas(image: FlickrImage) {
@@ -124,14 +102,18 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
 
       this.foregroundCanvas.setWidth(img.width);
       this.foregroundCanvas.setHeight(img.height);
+      this.refreshMask();
+
+      fabric.Image.fromURL('assets/photo_2017-06-06_06-45-14.png', (img) => {
+        this.foregroundCanvas.add(img);
+        img.width = this.backgroundCanvas.getWidth();
+        img.height = this.backgroundCanvas.getHeight();
+        setTimeout(() => {
+          this.refreshMask();
+        });
+      }, { crossOrigin: 'Anonymous' });
     }, { crossOrigin: 'Anonymous' });
 
-    fabric.Image.fromURL('assets/photo_2017-06-06_06-45-14.png', (img) => {
-      this.foregroundCanvas.add(img);
-      setTimeout(() => {
-        this.refreshMask();
-      });
-    }, { crossOrigin: 'Anonymous' });
   }
 
   handleCanvasRefresh(state: ArtboardState) {
