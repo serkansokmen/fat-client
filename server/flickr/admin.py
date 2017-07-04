@@ -9,6 +9,12 @@ from django.utils.translation import ugettext as _
 from sorl.thumbnail.admin import AdminImageMixin
 from .models import Search, Image
 
+
+def download_approved_images(modeladmin, request, queryset):
+    for image in queryset:
+        if image.state == Image.IMAGE_STATES[2][0]:
+            image.download_image()
+
 def set_images_indeterminate(modeladmin, request, queryset):
     queryset.update(state=Image.IMAGE_STATES[0][0])
 set_images_indeterminate.short_description = "Mark selected as `Indeterminate`"
@@ -35,8 +41,14 @@ class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
         set_images_indeterminate,
         set_images_discarded,
         set_images_approved,
-        set_images_processed
+        set_images_processed,
+        download_approved_images,
     ]
+
+    def save_model(self, request, obj, form, change):
+        if obj.state == Image.IMAGE_STATES[2][0] and not obj.image:
+            obj.download_image()
+        obj.save()
 admin.site.register(Image, ImageAdmin)
 
 

@@ -20,7 +20,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   state$: Observable<any>;
   private sub: any;
 
-  viewMode = ViewMode.thumbnails;
+  viewMode = ViewMode.list;
 
   constructor(
     public dialog: MdDialog,

@@ -51,15 +51,14 @@ class Image(models.Model):
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
-    def save(self, *args, **kwargs):
-        if self.state == Image.IMAGE_STATES[2][0] and not self.image:
+    def download_image(self):
+        if not self.image:
             img_id = self.id
             img_url = self.get_flickr_url()
             img_temp = NamedTemporaryFile(delete=True)
             img_temp.write(urlopen(img_url).read())
             img_temp.flush()
             self.image.save(img_id + '.jpg', File(img_temp))
-        super(Image, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('Image')

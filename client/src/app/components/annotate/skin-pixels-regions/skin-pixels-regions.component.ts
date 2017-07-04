@@ -74,6 +74,14 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    this.foregroundCanvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
+      // backgroundColor: 'white'
+    });
+    this.context = this.foregroundCanvas.getContext('2d');
+
+    this.backgroundCanvas = new fabric.StaticCanvas(this.bgCanvas.nativeElement, {
+      backgroundColor: 'black'
+    });
 
     this.subscription = Observable.combineLatest(this.artboard$, this.annotate$,
       (artboard, annotate) => Observable.of({
@@ -86,8 +94,9 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
         if (annotateState.selectedImage && (!this.image || this.image.id != annotateState.selectedImage.id)) {
           this.image = annotateState.selectedImage;
           this.initCanvas(this.image);
-          this.handleCanvasRefresh(artboardState);
+          console.log(artboardState);
         }
+        this.handleCanvasRefresh(artboardState);
       });
 
     // this.subscription = this.state$.subscribe((state: ArtboardState) => {
@@ -99,18 +108,10 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
 
   initCanvas(image: FlickrImage) {
 
-    this.foregroundCanvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
-      // backgroundColor: 'white'
-    });
     this.foregroundCanvas.clear();
     this.foregroundCanvas.isDrawingMode = true;
     this.foregroundCanvas.on('mouse:down', (options) => {
       this.refreshMask();
-    });
-    this.context = this.foregroundCanvas.getContext('2d');
-
-    this.backgroundCanvas = new fabric.StaticCanvas(this.bgCanvas.nativeElement, {
-      backgroundColor: 'black'
     });
 
     fabric.Image.fromURL(image.image, (img) => {
@@ -125,7 +126,7 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
       this.foregroundCanvas.setHeight(img.height);
     }, { crossOrigin: 'Anonymous' });
 
-    fabric.Image.fromURL(image.image, (img) => {
+    fabric.Image.fromURL('assets/photo_2017-06-06_06-45-14.png', (img) => {
       this.foregroundCanvas.add(img);
       setTimeout(() => {
         this.refreshMask();
