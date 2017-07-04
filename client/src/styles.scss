@@ -67,3 +67,9 @@ md-toolbar {
     top: 0;
   }
 }
+
+.mat-accent .mat-slider-track-fill,
+.mat-accent .mat-slider-thumb,
+.mat-accent .mat-slider-thumb-label {
+  background-color: #939393 !important;
+}

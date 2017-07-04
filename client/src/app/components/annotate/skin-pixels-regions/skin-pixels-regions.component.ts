@@ -44,9 +44,6 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
 
   @Input('image') image: FlickrImage;
 
-  @Output('image')
-  imageEmitter = new EventEmitter<FlickrImage>();
-
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
   @ViewChild('drawCanvas') drawCanvas: ElementRef;

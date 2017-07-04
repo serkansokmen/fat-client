@@ -1,5 +1,4 @@
-import { Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ChangeDetectionStrategy, HostBinding } from '@angular/core';
-import { ViewMode } from '../../models/card-layout.models';
+import { Component, Input, Output, HostBinding, SimpleChanges, SimpleChange, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Image } from '../../models/search.models';
 
 @Component({
@@ -8,25 +7,13 @@ import { Image } from '../../models/search.models';
   styleUrls: ['./card-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardListComponent implements OnChanges {
+export class CardListComponent {
 
-  @HostBinding('style.flex-direction') direction = 'column';
-
-  @Input() viewMode: ViewMode;
-  @Input() cardOptions: any;
   @Input() images: Image[];
+  @Input() cardOptions: any;
 
   @Output('onCardClick')
   clickEmitter = new EventEmitter<Image>();
-
-  constructor() {}
-
-  ngOnChanges(changes: SimpleChanges) {
-    const viewMode = changes.viewMode;
-    if (viewMode && viewMode.previousValue != viewMode.currentValue) {
-      this.direction = viewMode.currentValue.id == 0 ? 'row' : 'column';
-    }
-  }
 
   handleCardClick(image: Image) {
     this.clickEmitter.emit(image);

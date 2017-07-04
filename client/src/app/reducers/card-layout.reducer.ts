@@ -1,20 +1,18 @@
 import { Action } from '@ngrx/store';
-import { ViewMode } from '../models/card-layout.models';
+import { CardLayoutOptions } from '../models/card-layout.models';
 import { CardLayoutActions } from '../actions/card-layout.actions';
 import { union, without } from 'underscore';
 
 
 export interface CardLayoutState {
-  viewModes: ViewMode[],
-  currentViewMode: ViewMode,
-  thumbnailScale: number,
+  viewModes: CardLayoutOptions[],
+  currentViewMode: CardLayoutOptions,
   isScaleSliderVisible: boolean,
 };
 
 const initialState: CardLayoutState = {
-  viewModes: [ViewMode.list, ViewMode.thumbnails],
-  currentViewMode: ViewMode.list,
-  thumbnailScale: 30,
+  viewModes: [CardLayoutOptions.list, CardLayoutOptions.thumbs],
+  currentViewMode: CardLayoutOptions.list,
   isScaleSliderVisible: false,
 };
 
@@ -32,7 +30,10 @@ export function cardLayoutReducer(state: CardLayoutState = initialState, action:
     case CardLayoutActions.SET_THUMBNAIL_SCALE:
       return {
         ...state,
-        thumbnailScale: action.payload.scale
+        currentViewMode: {
+          ...state.currentViewMode,
+          cardScale: action.payload.scale
+        }
       };
 
     default: {

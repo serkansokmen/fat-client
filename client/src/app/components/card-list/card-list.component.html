@@ -1,6 +1,5 @@
 <fat-card *ngFor="let image of images"
   [image]="image"
   (onImageClick)="handleCardClick($event)"
-  [viewMode]="viewMode"
-  [cardScale]="cardOptions?.cardScale"
+  [cardOptions]="cardOptions"
   [isActionsVisible]="cardOptions?.isActionsVisible"></fat-card>

@@ -9,7 +9,7 @@ import { SearchActions } from '../../actions/search.actions';
 import { Image, License, ImageState } from '../../models/search.models';
 import { CardLayoutActions } from '../../actions/card-layout.actions';
 import { CardLayoutState } from '../../reducers/card-layout.reducer';
-import { ViewMode } from '../../models/card-layout.models';
+import { CardLayoutOptions } from '../../models/card-layout.models';
 import { maxValue } from '../../validators/max-value.validator';
 
 
@@ -93,7 +93,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         console.log(params.slug);
       }
       this.handleSearch(null);
-      this.store.dispatch(this.cardLayoutActions.selectViewMode(ViewMode.thumbnails));
+      this.store.dispatch(this.cardLayoutActions.selectViewMode(CardLayoutOptions.thumbs));
     });
 
   }

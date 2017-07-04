@@ -41,37 +41,35 @@
     </form>
   </md-sidenav>
 
-  <div class="content"
-    [class.is-loading]="(state$ | async)?.isRequesting">
-    <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
-    <div class="content-heading" *ngIf="!(state$ | async)?.isRequesting && (state$ | async)?.images.length > 0">
-      <md-button-toggle-group #viewMode="mdButtonToggleGroup"
-        (change)="handleViewMode($event)">
-        <md-button-toggle *ngFor="let viewMode of (cardLayout$ | async)?.viewModes" [value]="viewMode"
-          [checked]="(cardLayout$ | async)?.currentViewMode.id == viewMode?.id">
-          <md-icon fontSet="fontawesome" fontIcon="fa-{{ viewMode?.iconName }}"></md-icon>
-        </md-button-toggle>
-      </md-button-toggle-group>
-      <md-slider
-        *ngIf="(cardLayout$ | async)?.isScaleSliderVisible"
-        [disabled]="(state$ | async)?.isRequesting"
-        [max]="50"
-        [min]="10"
-        [step]="5"
-        [thumb-label]="false"
-        [value]="(cardLayout$ | async)?.thumbnailScale"
-        [vertical]="false"
-        (input)="handleThumbnailScale($event)">
-      </md-slider>
-    </div>
-    <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
-    <fat-card-list *ngIf="!(state$ | async)?.isRequesting"
+  <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
+  <md-toolbar color="accent" *ngIf="!(state$ | async)?.isRequesting && (state$ | async)?.images.length > 0">
+    <button md-icon-button (click)="sidenav.toggle()">
+      <md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon>
+    </button>
+    <md-button-toggle-group #viewMode="mdButtonToggleGroup" (change)="handleViewMode($event)">
+      <md-button-toggle *ngFor="let viewMode of (cardLayout$ | async)?.viewModes" [value]="viewMode"
+        [checked]="(cardLayout$ | async)?.currentViewMode.id == viewMode?.id">
+        <md-icon fontSet="fontawesome" fontIcon="fa-{{ viewMode?.iconName }}"></md-icon>
+      </md-button-toggle>
+    </md-button-toggle-group>
+    <span class="spacer"></span>
+    <md-slider
+      *ngIf="(cardLayout$ | async)?.isScaleSliderVisible"
+      [disabled]="(state$ | async)?.isRequesting"
+      [max]="50"
+      [min]="10"
+      [step]="5"
+      [thumb-label]="false"
+      [value]="(cardLayout$ | async)?.currentViewMode.cardScale"
+      [vertical]="false"
+      (input)="handleThumbnailScale($event)"></md-slider>
+  </md-toolbar>
+
+  <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
+
+  <fat-card-list *ngIf="!(state$ | async)?.isRequesting"
       [images]="images"
-      [viewMode]="(cardLayout$ | async)?.currentViewMode"
-      [cardOptions]="{
-        cardScale: (cardLayout$ | async)?.thumbnailScale,
-        isActionsVisible: true
-      }"
+      [cardOptions]="(cardLayout$ | async)?.currentViewMode"
       (onCardClick)="handleImageDiscarded($event)"></fat-card-list>
-  </div>
+
 </md-sidenav-container>

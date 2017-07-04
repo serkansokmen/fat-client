@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { ViewMode } from '../models/card-layout.models';
+import { CardLayoutOptions } from '../models/card-layout.models';
 
 
 @Injectable()
 export class CardLayoutActions {
 
   static SELECT_VIEW_MODE = '[Card Layout] Select View Mode';
-  selectViewMode(viewMode: ViewMode): Action {
+  selectViewMode(viewMode: CardLayoutOptions): Action {
     return {
       type: CardLayoutActions.SELECT_VIEW_MODE,
       payload: {

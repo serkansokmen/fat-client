@@ -6,7 +6,7 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
 import { Image, ImageState } from '../../models/search.models';
-import { ViewMode } from '../../models/card-layout.models';
+import { CardLayoutOptions } from '../../models/card-layout.models';
 
 
 @Component({
@@ -18,7 +18,7 @@ import { ViewMode } from '../../models/card-layout.models';
 export class AnnotateComponent implements OnInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
-  viewMode = ViewMode.thumbnails;
+  viewMode = CardLayoutOptions.thumbs;
 
   private sub: any;
 

@@ -1,15 +1,23 @@
-export class ViewMode {
+export interface CardLayoutOptions {
+  id: number;
+  name: string;
+  iconName: string;
+  containerClassName: string;
+  cardScale: number;
+  isActionsVisible: boolean;
+}
+
+export class CardLayoutOptions {
+
   constructor(
     public id: number,
     public name: string,
-    public containerClassName: string,
     public iconName: string,
-    public thumbMinWidth: string,
-    public thumbMaxWidth: string,
-    public thumbMinHeight: string,
-    public thumbMaxHeight: string,
+    public containerClassName: string,
+    public cardScale: number,
+    public isActionsVisible: boolean = true,
   ) {}
 
-  static list = new ViewMode(0, 'List', 'view-mode-list', 'th-list', '120px', '120px', '120px', '120px');
-  static thumbnails = new ViewMode(1, 'Thumbnails', 'view-mode-thumbnails', 'th-large', '200px', '600px', '200px', '600px');
+  static list = new CardLayoutOptions(0, 'List', 'th-list', 'view-mode-list', 100, false);
+  static thumbs = new CardLayoutOptions(1, 'Thumbnails', 'th-large', 'view-mode-thumbnails', 33.3, false);
 }

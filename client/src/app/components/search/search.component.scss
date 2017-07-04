@@ -1,6 +1,7 @@
 :host {
   overflow: hidden;
   width: 100%;
+  position: relative;
 
   .pagination-label {
     margin-bottom: 20px;
@@ -21,34 +22,15 @@
     width: 100%  !important;
   }
 
+  fat-card-list {
+    padding: 72px 20px;
+    height: 100%;
+    overflow: auto;
+  }
+
   h2 {
     margin-top: 10px;
     margin-bottom: 20px;
-  }
-
-  .content {
-    width: 100%;
-    height: 100%;
-    padding: 20px 20px 120px 20px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-direction: column;
-
-    &.is-loading {
-    }
-
-    .content-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-direction: row;
-      width: 100%;
-      margin-bottom: 20px;
-      h2 {
-        flex: 1 1 auto;
-      }
-    }
   }
 
   md-sidenav-container {

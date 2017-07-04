@@ -12,6 +12,9 @@
   <md-card-content>
 
     <div class="content">
+
+      <md-progress-spinner *ngIf="(annotate$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
+
       <div *ngIf="!(annotate$ | async)?.isRequesting && !(annotate$ | async)?.selectedImage && !(annotate$ | async)?.selectedStep">
         <div *ngIf="(annotate$ | async)?.previous">
           <button md-button>{{ (annotate$ | async)?.previous }}</button>
@@ -21,13 +24,8 @@
         </div>
         <fat-card-list
             [images]="(annotate$ | async)?.images"
-            [viewMode]="viewMode"
-            [cardOptions]="{
-              cardScale: 25,
-              isActionsVisible: false
-            }"
+            [cardOptions]="viewMode"
             (onCardClick)="handleCardSelect($event)"></fat-card-list>
-        <md-progress-spinner *ngIf="(annotate$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
         <div *ngIf="!(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">No results.</div>
       </div>
 
