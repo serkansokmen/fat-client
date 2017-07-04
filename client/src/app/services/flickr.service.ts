@@ -41,6 +41,7 @@ export class FlickrService {
       .map((result: any) => {
         return {
           total: result.total,
+          left: result.left,
           images: result.images ? result.images.map(photo => new FlickrImage(photo)) : [],
           search: result.search,
           perpage: result.perpage,
@@ -87,9 +88,10 @@ export class FlickrService {
           })
           .map((response: Response) => response.json())
           .switchMap(result => Observable.of({
-            total: result.total,
             search: result.search,
-            images: result.images.map(image => new FlickrImage(image))
+            images: result.images.map(image => new FlickrImage(image)),
+            left: result.left,
+            total: result.total,
           }));
       }
     }

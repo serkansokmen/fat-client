@@ -36,6 +36,12 @@ md-sidenav-container {
     min-width: 325px;
     padding-top: 20px;
   }
+
+  &.is-loading {
+    .mat-sidenav-content {
+      padding: 40px;
+    }
+  }
 }
 .mat-icon.fa {
   display: inline-flex;

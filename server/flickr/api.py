@@ -126,7 +126,8 @@ def flickr(request):
                 already_added_images = [image for image in new_images if Image.objects.filter(id=image.get('id')) == 0]
 
                 return Response({
-                    'total': max(flickr_total - len(already_added_images) - search.images.count(), 0),
+                    'total': flickr_total,
+                    'left': max(flickr_total - len(already_added_images) - search.images.count(), 0),
                     'search': search_serializer.data,
                     'images': new_images,
                     'page': req_page,
@@ -138,7 +139,8 @@ def flickr(request):
                     return make_search_query(request, flickr_page=flickr_page + 1)
                 else:
                     return Response({
-                        'total': 0,
+                        'total': flickr_total,
+                        'left': 0,
                         'search': search_serializer.data,
                         'images': [],
                         'page': req_page,
@@ -172,7 +174,8 @@ def flickr(request):
         # query = make_search_query(request)
         # import ipdb; ipdb.set_trace()
         return Response({
-            'total': max(flickr_total - search.images.count(), 0),
+            'total': flickr_total,
+            'left': max(flickr_total - search.images.count(), 0),
             'search': search_serializer.data,
             'images': [],
             'page': req_page,

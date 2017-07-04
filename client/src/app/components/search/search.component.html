@@ -1,4 +1,4 @@
-<md-sidenav-container>
+<md-sidenav-container [class.is-loading]="(state$ | async)?.isRequesting">
   <md-sidenav #sidenav mode="side" opened="true">
     <form [formGroup]="form" (ngSubmit)="handleSearch($event)" novalidate>
       <md-input-container><input [autocomplete]="'off'" mdInput formControlName="tags" type="text" placeholder="Tags"/></md-input-container>
