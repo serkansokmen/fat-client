@@ -14,12 +14,9 @@
     // flex: 1 0 auto;
     padding: 5px;
     position: relative;
-    display: block;
-    overflow: auto;
     border: 1px solid #ccc;
     box-shadow: 0px 0px 20px -8px rgba(0,0,0,0.75);
     border-radius: 10px;
-    margin-bottom: 15px;
     margin: 5px;
 
     .state-icon {
@@ -31,6 +28,7 @@
       text-align: center;
       width: auto;
       height: auto;
+      z-index: 200;
     }
 
     &.is-discarded {

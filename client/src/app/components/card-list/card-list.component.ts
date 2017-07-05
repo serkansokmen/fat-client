@@ -25,7 +25,7 @@ export class CardListComponent implements OnChanges {
     const options = changes.cardOptions;
     if (options && options.currentValue != options.previousValue) {
       let scale = options.currentValue.cardScale;
-      this.columnCount = Math.floor(100 / (Math.floor(scale / 5) * 5)) / 2;
+      this.columnCount = Math.round(scale / 10);
     }
   }
 

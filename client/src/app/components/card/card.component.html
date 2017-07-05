@@ -17,6 +17,7 @@
 
     <md-icon class="state-icon" [style.color]="image.state?.value == 1 ? 'red' : 'white'"
       *ngSwitchCase="1"
+      [style.font-size]="70 - cardOptions.cardScale + 'px'"
       [innerHTML]="image.state?.value == 1 ? 'close' : 'check'"></md-icon>
 
   </md-card-content>

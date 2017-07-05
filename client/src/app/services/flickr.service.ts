@@ -114,7 +114,7 @@ export class FlickrService {
       // });
   }
 
-  queryAutocomplete(query: string): Observable<any> {
+  2(query: string): Observable<any> {
     return this.searchExisting(query)
       .switchMap(result => Observable.of(result.results.map(search => ({ id: search.id, tags: search.tags }))));
   }

@@ -1,6 +1,6 @@
 <md-sidenav-container [class.is-loading]="(state$ | async)?.isRequesting">
   <md-sidenav #sidenav mode="side" opened="true">
-    <form [formGroup]="form" (ngSubmit)="handleSearch($event)" novalidate>
+    <form [formGroup]="form" (ngSubmit)="licensesPanel.close(); handleSearch($event)" novalidate>
       <md-input-container><input [autocomplete]="'off'" mdInput formControlName="tags" type="text" placeholder="Tags"/></md-input-container>
       <!-- <md-input-container><input [autocomplete]="'off'" mdInput formControlName="exclude" type="text" placeholder="Exclude"/></md-input-container> -->
       <md-select placeholder="Tag mode" formControlName="tagMode">
@@ -15,6 +15,12 @@
           [value]="(state$ | async)?.perpage"
           [placeholder]="'How many per batch? (max 100)'"/>
       </md-input-container>
+      <md-input-container>
+        <input [autocomplete]="'off'" mdInput formControlName="page"
+          [max]="(state$ | async)?.pages"
+          [placeholder]="'Page ' + (state$ | async)?.page"
+          [value]="(state$ | async)?.page" type="number"/>
+      </md-input-container>
       <div>
         <md-expansion-panel #licensesPanel>
           <md-expansion-panel-header>
@@ -27,12 +33,6 @@
           </div>
         </md-expansion-panel>
       </div>
-      <md-input-container>
-        <input [autocomplete]="'off'" mdInput formControlName="page"
-          [max]="(state$ | async)?.pages"
-          [placeholder]="'Page ' + (state$ | async)?.page"
-          [value]="(state$ | async)?.page" type="number"/>
-      </md-input-container>
       <div class="form-controls">
         <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon> Search</button></p>
         <p><button md-button color="accent" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-refresh"></md-icon> Discard all</button></p>
@@ -56,12 +56,13 @@
     <md-slider
       *ngIf="(cardLayout$ | async)?.isScaleSliderVisible"
       [disabled]="(state$ | async)?.isRequesting"
-      [max]="50"
-      [min]="10"
-      [step]="1"
+      [max]="60"
+      [min]="20"
+      [step]="10"
       [thumb-label]="false"
       [value]="(cardLayout$ | async)?.currentViewMode.cardScale"
       [vertical]="false"
+      [invert]="true"
       (input)="handleThumbnailScale($event)"></md-slider>
   </md-toolbar>
 
