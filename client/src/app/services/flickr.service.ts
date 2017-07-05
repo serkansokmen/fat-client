@@ -98,22 +98,25 @@ export class FlickrService {
     }
   }
 
-  getExistingSearches() {
-    let url = `${this.endpoint}search/`;
+  searchExisting(query: string): Observable<any> {
+    let url = `${this.endpoint}search/?q=${query}`;
     return this.http.get(url, this.jwt())
-      .map((response: Response) => response.json())
-      .map((result: any) => {
-        return {
+      .map((response) => response.json())
+      .switchMap(result => Observable.of({
           count: result.count,
           next: result.next,
           previous: result.previous,
           results: result.results,
-        };
-      })
-      .catch(error => {
-        console.error('Error at search', error);
-        return Observable.empty();
-      });
+        }));
+      // .catch(error => {
+      //   console.error('Error at search', error);
+      //   return Observable.empty();
+      // });
+  }
+
+  queryAutocomplete(query: string): Observable<any> {
+    return this.searchExisting(query)
+      .switchMap(result => Observable.of(result.results.map(search => ({ id: search.id, tags: search.tags }))));
   }
 
   getImages(state: ImageState) {

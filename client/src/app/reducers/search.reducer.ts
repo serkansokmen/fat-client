@@ -6,7 +6,6 @@ import { union, without } from 'underscore';
 export interface SearchState {
   isRequesting: boolean,
   search: any,
-  existingSearches: any[],
   images: Image[],
   tagModes: string[],
   selectedLicenses: License[],
@@ -23,7 +22,6 @@ const initialState: SearchState = {
   search: {
     id: null
   },
-  existingSearches: [],
   selectedLicenses: [
     License.getLicense('4'),
     License.getLicense('5'),
@@ -48,19 +46,6 @@ export function searchReducer(state: SearchState = initialState, action: Action)
       return {
         ...state,
         perpage: action.payload.perpage
-      };
-
-    case SearchActions.REQUEST_EXISTING_SEARCHES:
-      return {
-        ...state,
-        isRequesting: true,
-      };
-
-    case SearchActions.REQUEST_EXISTING_SEARCHES_COMPLETE:
-      return {
-        ...state,
-        isRequesting: false,
-        existingSearches: action.payload.results,
       };
 
     case SearchActions.REQUEST_SEARCH:

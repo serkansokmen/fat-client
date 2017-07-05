@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { SearchState } from '../../reducers/search.reducer';
 import { SearchActions } from '../../actions/search.actions';
+import { FlickrService } from '../../services/flickr.service';
 import { Image, License, ImageState } from '../../models/search.models';
 import { CardLayoutActions } from '../../actions/card-layout.actions';
 import { CardLayoutState } from '../../reducers/card-layout.reducer';
@@ -39,6 +40,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     private store: Store<SearchState>,
     private searchActions: SearchActions,
     private cardLayoutActions: CardLayoutActions,
+    private flickr: FlickrService,
   ) {
     this.state$ = store.select('search');
     this.cardLayout$ = store.select('cardLayout');
@@ -65,6 +67,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.cardLayoutActions.setActionsVisible(true));
 
     this.state$.subscribe(state => {
+
       if (this.images != state.images && state.images.length == 0 && state.total > 0) {
         this.handleSearch(null);
       }
@@ -76,7 +79,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.selectedLicenses = state.selectedLicenses;
       this.images = state.images;
       this.currentPerPage = state.perpage;
-
 
     });
 
@@ -97,6 +99,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.store.dispatch(this.cardLayoutActions.selectViewMode(CardLayoutOptions.thumbs));
     });
 
+  }
+
+  public requestAutocompleteItems = (text: string): Observable<Response> => {
+    return this.flickr.searchExisting(text);
   }
 
   ngOnDestroy() {

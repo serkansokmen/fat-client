@@ -223,6 +223,16 @@ class SearchViewSet(viewsets.ModelViewSet):
 
     serializer_class = SearchSerializer
     queryset = Search.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('tags',)
+    pagination_class = LargeResultsSetPagination
+
+    def get_queryset(self):
+        queryset = Search.objects.all()
+        query = self.request.query_params.get('q', None)
+        if query is not None:
+            queryset = queryset.filter(tags__icontains=query)
+        return queryset
 
 
 
