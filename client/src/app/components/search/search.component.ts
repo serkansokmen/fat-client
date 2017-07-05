@@ -62,6 +62,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       perpage: [10, Validators.required],
       page: [1, Validators.required],
     });
+    this.store.dispatch(this.cardLayoutActions.setActionsVisible(true));
 
     this.state$.subscribe(state => {
       if (this.images != state.images && state.images.length == 0 && state.total > 0) {
@@ -76,7 +77,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.images = state.images;
       this.currentPerPage = state.perpage;
 
-      this.store.dispatch(this.cardLayoutActions.setActionsVisible(true));
 
     });
 

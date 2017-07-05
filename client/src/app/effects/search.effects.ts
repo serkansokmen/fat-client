@@ -28,6 +28,17 @@ export class SearchEffects {
         return Observable.empty();
     });
 
+  @Effect() requestExistingSearches$ = this.actions$
+    .ofType(SearchActions.REQUEST_EXISTING_SEARCHES)
+    .map(toPayload)
+    .switchMap(payload => this.service.getExistingSearches())
+    .switchMap(results => Observable.of({
+        type: SearchActions.REQUEST_EXISTING_SEARCHES_COMPLETE,
+        payload: {
+          results,
+        }
+      }));
+
   @Effect() searchPage$ = this.actions$
     .ofType(SearchActions.REQUEST_SEARCH)
     .map(toPayload)

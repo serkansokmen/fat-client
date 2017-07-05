@@ -31,6 +31,7 @@ export class FlickrService {
       `&tag_mode=${search.tagMode}` +
       `&perpage=${perpage}` +
       `&page=${page}`;
+
     return this.http.get(url, this.jwt())
       .map((response: Response) => response.json())
       .catch(error => {
@@ -95,6 +96,24 @@ export class FlickrService {
           }));
       }
     }
+  }
+
+  getExistingSearches() {
+    let url = `${this.endpoint}search/`;
+    return this.http.get(url, this.jwt())
+      .map((response: Response) => response.json())
+      .map((result: any) => {
+        return {
+          count: result.count,
+          next: result.next,
+          previous: result.previous,
+          results: result.results,
+        };
+      })
+      .catch(error => {
+        console.error('Error at search', error);
+        return Observable.empty();
+      });
   }
 
   getImages(state: ImageState) {

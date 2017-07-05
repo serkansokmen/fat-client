@@ -3,6 +3,7 @@
   [ngSwitch]="cardOptions.id">
 
   <md-card-content (click)="handleImageClick(image)">
+
     <img md-card-image [src]="getImageURL(image)" [alt]="image.id" />
     <div class="meta" *ngSwitchCase="0">
       <strong>Flickr ID:</strong> {{ image.id }} <br>
@@ -13,6 +14,11 @@
       <md-icon color="primary" [style.color]="image.state?.value == 1 ? 'red' : 'green'"
         [innerHTML]="image.state?.value == 1 ? 'close' : 'check'"></md-icon>
     </button>
+
+    <md-icon class="state-icon" [style.color]="image.state?.value == 1 ? 'red' : 'white'"
+      *ngSwitchCase="1"
+      [innerHTML]="image.state?.value == 1 ? 'close' : 'check'"></md-icon>
+
   </md-card-content>
 
   <md-card-actions *ngIf="cardOptions.isActionsVisible">
@@ -22,9 +28,6 @@
         <strong>License:</strong> <a [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
       </div>
     </div>
-    <button md-button (click)="handleImageClick(image)" *ngSwitchCase="1">
-      <md-icon color="primary" [style.color]="image.state?.value == 1 ? 'red' : 'green'"
-        [innerHTML]="image.state?.value == 1 ? 'close' : 'check'"></md-icon>
-    </button>
+
   </md-card-actions>
 </md-card>

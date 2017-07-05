@@ -16,6 +16,24 @@ export class SearchActions {
     }
   }
 
+  static REQUEST_EXISTING_SEARCHES = '[Search] Request Existing Searches';
+  requestExistingSearches(): Action {
+    return {
+      type: SearchActions.REQUEST_EXISTING_SEARCHES,
+      payload: {}
+    }
+  }
+
+  static REQUEST_EXISTING_SEARCHES_COMPLETE = '[Search] Request Search Complete';
+  requestExistingSearchesComplete(results: any[]): Action {
+    return {
+      type: SearchActions.REQUEST_EXISTING_SEARCHES_COMPLETE,
+      payload: {
+        results,
+      }
+    }
+  }
+
   static REQUEST_SEARCH = '[Search] Request Search';
   requestSearch(search: any, licenses: License[], perpage: number, page: number): Action {
     return {
