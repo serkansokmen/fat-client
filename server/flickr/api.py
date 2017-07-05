@@ -3,6 +3,7 @@ import json
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.http import JsonResponse
 from django_filters import rest_framework as filters
@@ -15,7 +16,7 @@ from .models import Search, Image
 from .serializers import SearchSerializer, ImageSerializer
 
 
-def make_search_query(request, flickr_page=1):
+def make_search_query(request, flickr_page=0):
 
     req_data = request.GET if request.method == 'GET' else request.data
     req_page = int(req_data.get('page', '1'))
@@ -26,7 +27,7 @@ def make_search_query(request, flickr_page=1):
     licenses = req_data.get('licenses')
     user_id = req_data.get('user_id')
 
-    flickr_perpage =  req_data.get('flickr_perpage', 500)
+    flickr_perpage =  req_data.get('flickr_perpage', 100)
 
     if tags is None:
         return Response({
@@ -71,21 +72,24 @@ def flickr(request):
 
     json = make_search_query(request)
 
-    if json is not None:
-        results = json['photos']
-        flickr_pages = int(results['pages'])
-        flickr_page = int(results['page'])
-        flickr_total = int(results['total'])
-        photos_results = results['photo']
+    if json is None:
+        return Response({'message': _('An error occured parsing response data.')}, status=status.HTTP_400_BAD_REQUEST)
 
-        (search, created) = Search.objects.get_or_create(
-            tags=tags,
-            defaults={
-                'tag_mode': tag_mode,
-                'licenses': licenses,
-                'user_id': user_id,
-            }
-        )
+    results = json['photos']
+    flickr_pages = int(results['pages'])
+    flickr_page = int(results['page'])
+    flickr_total = int(results['total'])
+    photos_results = results['photo']
+
+    (search, created) = Search.objects.get_or_create(
+        tags=tags,
+        defaults={
+            'tag_mode': tag_mode,
+            'licenses': licenses,
+            'user_id': user_id,
+        }
+    )
+    search_serializer = SearchSerializer(search)
 
     if request.method == 'GET':
         # return if all added already
@@ -99,8 +103,7 @@ def flickr(request):
             }, status=status.HTTP_404_NOT_FOUND)
         # we have new images
         else:
-            # import ipdb; ipdb.set_trace()
-            new_images = [{
+            response_images = [{
                 'id': image['id'],
                 'title': image['title'],
                 'owner': image['owner'],
@@ -117,24 +120,27 @@ def flickr(request):
                     'label': Image.IMAGE_STATES[0][1],
                 }
             } for image in photos_results
-                if not search.images.filter(id=image.get('id')).exists()
-            ][req_cursor:req_cursor + req_perpage]
+                if not search.images.filter(
+                    ~Q(state=Image.IMAGE_STATES[0][0]),
+                    id=image.get('id')).exists()][req_cursor:req_cursor + req_perpage]
 
-            search_serializer = SearchSerializer(search)
-            if len(new_images) > 0:
+            response_image_ids = [img.get('id') for img in response_images]
 
-                already_added_images = [image for image in new_images if Image.objects.filter(id=image.get('id')) == 0]
+            if len(response_images) > 0:
+
+                already_added_count = search.images.filter(id__in=response_image_ids).count()
 
                 return Response({
                     'total': flickr_total,
-                    'left': max(flickr_total - len(already_added_images) - search.images.count(), 0),
+                    'left': max(flickr_total - already_added_count - search.images.count(), 0),
                     'search': search_serializer.data,
-                    'images': new_images,
+                    'images': response_images,
                     'page': req_page,
                     'perpage': req_perpage,
                     'cursor': (req_page - 1) * req_perpage,
                 })
             else:
+                import ipdb; ipdb.set_trace()
                 if flickr_page < flickr_pages:
                     return make_search_query(request, flickr_page=flickr_page + 1)
                 else:

@@ -17,7 +17,7 @@ export class CardComponent implements OnChanges {
   @Input() cardOptions: any;
   @Input() isActionsVisible: boolean;
 
-  @HostBinding('style.flex-basis') flexBasis: string;
+  @HostBinding('style.width') width: string;
 
   @Output('onImageClick')
   clickEmitter = new EventEmitter<Image>();
@@ -25,7 +25,7 @@ export class CardComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     const cardOptions = changes.cardOptions;
     if (cardOptions && cardOptions.previousValue != cardOptions.currentValue) {
-      this.flexBasis = cardOptions.currentValue.id == CardLayoutOptions.list.id ? '100%' : cardOptions.currentValue.cardScale + '%';
+      // this.width = cardOptions.currentValue.id == CardLayoutOptions.list.id ? 'inherit' : cardOptions.currentValue.cardScale + '%';
     }
   }
 

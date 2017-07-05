@@ -56,7 +56,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     this.form = this.formBuilder.group({
       id: [null],
-      tags: ['train, child, -drawing, -sketch', Validators.required],
+      tags: ['train,child,-drawing', Validators.required],
       userID: [''],
       tagMode: ['all', Validators.required],
       perpage: [10, Validators.required],

@@ -91,7 +91,7 @@ import { CardListComponent } from './components/card-list/card-list.component';
     RouterStoreModule.connectRouter(),
     EffectsModule.runAfterBootstrap(SearchEffects),
     EffectsModule.runAfterBootstrap(AnnotateEffects),
-    StoreDevtoolsModule.instrumentOnlyWithExtension()
+    StoreDevtoolsModule.instrumentOnlyWithExtension(),
   ],
   providers: [
     AuthGuard,

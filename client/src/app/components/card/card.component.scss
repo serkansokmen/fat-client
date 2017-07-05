@@ -1,15 +1,9 @@
-:host,
-.card-image-wrapper,
-img[md-card-image],
-.meta {
-  transition: all 0.4s ease;
-}
-
 :host {
-  break-inside: avoid;
-  flex: 0 1 auto;
-  position: relative;
-  box-sizing: border-box;
+  // flex: 0 1 auto;
+  // position: relative;
+  // box-sizing: border-box;
+  display: inline-block;
+  column-break-inside: avoid;
 
   md-card {
 
@@ -96,4 +90,7 @@ img[md-card-image],
 
   }
 
+}
+@media screen and (max-width: 750px) {
+  :host { width: 100%; }
 }

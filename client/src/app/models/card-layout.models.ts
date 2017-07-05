@@ -1,3 +1,4 @@
+
 export interface CardLayoutOptions {
   id: number;
   name: string;
@@ -15,7 +16,7 @@ export class CardLayoutOptions {
     public iconName: string,
     public containerClassName: string,
     public cardScale: number,
-    public isActionsVisible: boolean = true,
+    public isActionsVisible: boolean,
   ) {}
 
   static list = new CardLayoutOptions(0, 'List', 'th-list', 'view-mode-list', 100, false);
