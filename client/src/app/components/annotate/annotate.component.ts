@@ -8,6 +8,7 @@ import { AnnotateActions } from '../../actions/annotate.actions';
 import { Image, ImageState } from '../../models/search.models';
 import { CardLayoutOptions } from '../../models/card-layout.models';
 import { CardLayoutActions } from '../../actions/card-layout.actions';
+import { AdminService } from '../../services/admin.service';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
   viewMode = CardLayoutOptions.thumbs;
+  adminURL: string;
 
   private sub: any;
 
@@ -30,8 +32,10 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     private cardLayoutActions: CardLayoutActions,
     private router: Router,
     private route: ActivatedRoute,
+    private admin: AdminService,
   ) {
     this.annotate$ = store.select('annotate');
+    this.adminURL = admin.adminEndpoint;
   }
 
   ngOnInit() {

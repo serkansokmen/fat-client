@@ -20,6 +20,7 @@ import { SafeStylePipe } from './pipes/safe-style.pipe';
 
 // Services
 import { AuthenticationService } from './services/authentication.service';
+import { AdminService } from './services/admin.service';
 import { FlickrService } from './services/flickr.service';
 import { ImageService } from './services/image.service';
 
@@ -96,6 +97,7 @@ import { CardListComponent } from './components/card-list/card-list.component';
   providers: [
     AuthGuard,
     AuthenticationService,
+    AdminService,
     CookieService,
     FlickrService,
     ImageService,

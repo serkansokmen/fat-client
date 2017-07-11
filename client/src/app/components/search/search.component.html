@@ -2,7 +2,6 @@
   <md-sidenav #sidenav mode="side" opened="true">
     <form [formGroup]="form" (ngSubmit)="licensesPanel.close(); handleSearch($event)" novalidate>
       <md-input-container><input [autocomplete]="'off'" mdInput formControlName="tags" type="text" placeholder="Tags"/></md-input-container>
-      <!-- <md-input-container><input [autocomplete]="'off'" mdInput formControlName="exclude" type="text" placeholder="Exclude"/></md-input-container> -->
       <md-select placeholder="Tag mode" formControlName="tagMode">
         <md-option *ngFor="let mode of (state$ | async)?.tagModes" [value]="mode">{{ mode }}</md-option>
       </md-select>
@@ -13,7 +12,7 @@
           (keyup.enter)="handlePerpageKeypress($event)" [autocomplete]="'off'" formControlName="perpage"
           type="number"
           [value]="(state$ | async)?.perpage"
-          [placeholder]="'How many per batch? (max 100)'"/>
+          [placeholder]="'How many per page? (max 100)'"/>
       </md-input-container>
       <md-input-container>
         <input [autocomplete]="'off'" mdInput formControlName="page"
@@ -34,14 +33,18 @@
         </md-expansion-panel>
       </div>
       <div class="form-controls">
-        <p><button md-raised-button type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon> Search</button></p>
-        <p><button md-button color="accent" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-refresh"></md-icon> Discard all</button></p>
-        <p><button md-button color="primary" type="button" (click)="handleSave($event, state$?.page)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Save</button></p>
+        <p><button md-button color="accent" type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon> Search</button></p>
+        <!-- <p><button md-button color="accent" type="button" (click)="handleToggleSelectAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-check"></md-icon> Select All</button></p> -->
+        <p><button md-button color="warn" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-minus"></md-icon> Deselect all</button></p>
+        <p><button md-raised-button color="primary" type="button" (click)="handleSave($event, state$?.page)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Next Page</button></p>
       </div>
     </form>
   </md-sidenav>
 
   <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
+
+  <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
+
   <md-toolbar color="accent" *ngIf="!(state$ | async)?.isRequesting && (state$ | async)?.images.length > 0">
     <button md-icon-button (click)="sidenav.toggle()">
       <md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon>
@@ -65,8 +68,6 @@
       [invert]="true"
       (input)="handleThumbnailScale($event)"></md-slider>
   </md-toolbar>
-
-  <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
 
   <fat-card-list *ngIf="!(state$ | async)?.isRequesting"
       [images]="images"

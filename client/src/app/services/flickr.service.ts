@@ -29,7 +29,7 @@ export class FlickrService {
       `${search.userID ? '&user_id=' + search.userID : ''}` +
       `&tags=${search.tags.split(',').map(str => str.trim()).join(',')}` +
       `&tag_mode=${search.tagMode}` +
-      `&perpage=${perpage}` +
+      `&perpage=${perpage >= 100 ? 100 : perpage}` +
       `&page=${page}`;
 
     return this.http.get(url, this.jwt())
@@ -114,7 +114,7 @@ export class FlickrService {
       // });
   }
 
-  2(query: string): Observable<any> {
+  queryAutocomplete(query: string): Observable<any> {
     return this.searchExisting(query)
       .switchMap(result => Observable.of(result.results.map(search => ({ id: search.id, tags: search.tags }))));
   }
