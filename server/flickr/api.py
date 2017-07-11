@@ -27,7 +27,7 @@ def make_search_query(request, flickr_page=0):
     licenses = req_data.get('licenses')
     user_id = req_data.get('user_id')
 
-    flickr_perpage =  req_data.get('flickr_perpage', 100)
+    flickr_perpage =  req_data.get('flickr_perpage', 500)
 
     if tags is None:
         return Response({
@@ -140,7 +140,7 @@ def flickr(request):
                     'cursor': (req_page - 1) * req_perpage,
                 })
             else:
-                import ipdb; ipdb.set_trace()
+                # import ipdb; ipdb.set_trace()
                 if flickr_page < flickr_pages:
                     return make_search_query(request, flickr_page=flickr_page + 1)
                 else:
@@ -171,7 +171,7 @@ def flickr(request):
         search_serializer = SearchSerializer(search)
 
         for image_data in images_data:
-            (image, created) = Image.objects.get_or_create(**image_data)
+            (image, created) = Image.objects.get_or_create(id=image_data.get('id'), defaults=image_data)
             # import ipdb; ipdb.set_trace()
             if image not in search.images.all():
                 search.images.add(image)
