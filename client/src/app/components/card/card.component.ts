@@ -18,6 +18,7 @@ export class CardComponent implements OnChanges {
   @Input() isActionsVisible: boolean;
 
   @HostBinding('style.width') width: string;
+  @HostBinding('style.display') display: string;
 
   @Output('onImageClick')
   clickEmitter = new EventEmitter<Image>();
@@ -25,7 +26,7 @@ export class CardComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     const cardOptions = changes.cardOptions;
     if (cardOptions && cardOptions.previousValue != cardOptions.currentValue) {
-      // this.width = cardOptions.currentValue.id == CardLayoutOptions.list.id ? 'inherit' : cardOptions.currentValue.cardScale + '%';
+      this.display = cardOptions.currentValue.id == CardLayoutOptions.list.id ? 'block' : 'inline-block';
     }
   }
 

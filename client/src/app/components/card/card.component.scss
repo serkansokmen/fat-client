@@ -1,8 +1,5 @@
 :host {
-  // flex: 0 1 auto;
-  // position: relative;
-  // box-sizing: border-box;
-  display: block;
+
   column-break-inside: avoid;
 
   md-card {
@@ -17,7 +14,7 @@
     border: 1px solid #ccc;
     box-shadow: 0px 0px 20px -8px rgba(0,0,0,0.75);
     border-radius: 10px;
-    margin: 5px;
+    margin: 15px;
 
     .state-icon {
       position: absolute;
@@ -50,6 +47,7 @@
       overflow: hidden;
       padding: 5px;
       cursor: pointer;
+      width: 100%;
 
       img[md-card-image] {
         width: 100%;
@@ -85,7 +83,7 @@
       height: auto;
       width: 100%;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       flex-direction: row !important;
 
       img[md-card-image] {
