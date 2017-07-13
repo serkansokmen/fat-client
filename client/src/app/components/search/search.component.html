@@ -41,11 +41,18 @@
     </form>
   </md-sidenav>
 
-  <md-progress-spinner *ngIf="(state$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
+  <div class="full-centered" *ngIf="(state$ | async)?.isRequesting">
+    <md-progress-spinner color="primary" mode="indeterminate"></md-progress-spinner>
+  </div>
+  <div class="full-centered" *ngIf="!((state$ | async)?.images[0] || (state$ | async)?.isRequesting)">
+    <div class="block">
+      <h4>No images found</h4>
+      <p>You might have reviewed all images related to similar tags, please try different search queries, for example change license types available.</p>
+    </div>
+  </div>
 
-  <div *ngIf="!(state$ | async)?.images[0] && !(state$ | async)?.isRequesting">No results.</div>
-
-  <md-toolbar color="accent" *ngIf="!(state$ | async)?.isRequesting && (state$ | async)?.images.length > 0">
+  <md-toolbar class="top" color="accent"
+    *ngIf="!(state$ | async)?.isRequesting && (state$ | async)?.images.length > 0">
     <button md-icon-button (click)="sidenav.toggle()">
       <md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon>
     </button>
