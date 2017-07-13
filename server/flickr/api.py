@@ -3,7 +3,8 @@ import json
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.http import JsonResponse
 from django_filters import rest_framework as filters
@@ -103,6 +104,7 @@ def flickr(request):
             }, status=status.HTTP_404_NOT_FOUND)
         # we have new images
         else:
+            # import ipdb; ipdb.set_trace()
             response_images = [{
                 'id': image['id'],
                 'title': image['title'],
@@ -120,9 +122,8 @@ def flickr(request):
                     'label': Image.IMAGE_STATES[0][1],
                 }
             } for image in photos_results
-                if not search.images.filter(
-                    ~Q(state=Image.IMAGE_STATES[0][0]),
-                    id=image.get('id')).exists()][req_cursor:req_cursor + req_perpage]
+                if not Image.objects.filter(id=image.get('id')).exists()
+            ][req_cursor:req_cursor + req_perpage]
 
             response_image_ids = [img.get('id') for img in response_images]
 
@@ -155,13 +156,6 @@ def flickr(request):
 
     elif request.method == 'POST' or request.method == 'PUT':
 
-        if json is not None:
-            results = json['photos']
-            flickr_pages = int(results['pages'])
-            flickr_page = int(results['page'])
-            flickr_total = int(results['total'])
-            photos_results = results['photo']
-
         images_data = request.data.get('images', None)
         if images_data is None:
             return Response({'message': _('Some images are required')}, status=status.HTTP_400_BAD_REQUEST)
@@ -176,6 +170,18 @@ def flickr(request):
             if image not in search.images.all():
                 search.images.add(image)
         search.save()
+
+        # Search for new batch
+        json = make_search_query(request)
+
+        if json is None:
+            return Response({'message': _('An error occured parsing response data.')}, status=status.HTTP_400_BAD_REQUEST)
+
+        results = json['photos']
+        flickr_pages = int(results['pages'])
+        flickr_page = int(results['page'])
+        flickr_total = int(results['total'])
+        photos_results = results['photo']
 
         # query = make_search_query(request)
         # import ipdb; ipdb.set_trace()
