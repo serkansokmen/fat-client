@@ -17,7 +17,7 @@ export class NudityCheckActions {
     }
   }
 
-  static TOGGLE_TYPE_ACTIVE = '[NudityCheck] Set Weight';
+  static TOGGLE_TYPE_ACTIVE = '[NudityCheck] Set Weight Active';
   toggleTypeActive(type: NudityCheckType): Action {
     return {
       type: NudityCheckActions.TOGGLE_TYPE_ACTIVE,
