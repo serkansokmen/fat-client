@@ -34,7 +34,7 @@ set_images_processed.short_description = "Mark selected as `Completed`"
 class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
     list_display = ('image_tag', 'state', 'id', 'secret', 'license', 'tags',)
     list_display_links = ('image_tag', 'id')
-    list_filter = ('search', 'state', 'license', 'owner',
+    list_filter = ('search', 'state', 'license',
         'ispublic', 'isfriend', 'isfamily')
     readonly_fields = ('image_tag', 'ispublic', 'isfriend', 'isfamily')
     actions = [
