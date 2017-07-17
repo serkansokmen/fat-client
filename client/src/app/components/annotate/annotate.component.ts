@@ -25,6 +25,8 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   adminURL: string;
 
   private sub: any;
+  private base64: string;
+  private image: Image;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -61,8 +63,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     if (image.image) {
       this.store.dispatch(this.actions.selectImage(image));
       this.router.navigate(['/annotate', image.id], {queryParams: {step: 1}});
-    } else {
-
+      this.image = image;
     }
   }
 
@@ -71,12 +72,16 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     this.router.navigate(['/annotate', data.image.id], { queryParams: { step: data.step }});
   }
 
-  handleImageAnnotated(image: any) {
-    this.store.dispatch(this.actions.updateAnnotatedImage(this.sanitizer.bypassSecurityTrustUrl(image)));
+  handleImageAnnotated(base64: string) {
+    this.base64 = base64;
+    this.store.dispatch(this.actions.updateBase64(this.base64));
   }
 
-  handleSave(event) {
-    this.store.dispatch(this.actions.saveAnnotation());
+  handleSave() {
+    if (!this.image) {
+      return;
+    }
+    this.store.dispatch(this.actions.saveAnnotation(this.image, this.base64));
   }
 
 }

@@ -81,7 +81,7 @@ class Image(models.Model):
 
     def image_tag(self):
         return '<img src="{}" />'.format(self.get_flickr_thumbnail())
-    image_tag.short_description = 'Image'
+    image_tag.short_description = _('Image')
     image_tag.allow_tags = True
 
 
@@ -120,3 +120,18 @@ def clean_search_images(sender, instance, **kwargs):
     for image in Image.objects.all():
         if image.search.count() == 0 and image.state == Image.IMAGE_STATES[0][0]:
             image.delete()
+
+
+class Annotation(models.Model):
+
+    image = models.ForeignKey(Image)
+    skin_pixels_image = ImageField(upload_to='skin_pixel_images')
+
+    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    class Meta:
+        verbose_name = _('Annotation')
+        verbose_name_plural = _('Annotations')
+        get_latest_by = 'updated_at'
+        ordering = ['-created_at', '-updated_at',]

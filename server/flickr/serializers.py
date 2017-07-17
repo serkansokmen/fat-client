@@ -1,7 +1,8 @@
 import requests
 from django.conf import settings
 from rest_framework import serializers, permissions, response
-from .models import Search, Image
+from drf_extra_fields.fields import Base64ImageField
+from .models import Search, Image, Annotation
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -47,23 +48,6 @@ class SearchSerializer(serializers.ModelSerializer):
                 instance.images.add(image)
         return instance
 
-        # for image in validated_data.get('images'):
-        #     image, created = Image.objects.get_or_create(
-        #         id=photo.get('id'),
-        #         title=photo.get('title'),
-        #         owner=photo.get('owner'),
-        #         secret=photo.get('secret'),
-        #         server=photo.get('server'),
-        #         farm=photo.get('farm'),
-        #         license=photo.get('license'),
-        #         tags=photo.get('tags'),
-        #         ispublic=photo.get('ispublic'),
-        #         isfriend=photo.get('isfriend'),
-        #         isfamily=photo.get('isfamily'))
-        #     if image not in instance.images.all():
-        #         instance.images.add(image)
-        # instance.save()
-
     def update(self, instance, validated_data):
         images_data = validated_data.pop('images')
         for image_data in images_data:
@@ -71,3 +55,13 @@ class SearchSerializer(serializers.ModelSerializer):
             if image_data.get('state') != Image.IMAGE_STATES[1][0] and image not in instance.images.all():
                 instance.images.add(image)
         return instance
+
+
+class AnnotationSerializer(serializers.ModelSerializer):
+
+    skin_pixels_image = Base64ImageField(required=True)
+
+    class Meta:
+        model = Annotation
+        queryset = Annotation.objects.all()
+        fields = ('id', 'image', 'skin_pixels_image')

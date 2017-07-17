@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from sorl.thumbnail.admin import AdminImageMixin
-from .models import Search, Image
+from .models import Search, Image, Annotation
 
 
 def download_approved_images(modeladmin, request, queryset):
@@ -27,12 +27,10 @@ def set_images_approved(modeladmin, request, queryset):
     queryset.update(state=Image.IMAGE_STATES[2][0])
 set_images_approved.short_description = "Mark selected as `Approved`"
 
-def set_images_processed(modeladmin, request, queryset):
-    queryset.update(state=Image.IMAGE_STATES[3][0])
-set_images_processed.short_description = "Mark selected as `Completed`"
 
+@admin.register(Image)
 class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
-    list_display = ('image_tag', 'state', 'id', 'secret', 'license', 'tags',)
+    list_display = ('image_tag', 'state', 'id', 'secret', 'license', 'tags')
     list_display_links = ('image_tag', 'id')
     list_filter = ('search', 'state', 'license',
         'ispublic', 'isfriend', 'isfamily')
@@ -41,7 +39,6 @@ class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
         set_images_indeterminate,
         set_images_discarded,
         set_images_approved,
-        set_images_processed,
         download_approved_images,
     ]
 
@@ -49,9 +46,9 @@ class ImageAdmin(AdminImageMixin, admin.ModelAdmin):
         if obj.state == Image.IMAGE_STATES[2][0] and not obj.image:
             obj.download_image()
         obj.save()
-admin.site.register(Image, ImageAdmin)
 
 
+@admin.register(Search)
 class SearchAdmin(admin.ModelAdmin):
     list_display = (
         'tags',
@@ -63,7 +60,6 @@ class SearchAdmin(admin.ModelAdmin):
     list_filter = ('tag_mode', 'user_id', 'created_at', 'updated_at',)
     filter_horizontal = ('images',)
     readonly_fields = ('licenses',)
-    # exclude = ('images',)
 
     def image_count_indeterminate(self, obj):
         return obj.get_images_of_state(Image.IMAGE_STATES[0]).count()
@@ -78,4 +74,9 @@ class SearchAdmin(admin.ModelAdmin):
         return obj.get_images_of_state(Image.IMAGE_STATES[3]).count()
     image_count_processed.short_description = _('{} image count'.format(Image.IMAGE_STATES[3][1]))
 
-admin.site.register(Search, SearchAdmin)
+
+@admin.register(Annotation)
+class AnnotationAdmin(AdminImageMixin, admin.ModelAdmin):
+    list_display = ('image', 'skin_pixels_image')
+    list_filter = ('image',)
+

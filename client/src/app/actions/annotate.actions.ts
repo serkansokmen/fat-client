@@ -75,30 +75,33 @@ export class AnnotateActions {
     }
   }
 
-  static UPDATE_ANNOTATED_IMAGE = '[Annotate] Update Annotated Image';
-  updateAnnotatedImage(result: any): Action {
+  static UPDATE_BASE64 = '[Annotate] Update Base64';
+  updateBase64(base64: string): Action {
     return {
-      type: AnnotateActions.UPDATE_ANNOTATED_IMAGE,
+      type: AnnotateActions.UPDATE_BASE64,
       payload: {
-        result
+        base64
       }
     }
   }
 
   static SAVE_ANNOTATION = '[Annotate] Save Annotation';
-  saveAnnotation(): Action {
+  saveAnnotation(image: Image, base64: string): Action {
     return {
       type: AnnotateActions.SAVE_ANNOTATION,
-      payload: { }
+      payload: {
+        image,
+        base64
+      }
     }
   }
 
   static SAVE_ANNOTATION_COMPLETE = '[Annotate] Save Annotation Complete';
-  saveAnnotationComplete(result: any): Action {
+  saveAnnotationComplete(annotation: any): Action {
     return {
       type: AnnotateActions.SAVE_ANNOTATION_COMPLETE,
       payload: {
-        result
+        annotation
       }
     }
   }

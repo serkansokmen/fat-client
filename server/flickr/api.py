@@ -13,8 +13,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
-from .models import Search, Image
-from .serializers import SearchSerializer, ImageSerializer
+from .models import Search, Image, Annotation
+from .serializers import SearchSerializer, ImageSerializer, AnnotationSerializer
 
 
 def make_search_query(request, flickr_page=0):
@@ -250,12 +250,12 @@ class ImageViewSet(viewsets.ModelViewSet):
     filter_fields = ('state', 'license')
     pagination_class = LargeResultsSetPagination
 
-    # def get_queryset(self):
-    #     queryset = Image.objects.all()
-    #     state = self.request.query_params.get('state', None)
-    #     if state is not None:
-    #         queryset = queryset.filter(state=Image.IMAGE_STATES[2][0])
-    #     return queryset
+
+class AnnotationViewSet(viewsets.ModelViewSet):
+
+    queryset = Annotation.objects.all()
+    serializer_class = AnnotationSerializer
+    pagination_class = StandardResultsSetPagination
 
 
 class LicenseView(views.APIView):

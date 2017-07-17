@@ -53,13 +53,12 @@ export class AnnotateEffects {
 
   @Effect() saveAnnotation$ = this.actions$
     .ofType(AnnotateActions.SAVE_ANNOTATION)
-    .withLatestFrom(this.store$)
-    .map(([action, state]) => state)
-    .switchMap(state => this.service.saveAnnotation(state))
-    .switchMap(result => Observable.of({
+    .map(toPayload)
+    .switchMap(payload => this.service.saveAnnotation(payload.image, payload.base64))
+    .switchMap(annotation => Observable.of({
         type: AnnotateActions.SAVE_ANNOTATION_COMPLETE,
         payload: {
-          result
+          annotation
         }
       }));
 

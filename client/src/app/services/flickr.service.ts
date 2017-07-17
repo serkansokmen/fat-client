@@ -108,10 +108,6 @@ export class FlickrService {
           previous: result.previous,
           results: result.results,
         }));
-      // .catch(error => {
-      //   console.error('Error at search', error);
-      //   return Observable.empty();
-      // });
   }
 
   queryAutocomplete(query: string): Observable<any> {
@@ -146,6 +142,31 @@ export class FlickrService {
       .map((response: Response) => new FlickrImage(response.json()));
   }
 
+  saveAnnotation(image: FlickrImage, base64: string) {
+    let body = JSON.stringify({
+      image: image.id,
+      skin_pixels_image: base64,
+    });
+
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser && currentUser.token) {
+      let headers = new Headers({
+        'Content-Type': 'application/json; charset=utf-8',
+        'X-CSRFToken': this.cookieService.get('csrftoken'),
+        'Authorization': `Token ${currentUser.token}`
+      });
+      let options = new RequestOptions({ headers: headers });
+
+      return this.http.post(`${this.endpoint}annotations/`, body, options)
+        .catch(error => {
+          console.error('Error at search', error);
+          return Observable.empty();
+        })
+        .map((response: Response) => response.json())
+        .switchMap(result => Observable.of(result));
+    }
+  }
+
   private jwt() {
     // create authorization header with jwt token
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -155,10 +176,6 @@ export class FlickrService {
       });
       return new RequestOptions({ headers: headers });
     }
-  }
-
-  saveAnnotation(state: any) {
-    return Observable.of(state);
   }
 
 }

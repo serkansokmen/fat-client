@@ -14,6 +14,7 @@ schema_view = get_schema_view(title='Flickr Search Tool API')
 router = routers.DefaultRouter()
 router.register(r'search', flickr_api.SearchViewSet)
 router.register(r'images', flickr_api.ImageViewSet)
+router.register(r'annotations', flickr_api.AnnotationViewSet)
 # router.register(r'licenses', flickr_api.LicenseViewSet)
 
 
