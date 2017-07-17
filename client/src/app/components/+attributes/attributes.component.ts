@@ -16,10 +16,10 @@ import {
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { union } from 'underscore';
-import { ObjectXState } from '../../../reducers/object-x.reducer';
-import { ObjectXActions } from '../../../actions/object-x.actions';
-import { ObjectX, Gender, DrawMode } from '../../../models/object-x.models';
-import { Image as FlickrImage } from '../../../models/search.models';
+import { ObjectXState } from '../../reducers/object-x.reducer';
+import { ObjectXActions } from '../../actions/object-x.actions';
+import { ObjectX, Gender, DrawMode } from '../../models/object-x.models';
+import { Image as FlickrImage } from '../../models/search.models';
 
 @Component({
   selector: 'fat-attributes',

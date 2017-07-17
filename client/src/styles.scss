@@ -81,3 +81,11 @@ md-toolbar {
 .mat-accent .mat-slider-thumb-label {
   background-color: #BBDEFB !important;
 }
+
+.form-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+}

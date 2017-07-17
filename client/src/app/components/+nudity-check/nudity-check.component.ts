@@ -16,10 +16,10 @@ import {
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
-import { NudityCheckState } from '../../../reducers/nudity-check.reducer';
-import { NudityCheckActions } from '../../../actions/nudity-check.actions';
-import { ObjectX, Gender, DrawMode } from '../../../models/object-x.models';
-import { Image as FlickrImage } from '../../../models/search.models';
+import { NudityCheckState } from '../../reducers/nudity-check.reducer';
+import { NudityCheckActions } from '../../actions/nudity-check.actions';
+import { ObjectX, Gender, DrawMode } from '../../models/object-x.models';
+import { Image as FlickrImage } from '../../models/search.models';
 
 @Component({
   selector: 'fat-nudity-check',

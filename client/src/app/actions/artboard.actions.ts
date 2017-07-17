@@ -26,16 +26,6 @@ export class ArtboardActions {
     }
   }
 
-  static SELECT_IMAGE_SOURCE = '[App] Select Image Source';
-  selectImageSource(src: string): Action {
-    return {
-      type: ArtboardActions.SELECT_IMAGE_SOURCE,
-      payload: {
-        src
-      }
-    }
-  }
-
   static SET_ZOOM = '[Artboard] Set Zoom';
   setZoom(zoom: number): Action {
     return {

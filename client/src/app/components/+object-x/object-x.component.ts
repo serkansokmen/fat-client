@@ -16,11 +16,11 @@ import {
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
-import { ObjectXState } from '../../../reducers/object-x.reducer';
-import { ObjectXActions } from '../../../actions/object-x.actions';
-import { ObjectX, ObjectXType, DrawMode } from '../../../models/object-x.models';
-import { Image as FlickrImage } from '../../../models/search.models';
-import { AnnotateState } from '../../../reducers/annotate.reducer';
+import { ObjectXState } from '../../reducers/object-x.reducer';
+import { ObjectXActions } from '../../actions/object-x.actions';
+import { ObjectX, ObjectXType, DrawMode } from '../../models/object-x.models';
+import { Image as FlickrImage } from '../../models/search.models';
+import { AnnotateState } from '../../reducers/annotate.reducer';
 
 @Component({
   selector: 'fat-object-x',

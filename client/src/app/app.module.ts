@@ -42,17 +42,18 @@ import { objectXReducer } from './reducers/object-x.reducer';
 import { nudityCheckReducer } from './reducers/nudity-check.reducer';
 
 // Components
-import { LoginComponent } from './components/login/login.component';
-import { SearchComponent } from './components/search/search.component';
-import { CardComponent } from './components/card/card.component';
-import { SkinPixelsRegionsComponent } from './components/annotate/skin-pixels-regions/skin-pixels-regions.component';
-import { NudityCheckComponent } from './components/annotate/nudity-check/nudity-check.component';
-import { ObjectXComponent } from './components/annotate/object-x/object-x.component';
-import { AttributesComponent } from './components/annotate/attributes/attributes.component';
-import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import { AnnotateStepsComponent } from './components/annotate/annotate-steps/annotate-steps.component';
-import { AnnotateComponent } from './components/annotate/annotate.component';
+import { LoginComponent } from './components/+login/login.component';
+import { SearchComponent } from './components/+search/search.component';
+import { AnnotateComponent } from './components/+annotate/annotate.component';
+import { SkinPixelsRegionsComponent } from './components/+skin-pixels-regions/skin-pixels-regions.component';
+import { NudityCheckComponent } from './components/+nudity-check/nudity-check.component';
+import { ObjectXComponent } from './components/+object-x/object-x.component';
+import { AttributesComponent } from './components/+attributes/attributes.component';
+
 import { CardListComponent } from './components/card-list/card-list.component';
+import { CardComponent } from './components/card/card.component';
+import { AnnotateStepsComponent } from './components/annotate-steps/annotate-steps.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
 
 @NgModule({

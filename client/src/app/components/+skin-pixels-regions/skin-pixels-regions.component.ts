@@ -22,12 +22,12 @@ import {
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
-import { ArtboardState } from '../../../reducers/artboard.reducer';
-import { ArtboardActions } from '../../../actions/artboard.actions';
-import { ArtboardService } from '../../../services/artboard.service';
-import { ArtboardTool } from '../../../models/artboard.models';
-import { ImageService } from '../../../services/image.service';
-import { Image as FlickrImage } from '../../../models/search.models';
+import { ArtboardState } from '../../reducers/artboard.reducer';
+import { ArtboardActions } from '../../actions/artboard.actions';
+import { ArtboardService } from '../../services/artboard.service';
+import { ArtboardTool } from '../../models/artboard.models';
+import { ImageService } from '../../services/image.service';
+import { Image as FlickrImage } from '../../models/search.models';
 
 @Component({
   selector: 'fat-skin-pixels-regions',

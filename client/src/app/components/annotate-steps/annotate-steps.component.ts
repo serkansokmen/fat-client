@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { Image } from '../../../models/search.models';
+import { Image } from '../../models/search.models';
 
 @Component({
   selector: 'fat-annotate-steps',
@@ -14,14 +14,14 @@ export class AnnotateStepsComponent {
   @Input() selectedImage: Image;
 
   @Output('onStepSelect') stepEmitter = new EventEmitter<any>();
-  @Output('onSave') save = new EventEmitter();
+  @Output('onNext') next = new EventEmitter();
 
   handleStepClick(data: any) {
     this.stepEmitter.emit(data);
   }
 
   handleSave() {
-    this.save.emit();
+    this.next.emit();
   }
 
 }

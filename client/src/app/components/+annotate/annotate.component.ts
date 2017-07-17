@@ -77,7 +77,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.actions.updateBase64(this.base64));
   }
 
-  handleSave() {
+  handleNext() {
     if (!this.image) {
       return;
     }

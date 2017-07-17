@@ -4,7 +4,7 @@
   [items]="(annotate$ | async)?.steps"
   [step]="(annotate$ | async)?.selectedStep"
   (onStepSelect)="handleStepChange($event)"
-  (onSave)="handleSave($event)"></fat-annotate-steps>
+  (onNext)="handleNext($event)"></fat-annotate-steps>
 
 <md-card>
   <md-card-title *ngIf="(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
