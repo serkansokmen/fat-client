@@ -85,4 +85,22 @@ export class AnnotateActions {
     }
   }
 
+  static SAVE_ANNOTATION = '[Annotate] Save Annotation';
+  saveAnnotation(): Action {
+    return {
+      type: AnnotateActions.SAVE_ANNOTATION,
+      payload: { }
+    }
+  }
+
+  static SAVE_ANNOTATION_COMPLETE = '[Annotate] Save Annotation Complete';
+  saveAnnotationComplete(result: any): Action {
+    return {
+      type: AnnotateActions.SAVE_ANNOTATION_COMPLETE,
+      payload: {
+        result
+      }
+    }
+  }
+
 }

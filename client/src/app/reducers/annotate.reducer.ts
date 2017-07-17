@@ -10,6 +10,7 @@ export interface AnnotateState {
   images: Image[],
   selectedImage: Image,
   annotatedImage: any,
+  annotationResult: any,
   total: number,
   previous: string,
   next: string,
@@ -42,6 +43,7 @@ const initialState: AnnotateState = {
   images: [],
   selectedImage: null,
   annotatedImage: null,
+  annotationResult: null,
   total: 0,
   previous: null,
   next: null,
@@ -108,6 +110,20 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         ...state,
         annotatedImage: action.payload.result,
       }
+
+    case AnnotateActions.SAVE_ANNOTATION:
+      return {
+        ...state,
+        isRequesting: true,
+      };
+
+    case AnnotateActions.SAVE_ANNOTATION_COMPLETE:
+      return {
+        ...state,
+        isRequesting: false,
+        annotationResult: action.payload.result,
+        // selectedStep: 2,
+      };
 
     default:
       return state;

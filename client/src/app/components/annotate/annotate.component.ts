@@ -75,4 +75,8 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.actions.updateAnnotatedImage(this.sanitizer.bypassSecurityTrustUrl(image)));
   }
 
+  handleSave(event) {
+    this.store.dispatch(this.actions.saveAnnotation());
+  }
+
 }

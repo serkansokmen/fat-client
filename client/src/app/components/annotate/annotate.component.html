@@ -3,7 +3,8 @@
   [selectedImage]="(annotate$ | async)?.selectedImage"
   [items]="(annotate$ | async)?.steps"
   [step]="(annotate$ | async)?.selectedStep"
-  (onStepSelect)="handleStepChange($event)"></fat-annotate-steps>
+  (onStepSelect)="handleStepChange($event)"
+  (onSave)="handleSave($event)"></fat-annotate-steps>
 
 <md-card>
   <md-card-title *ngIf="(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
@@ -49,6 +50,8 @@
 
       </div>
     </div>
+
+    <pre [innerHTML]="(annotate$ | async)?.annotationResult | json"></pre>
 
   </md-card-content>
 </md-card>

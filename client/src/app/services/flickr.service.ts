@@ -157,4 +157,8 @@ export class FlickrService {
     }
   }
 
+  saveAnnotation(state: any) {
+    return Observable.of(state);
+  }
+
 }

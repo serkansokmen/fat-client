@@ -14,9 +14,14 @@ export class AnnotateStepsComponent {
   @Input() selectedImage: Image;
 
   @Output('onStepSelect') stepEmitter = new EventEmitter<any>();
+  @Output('onSave') save = new EventEmitter();
 
   handleStepClick(data: any) {
     this.stepEmitter.emit(data);
+  }
+
+  handleSave() {
+    this.save.emit();
   }
 
 }

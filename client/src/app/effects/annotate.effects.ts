@@ -12,6 +12,7 @@ import 'rxjs/add/operator/withLatestFrom';
 
 @Injectable()
 export class AnnotateEffects {
+
   constructor(
     private http: Http,
     private actions$: Actions,
@@ -47,6 +48,18 @@ export class AnnotateEffects {
         type: AnnotateActions.REQUEST_IMAGE_COMPLETE,
         payload: {
           image: result
+        }
+      }));
+
+  @Effect() saveAnnotation$ = this.actions$
+    .ofType(AnnotateActions.SAVE_ANNOTATION)
+    .withLatestFrom(this.store$)
+    .map(([action, state]) => state)
+    .switchMap(state => this.service.saveAnnotation(state))
+    .switchMap(result => Observable.of({
+        type: AnnotateActions.SAVE_ANNOTATION_COMPLETE,
+        payload: {
+          result
         }
       }));
 

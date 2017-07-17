@@ -16,7 +16,7 @@
   <button md-button [routerLink]="['/annotate']" color="warn">
     <md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon> Cancel
   </button>
-  <button md-button color="primary">
+  <button md-button color="primary" (click)="handleSave($event)">
     <md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Save
   </button>
 

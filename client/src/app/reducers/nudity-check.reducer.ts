@@ -27,9 +27,7 @@ export function nudityCheckReducer(state: NudityCheckState = initialState, actio
         ...state,
         checkTypes: state.checkTypes.map(type => {
           if (type == action.payload.type) {
-            console.log(type.isActive);
             type.isActive = !type.isActive;
-            console.log(type.isActive);
           }
           return type;
         })
