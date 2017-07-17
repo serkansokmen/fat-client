@@ -44,10 +44,12 @@
   <div class="full-centered" *ngIf="(state$ | async)?.isRequesting">
     <md-progress-spinner color="primary" mode="indeterminate"></md-progress-spinner>
   </div>
-  <div class="full-centered" *ngIf="!((state$ | async)?.images[0] || (state$ | async)?.isRequesting)">
-    <div class="block">
-      <h4>No images found</h4>
-      <p>You might have reviewed all images related to similar tags, please try different search queries, for example change license types available.</p>
+  <div class="jumbotron" *ngIf="!((state$ | async)?.images[0] || (state$ | async)?.isRequesting)">
+    <div class="full-centered">
+      <div class="block">
+        <h4>No images found</h4>
+        <p>You might have reviewed all images related to similar tags, please try different search queries, for example change license types available.</p>
+      </div>
     </div>
   </div>
 

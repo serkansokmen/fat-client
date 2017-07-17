@@ -20,6 +20,7 @@ import {
   Group
 } from 'fabric';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
 import { ArtboardState } from '../../../reducers/artboard.reducer';
 import { ArtboardActions } from '../../../actions/artboard.actions';
@@ -43,17 +44,27 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   artboard$: Observable<any>;
 
   @Input('image') image: FlickrImage;
+  @Output('annotated') annotated = new EventEmitter<ImageData>();
 
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
   @ViewChild('drawCanvas') drawCanvas: ElementRef;
   @ViewChild('bgCanvas') bgCanvas: ElementRef;
 
+  onResize(event) {
+    console.log(event.target.innerWidth);
+  }
+
   private foregroundCanvas: Canvas;
   private backgroundCanvas: StaticCanvas;
 
+  private canvasWidth: number;
+  private canvasHeight: number;
+  private canvasScale: number = 2.0;
+
   private context: CanvasRenderingContext2D;
   private subscription;
+  private resultSubject = new Subject<any>();
 
   constructor(
     public artboardStore: Store<ArtboardState>,
@@ -63,6 +74,18 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   )
   {
     this.artboard$ = artboardStore.select('artboard');
+
+    Observable.fromEvent(window, 'resize')
+      .debounceTime(800)
+      .subscribe((event) => {
+        this.onResize(event);
+      });
+
+    this.resultSubject
+      .debounceTime(800)
+      .subscribe((resultImage) => {
+        this.annotated.emit(resultImage);
+      });
   }
 
   ngAfterViewInit() {
@@ -92,25 +115,32 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
     fabric.Image.fromURL(image.image, (img) => {
       img.lockRotation = true;
       img.lockUniScaling = true;
-      this.backgroundCanvas.setWidth(img.width)
-      this.backgroundCanvas.setHeight(img.height);
+      this.canvasWidth = img.width * this.canvasScale;
+      this.canvasHeight = img.height * this.canvasScale;
+
+      img.width = this.canvasWidth;
+      img.height = this.canvasHeight;
       this.backgroundCanvas.setBackgroundImage(img);
+      this.backgroundCanvas.setDimensions({
+        width: this.canvasWidth,
+        height: this.canvasHeight});
       this.backgroundCanvas.renderAll();
 
-      this.foregroundCanvas.setWidth(img.width);
-      this.foregroundCanvas.setHeight(img.height);
-      this.refreshMask();
+      this.foregroundCanvas.setDimensions({
+        width: this.canvasWidth,
+        height: this.canvasHeight});
+      this.foregroundCanvas.renderAll();
+      // this.refreshMask();
 
-      fabric.Image.fromURL('assets/photo_2017-06-06_06-45-14.png', (img) => {
-        this.foregroundCanvas.add(img);
-        img.width = this.backgroundCanvas.getWidth();
-        img.height = this.backgroundCanvas.getHeight();
-        setTimeout(() => {
-          this.refreshMask();
-        });
-      }, { crossOrigin: 'Anonymous' });
+      // fabric.Image.fromURL('assets/photo_2017-06-06_06-45-14.png', (img) => {
+      //   this.foregroundCanvas.add(img);
+      //   img.width = this.backgroundCanvas.getWidth();
+      //   img.height = this.backgroundCanvas.getHeight();
+      //   setTimeout(() => {
+      //     this.refreshMask();
+      //   });
+      // }, { crossOrigin: 'Anonymous' });
     }, { crossOrigin: 'Anonymous' });
-
   }
 
   handleCanvasRefresh(state: ArtboardState) {
@@ -155,6 +185,7 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
           }
           this.foregroundCanvas.add(path);
           this.refreshMask();
+          this.resultSubject.next(this.foregroundCanvas.toDataURL('png'));
         });
         break;
 
@@ -168,6 +199,7 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
         }
         this.foregroundCanvas.on('path:created', (options) => {
           this.refreshMask();
+          this.resultSubject.next(this.foregroundCanvas.toDataURL('png'));
         });
         break;
 
@@ -183,16 +215,19 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   }
 
   refreshMask() {
-    let imgData = this.context.getImageData(
+    const imgData = this.context.getImageData(
       0, 0,
       this.foregroundCanvas.width,
       this.foregroundCanvas.height
     );
-    let pixels: Uint8ClampedArray = imgData.data;
-    let resultData = this.imageService.analyzePixels(pixels,
+    const pixels: Uint8ClampedArray = imgData.data;
+    const resultData = this.imageService.analyzePixels(pixels,
       this.foregroundCanvas.width,
-      this.foregroundCanvas.height);
-    this.context.putImageData(resultData, 0, 0);
+      this.foregroundCanvas.height,
+      this.canvasScale);
+    const resultImage = new ImageData(resultData,
+        this.foregroundCanvas.width,
+        this.foregroundCanvas.height);
+    this.context.putImageData(resultImage, 0, 0);
   }
-
 }

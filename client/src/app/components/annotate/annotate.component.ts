@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { MdDialog, MdDialogRef } from '@angular/material';
@@ -26,6 +27,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   private sub: any;
 
   constructor(
+    private sanitizer: DomSanitizer,
     public dialog: MdDialog,
     public store: Store<AnnotateState>,
     private actions: AnnotateActions,
@@ -67,6 +69,10 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   handleStepChange(data: any) {
     this.store.dispatch(this.actions.selectStep(data.step));
     this.router.navigate(['/annotate', data.image.id], { queryParams: { step: data.step }});
+  }
+
+  handleImageAnnotated(image: any) {
+    this.store.dispatch(this.actions.updateAnnotatedImage(this.sanitizer.bypassSecurityTrustUrl(image)));
   }
 
 }

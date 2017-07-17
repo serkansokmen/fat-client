@@ -75,4 +75,14 @@ export class AnnotateActions {
     }
   }
 
+  static UPDATE_ANNOTATED_IMAGE = '[Annotate] Update Annotated Image';
+  updateAnnotatedImage(result: any): Action {
+    return {
+      type: AnnotateActions.UPDATE_ANNOTATED_IMAGE,
+      payload: {
+        result
+      }
+    }
+  }
+
 }

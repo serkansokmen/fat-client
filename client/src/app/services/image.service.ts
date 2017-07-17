@@ -18,12 +18,12 @@ export class ImageService {
     });
   }
 
-  analyzePixels(pixels: Uint8ClampedArray, width: number, height: number): ImageData  {
+  analyzePixels(pixels: Uint8ClampedArray, width: number, height: number, scale: number): any  {
 
     const visibleColor = { r: 0, g: 255, b: 0, a: 150 };
     const hiddenColor = { r: 0, g: 0, b: 0, a: 0 };
 
-    for(let i = 0, n = pixels.length; i < n; i += 4) {
+    for(let i = 0, n = pixels.length * scale; i < n; i += 4) {
       let r = pixels[i];
       let g = pixels[i+1];
       let b = pixels[i+2];
@@ -41,7 +41,7 @@ export class ImageService {
       }
     }
 
-    return new ImageData(pixels, width, height);
+    return pixels;
   }
 
 }
