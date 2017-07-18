@@ -27,7 +27,6 @@ export class AuthEffects {
     private store$: Store<AuthState>,
     private service: AuthService,
     private http: Http,
-    private cookieService: CookieService,
   ) {
     this.authURL = `${environment.authURL}`;
     const token = JSON.parse(localStorage.getItem('token'));
