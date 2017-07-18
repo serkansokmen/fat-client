@@ -53,7 +53,7 @@ export class AnnotateEffects {
         }
       }));
 
-  @Effect() saveAnnotation$ = this.actions$
+  @Effect() saveSkinPixelsImage$ = this.actions$
     .ofType(AnnotateActions.SAVE_SKIN_PIXELS_IMAGE)
     .map(toPayload)
     .switchMap(payload => this.service.saveSkinPixelsImage(payload.image, payload.base64))
