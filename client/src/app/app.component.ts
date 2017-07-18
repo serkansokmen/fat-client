@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { go } from '@ngrx/router-store';
 import { MdIconRegistry } from '@angular/material';
@@ -13,7 +13,10 @@ import 'rxjs/add/operator/distinctUntilChanged';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
+
+  auth$: Observable<AuthState>;
+  private sub: any;
 
   title: string = 'FAT';
   links: any[] = [{
@@ -40,15 +43,21 @@ export class AppComponent {
     public actions: AuthActions,
     private mdIconRegistry: MdIconRegistry,
   ) {
-    this.store.select('auth')
-      .distinctUntilChanged()
-      .subscribe((state: AuthState) => {
-        if (state.token) {
-          go(['/search']);
-        }
+    this.auth$ = store.select('auth');
+    mdIconRegistry.registerFontClassAlias('fontawesome', 'fa');
+  }
+
+  ngOnInit() {
+    this.sub = this.auth$.subscribe((state: AuthState) => {
+      if (!state.token) {
+        this.store.dispatch(go(['/login']));
+      }
       this.isAuthenticated = state.token && state.token.length > 0;
     });
-    mdIconRegistry.registerFontClassAlias('fontawesome', 'fa');
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 
   handleLogout() {
