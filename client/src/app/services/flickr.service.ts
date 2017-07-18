@@ -66,35 +66,26 @@ export class FlickrService {
       })
     });
 
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && currentUser.token) {
-      let headers = new Headers({
-        'Content-Type': 'application/json; charset=utf-8',
-        'X-CSRFToken': this.cookieService.get('csrftoken'),
-        'Authorization': `Token ${currentUser.token}`
-      });
-      let options = new RequestOptions({ headers: headers });
-      if (search.id == null) {
-        return this.http.post(`${this.endpoint}flickr/`, body, options)
-          .catch(error => {
-            console.error('Error at search', error);
-            return Observable.empty();
-          })
-          .map((response: Response) => response.json())
-      } else {
-        return this.http.put(`${this.endpoint}flickr/`, body, options)
-          .catch(error => {
-            console.error('Error at search', error);
-            return Observable.empty();
-          })
-          .map((response: Response) => response.json())
-          .switchMap(result => Observable.of({
-            search: result.search,
-            images: result.images.map(image => new FlickrImage(image)),
-            left: result.left,
-            total: result.total,
-          }));
-      }
+    if (search.id == null) {
+      return this.http.post(`${this.endpoint}flickr/`, body, this.jwt())
+        .catch(error => {
+          console.error('Error at search', error);
+          return Observable.empty();
+        })
+        .map((response: Response) => response.json())
+    } else {
+      return this.http.put(`${this.endpoint}flickr/`, body, this.jwt())
+        .catch(error => {
+          console.error('Error at search', error);
+          return Observable.empty();
+        })
+        .map((response: Response) => response.json())
+        .switchMap(result => Observable.of({
+          search: result.search,
+          images: result.images.map(image => new FlickrImage(image)),
+          left: result.left,
+          total: result.total,
+        }));
     }
   }
 
@@ -148,31 +139,23 @@ export class FlickrService {
       skin_pixels_image: base64,
     });
 
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && currentUser.token) {
-      let headers = new Headers({
-        'Content-Type': 'application/json; charset=utf-8',
-        'X-CSRFToken': this.cookieService.get('csrftoken'),
-        'Authorization': `Token ${currentUser.token}`
-      });
-      let options = new RequestOptions({ headers: headers });
-
-      return this.http.post(`${this.endpoint}annotations/`, body, options)
-        .catch(error => {
-          console.error('Error at search', error);
-          return Observable.empty();
-        })
-        .map((response: Response) => response.json())
-        .switchMap(result => Observable.of(result));
-    }
+    return this.http.post(`${this.endpoint}annotations/`, body, this.jwt())
+      .catch(error => {
+        console.error('Error at search', error);
+        return Observable.empty();
+      })
+      .map((response: Response) => response.json())
+      .switchMap(result => Observable.of(result));
   }
 
   private jwt() {
     // create authorization header with jwt token
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && currentUser.token) {
+    let token = JSON.parse(localStorage.getItem('token'));
+    if (token) {
       let headers = new Headers({
-        'Authorization': `Token ${currentUser.token}`
+        'Content-Type': 'application/json; charset=utf-8',
+        'X-CSRFToken': this.cookieService.get('csrftoken'),
+        'Authorization': `Token ${token}`
       });
       return new RequestOptions({ headers: headers });
     }
