@@ -10,14 +10,14 @@ import { Image } from '../../models/search.models';
 export class AnnotateStepsComponent {
 
   @Input() items: any[];
-  @Input() step: number;
+  @Input() step: any;
   @Input() selectedImage: Image;
 
   @Output('onStepSelect') stepEmitter = new EventEmitter<any>();
   @Output('onNext') next = new EventEmitter();
 
-  handleStepClick(data: any) {
-    this.stepEmitter.emit(data);
+  handleStepClick(step: any) {
+    this.stepEmitter.emit(step);
   }
 
   handleSave() {

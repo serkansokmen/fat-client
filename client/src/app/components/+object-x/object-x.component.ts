@@ -15,12 +15,12 @@ import {
 } from 'fabric';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-
+import { AnnotateState } from '../../reducers/annotate.reducer';
+import { AnnotateActions } from '../../actions/annotate.actions';
 import { ObjectXState } from '../../reducers/object-x.reducer';
 import { ObjectXActions } from '../../actions/object-x.actions';
 import { ObjectX, ObjectXType, DrawMode } from '../../models/object-x.models';
 import { Image as FlickrImage } from '../../models/search.models';
-import { AnnotateState } from '../../reducers/annotate.reducer';
 
 @Component({
   selector: 'fat-object-x',
@@ -31,9 +31,8 @@ import { AnnotateState } from '../../reducers/annotate.reducer';
 })
 export class ObjectXComponent implements AfterViewInit, OnDestroy {
 
-  @Input('image') image: FlickrImage;
-
-  state$: Observable<ObjectXState>;
+  annotate$: Observable<AnnotateState>;
+  objectX$: Observable<ObjectXState>;
   objects: ObjectX[];
   visibleObjectTypes: ObjectXType[];
 
@@ -41,7 +40,7 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
   @ViewChild('bgCanvas') bgCanvas: ElementRef;
   private canvas: Canvas;
   private context: CanvasRenderingContext2D;
-  private subscription;
+  private subscriptions: any[];
 
   private selectedObjectType;
   private isStarted;
@@ -50,10 +49,13 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     public store: Store<ObjectXState>,
-    public actions: ObjectXActions
+    public actions: ObjectXActions,
+    public annotateStore: Store<AnnotateState>,
+    public annotateActions: AnnotateActions,
   )
   {
-    this.state$ = store.select('objectX');
+    this.annotate$ = store.select('annotate');
+    this.objectX$ = store.select('objectX');
     this.objects = [];
     this.visibleObjectTypes = [];
   }
@@ -68,20 +70,25 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
     });
     this.context = this.canvas.getContext('2d');
 
-    fabric.Image.fromURL(this.image.image, (img) => {
-      img.lockRotation = true;
-      img.lockUniScaling = true;
-      bgCanvas.setWidth(img.width)
-      bgCanvas.setHeight(img.height);
-      bgCanvas.setBackgroundImage(img);
-      bgCanvas.renderAll();
+    const annotateSubscription = this.annotate$.subscribe(state => {
+      if (state.selectedImage) {
+        fabric.Image.fromURL(state.selectedImage.image, (img) => {
+          img.lockRotation = true;
+          img.lockUniScaling = true;
+          bgCanvas.setWidth(img.width)
+          bgCanvas.setHeight(img.height);
+          bgCanvas.setBackgroundImage(img);
+          bgCanvas.renderAll();
 
-      this.canvas.setWidth(img.width);
-      this.canvas.setHeight(img.height);
+          this.canvas.setWidth(img.width);
+          this.canvas.setHeight(img.height);
+        });
+      }
     });
 
     this.store.dispatch(this.actions.setDrawMode(DrawMode.add));
-    this.subscription = this.state$.subscribe((state: ObjectXState) => {
+
+    const objectXSubscription = this.objectX$.subscribe((state: ObjectXState) => {
 
       this.selectedObjectType = state.selectedObjectType;
       this.visibleObjectTypes = state.visibleObjectTypes;
@@ -135,10 +142,14 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
         default: break;
       }
     });
+
+    this.subscriptions = [annotateSubscription, objectXSubscription];
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   isTypeVisible(type?: ObjectXType) {

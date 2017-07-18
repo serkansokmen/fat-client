@@ -15,7 +15,8 @@ import {
 } from 'fabric';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-
+import { AnnotateState } from '../../reducers/annotate.reducer';
+import { AnnotateActions } from '../../actions/annotate.actions';
 import { NudityCheckState } from '../../reducers/nudity-check.reducer';
 import { NudityCheckActions } from '../../actions/nudity-check.actions';
 import { ObjectX, Gender, DrawMode } from '../../models/object-x.models';
@@ -30,26 +31,23 @@ import { Image as FlickrImage } from '../../models/search.models';
 })
 export class NudityCheckComponent implements AfterViewInit, OnDestroy {
 
-  @Input('image') image: FlickrImage;
-
-  state$: Observable<NudityCheckState>;
-
-  private subscription;
+  annotate$: Observable<AnnotateState>;
+  nudityCheck$: Observable<NudityCheckState>;
 
   constructor(
     public store: Store<NudityCheckState>,
     public actions: NudityCheckActions,
+    public annotateStore: Store<AnnotateState>,
+    public annotateActions: AnnotateActions,
   )
   {
-    this.state$ = store.select('nudityCheck');
+    this.annotate$ = annotateStore.select('annotate');
+    this.nudityCheck$ = store.select('nudityCheck');
   }
 
   ngAfterViewInit() {
-    this.subscription = this.state$.subscribe((state: NudityCheckState) => {
-    });
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 }

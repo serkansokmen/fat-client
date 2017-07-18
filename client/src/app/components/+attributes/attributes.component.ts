@@ -1,10 +1,8 @@
 import { Component,
-  Input,
   ViewChild,
   ElementRef,
   AfterViewInit,
   OnDestroy,
-  HostListener,
   ChangeDetectionStrategy
 } from '@angular/core';
 import {
@@ -16,6 +14,8 @@ import {
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { union } from 'underscore';
+import { AnnotateState } from '../../reducers/annotate.reducer';
+import { AnnotateActions } from '../../actions/annotate.actions';
 import { ObjectXState } from '../../reducers/object-x.reducer';
 import { ObjectXActions } from '../../actions/object-x.actions';
 import { ObjectX, Gender, DrawMode } from '../../models/object-x.models';
@@ -30,24 +30,26 @@ import { Image as FlickrImage } from '../../models/search.models';
 })
 export class AttributesComponent implements AfterViewInit, OnDestroy {
 
-  @Input('image') image: FlickrImage;
-
-  state$: Observable<ObjectXState>;
+  annotate$: Observable<AnnotateState>;
+  objectX$: Observable<ObjectXState>;
   objects: ObjectX[];
 
   @ViewChild('drawCanvas') drawCanvas?: ElementRef;
   @ViewChild('bgCanvas') bgCanvas?: ElementRef;
 
   private context: CanvasRenderingContext2D;
-  private subscription;
+  private subscriptions: any[];
   private canvas: Canvas;
 
   constructor(
     public store: Store<ObjectXState>,
     public actions: ObjectXActions,
+    public annotateStore: Store<AnnotateState>,
+    public annotateActions: AnnotateActions,
   )
   {
-    this.state$ = store.select('objectX');
+    this.annotate$ = store.select('annotate');
+    this.objectX$ = store.select('objectX');
     this.objects = [];
   }
 
@@ -61,18 +63,21 @@ export class AttributesComponent implements AfterViewInit, OnDestroy {
     });
     this.context = this.canvas.getContext('2d');
 
-    fabric.Image.fromURL(this.image.image, (img) => {
-      img.lockRotation = true;
-      img.lockUniScaling = true;
-      bgCanvas.setWidth(img.width);
-      bgCanvas.setHeight(img.height);
-      bgCanvas.setBackgroundImage(img);
-      bgCanvas.renderAll();
-      this.canvas.setWidth(img.width);
-      this.canvas.setHeight(img.height);
-    });
-
-    this.subscription = this.state$.subscribe((state: ObjectXState) => {
+    const annotateSubscription = this.annotate$.subscribe(state => {
+      if (state.selectedImage) {
+        fabric.Image.fromURL(state.selectedImage.image, (img) => {
+          img.lockRotation = true;
+          img.lockUniScaling = true;
+          bgCanvas.setWidth(img.width);
+          bgCanvas.setHeight(img.height);
+          bgCanvas.setBackgroundImage(img);
+          bgCanvas.renderAll();
+          this.canvas.setWidth(img.width);
+          this.canvas.setHeight(img.height);
+        });
+      }
+    })
+    const objectXSubscription = this.objectX$.subscribe((state: ObjectXState) => {
 
       this.objects = union(this.objects, state.objects);
 
@@ -119,9 +124,12 @@ export class AttributesComponent implements AfterViewInit, OnDestroy {
 
       this.canvas.renderAll();
     });
+    this.subscriptions = [annotateSubscription, objectXSubscription];
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 }

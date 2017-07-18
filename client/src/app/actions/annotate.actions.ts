@@ -65,6 +65,16 @@ export class AnnotateActions {
     }
   }
 
+  static SELECT_STEP = '[Annotate] Select Step';
+  selectStep(step: any): Action {
+    return {
+      type: AnnotateActions.SELECT_STEP,
+      payload: {
+        step
+      }
+    }
+  }
+
   static SAVE_SKIN_PIXELS_IMAGE = '[Annotate] Save Skin Pixels Image';
   saveSkinPixelsImage(): Action {
     return {

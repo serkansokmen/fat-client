@@ -36,10 +36,6 @@ import { Image as FlickrImage } from '../../models/search.models';
   templateUrl: './skin-pixels-regions.component.html',
   styleUrls: ['./skin-pixels-regions.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    ArtboardActions,
-    ArtboardService
-  ]
 })
 export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
 
@@ -75,7 +71,7 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
     private zone: NgZone
   )
   {
-    this.annotate$ = artboardStore.select('annotate');
+    this.annotate$ = annotateStore.select('annotate');
     this.artboard$ = artboardStore.select('artboard');
 
     Observable.fromEvent(window, 'resize')

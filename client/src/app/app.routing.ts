@@ -12,27 +12,16 @@ import { AuthGuard } from './guards/auth.guard';
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'search', component: SearchComponent, canActivate: [ AuthGuard ] },
-    { path: 'annotate', component: AnnotateComponent, canActivate: [ AuthGuard ],
-      children: [{
-        path: ':id',
-        component: AnnotateComponent,
-        pathMatch: 'full',
-        children: [{
-          path: 'skin-pixels',
-          component: SkinPixelsRegionsComponent
-        }, {
-          path: 'nudity-check',
-          component: NudityCheckComponent
-        }, {
-          path: 'object-x',
-          component: ObjectXComponent
-        }, {
-          path: 'attributes',
-          component: AttributesComponent
-        }]
-      }]
+    { path: 'annotate', component: AnnotateComponent, canActivate: [ AuthGuard ] },
+    { path: 'annotate/:id', component: AnnotateComponent, canActivate: [ AuthGuard ],
+      children: [
+        { path: '', pathMatch: 'full', redirectTo: 'skin-pixels' },
+        { path: 'skin-pixels', component: SkinPixelsRegionsComponent },
+        { path: 'nudity-check', component: NudityCheckComponent },
+        { path: 'object-x', component: ObjectXComponent },
+        { path: 'attributes', component: AttributesComponent },
+      ]
     },
-    // { path: 'annotate/:id', component: AnnotateComponent, canActivate: [ AuthGuard ] },
     { path: '404', component: PageNotFoundComponent },
     { path: '**', pathMatch: 'full', redirectTo: '/404' }
 ];
