@@ -107,7 +107,9 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
       backgroundColor: 'black'
     });
     const annotateSubscription = this.annotate$.subscribe((state: AnnotateState) => {
-      this.initCanvas(state.selectedImage);
+      if (state.selectedImage) {
+        this.initCanvas(state.selectedImage);
+      }
     });
     const artboardSubscription = this.artboard$.subscribe((state: ArtboardState) => {
       this.handleCanvasRefresh(state);
