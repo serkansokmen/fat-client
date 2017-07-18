@@ -9,28 +9,16 @@ import { AuthActions } from '../../actions/auth.actions';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent {
 
   auth$: Observable<AuthState>;
   model: any = {};
-  private sub: any;
 
   constructor(
     private store: Store<AuthState>,
     private actions: AuthActions,
   ) {
     this.auth$ = store.select('auth');
-  }
-
-  ngOnInit() {
-    // // reset login status
-    this.sub = this.auth$.subscribe(state => {
-      console.log(state);
-    })
-  }
-
-  ngOnDestroy() {
-    this.sub.unsubscribe();
   }
 
   handleLogin() {
