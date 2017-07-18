@@ -3,5 +3,3 @@ backup/
 .env
 sigmard.pem
 *.rdb
-
-src/dump.rdb

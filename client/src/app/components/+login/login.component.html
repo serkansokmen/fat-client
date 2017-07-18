@@ -1,0 +1,20 @@
+<div class="jumbotron">
+  <form name="form" (ngSubmit)="f.form.valid && handleLogin()" #f="ngForm" novalidate>
+    <h2>Login</h2>
+    <md-input-container [ngClass]="{ 'has-error': f.submitted && !username.valid }">
+      <input mdInput type="text" class="form-control" name="username" placeholder="Username" [(ngModel)]="model.username" #username="ngModel" required autocomplete="off" />
+    </md-input-container>
+
+    <md-input-container [ngClass]="{ 'has-error': f.submitted && !password.valid }">
+      <input mdInput type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="model.password" #password="ngModel" required autocomplete="off" />
+    </md-input-container>
+
+    <div class="form-group">
+      <button md-raised-button [disabled]="loading"><md-icon fontSet="fontawesome" fontIcon="fa-sign-in"></md-icon> Login</button>
+    </div>
+
+    <div *ngFor="let error of (auth$ | async)?.errors" class="alert alert-danger">
+      {{ error }}
+    </div>
+  </form>
+</div>

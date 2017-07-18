@@ -1,0 +1,9 @@
+*.pyc
+*.sqlite3
+cache/
+.DS_Store
+staticfiles/
+media/
+*.log
+.env
+*.rdb

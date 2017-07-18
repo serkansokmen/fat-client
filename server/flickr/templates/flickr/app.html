@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Flickr Annotation Tool{% endblock title %}
+
+{% block head %}
+<base href="/">
+{% endblock head %}
+
+{% block content %}
+<fat-root></fat-root>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'dist/inline.bundle.js' %}"></script>
+<script type="text/javascript" src="{% static 'dist/polyfills.bundle.js' %}"></script>
+<script type="text/javascript" src="{% static 'dist/vendor.bundle.js' %}"></script>
+<script type="text/javascript" src="{% static 'dist/main.bundle.js' %}"></script>
+{% endblock js %}
