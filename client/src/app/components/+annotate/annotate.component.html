@@ -1,8 +1,37 @@
+<md-toolbar>
+
+  <button md-icon-button [mdMenuTriggerFor]="menu">
+    <md-icon fontSet="fontawesome" fontIcon="fa-bars"></md-icon> {{ step ? 'Step ' + step + ': ' + (annotate$ | async)?.steps[step-1]?.title : 'Please select a step' }}
+  </button>
+
+  <md-menu #menu="mdMenu">
+    <button md-menu-item *ngFor="let item of (annotate$ | async)?.steps"
+      [routerLink]="['/annotate', (annotate$ | async)?.selectedImage?.id, item?.routePath]">
+      <md-icon fontSet="fontawesome" [fontIcon]="item?.iconName"></md-icon> {{ item?.title }}
+    </button>
+  </md-menu>
+
+  <!-- <span class="spacer"></span> -->
+
+  <!-- <button md-button [routerLink]="['/annotate']" color="warn">
+    <md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon> Cancel
+  </button>
+  <button md-button color="primary" (click)="handleSave($event)">
+    <md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Next
+  </button> -->
+
+</md-toolbar>
+<br>
+<div class="container-fluid">
+  <h2 [innerHTML]="(annotate$ | async)?.steps[step-1]?.title"></h2>
+  <p [innerHTML]="(annotate$ | async)?.steps[step-1]?.description"></p>
+</div>
+
+
 <fat-annotate-steps
   *ngIf="(annotate$ | async)?.selectedImage"
   [selectedImage]="(annotate$ | async)?.selectedImage"
-  [items]="(annotate$ | async)?.steps"
-  [step]="(annotate$ | async)?.selectedStep"
+
   (onStepSelect)="handleStepChange($event)"
   (onNext)="handleNext($event)"></fat-annotate-steps>
 
@@ -38,17 +67,6 @@
             (onCardClick)="handleCardSelect($event)"></fat-card-list>
       </div>
 
-      <div [ngSwitch]="(annotate$ | async)?.selectedStep">
-
-        <fat-skin-pixels-regions *ngSwitchCase="1" [image]="(annotate$ | async)?.selectedImage"
-          (annotated)="handleImageAnnotated($event)"></fat-skin-pixels-regions>
-        <fat-nudity-check *ngSwitchCase="2" [image]="(annotate$ | async)?.selectedImage"></fat-nudity-check>
-        <fat-object-x *ngSwitchCase="3" [image]="(annotate$ | async)?.selectedImage"></fat-object-x>
-        <fat-attributes *ngSwitchCase="4" [image]="(annotate$ | async)?.selectedImage"></fat-attributes>
-
-        <!-- <img [src]="(annotate$ | async)?.annotatedImage"> -->
-
-      </div>
     </div>
 
     <pre [innerHTML]="(annotate$ | async)?.annotatedImage | json"></pre>

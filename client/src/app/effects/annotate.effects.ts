@@ -8,6 +8,8 @@ import { Image, License, ImageState } from '../models/search.models';
 import { AnnotateActions } from '../actions/annotate.actions';
 import { AnnotateState } from '../reducers/annotate.reducer';
 import { FlickrService } from '../services/flickr.service';
+
+import 'rxjs/add/observable/empty';
 import 'rxjs/add/operator/withLatestFrom';
 
 @Injectable()
@@ -52,11 +54,11 @@ export class AnnotateEffects {
       }));
 
   @Effect() saveAnnotation$ = this.actions$
-    .ofType(AnnotateActions.SAVE_ANNOTATION)
+    .ofType(AnnotateActions.SAVE_SKIN_PIXELS_IMAGE)
     .map(toPayload)
-    .switchMap(payload => this.service.saveAnnotation(payload.image, payload.base64))
+    .switchMap(payload => this.service.saveSkinPixelsImage(payload.image, payload.base64))
     .switchMap(annotation => Observable.of({
-        type: AnnotateActions.SAVE_ANNOTATION_COMPLETE,
+        type: AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE,
         payload: {
           annotation
         }

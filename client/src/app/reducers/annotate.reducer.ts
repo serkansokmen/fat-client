@@ -5,7 +5,6 @@ import { Image } from  '../models/search.models';
 
 export interface AnnotateState {
   steps: any[],
-  selectedStep: any,
   isRequesting: boolean,
   images: Image[],
   selectedImage: Image,
@@ -18,27 +17,26 @@ export interface AnnotateState {
 
 const initialState: AnnotateState = {
   steps: [{
-    id: 1,
+    routePath: '/skin-pixels',
     iconName: 'fa-paint-brush',
     title: 'Fine Tune Marked Skin Pixels',
     description: 'Please use the lasso & brush tool to remove or fully include regions and pixels. Try to get pixel perfect results.',
    }, {
-    id: 2,
+    routePath: '/nudity-check',
     iconName: 'fa-sliders',
     title: 'Semantic Nudity Percentage',
     description: '',
    }, {
-    id: 3,
+    routePath: '/object-x',
     iconName: 'fa-pencil-square-o',
     title: 'Mark Objects',
     description: 'Please select an object type and add related rectangles on top of the image by dragging and drawing the smallest bounding rectangle around each object. You can edit and remove later by selecting from the options.',
    }, {
-    id: 4,
+    routePath: '/attributes',
     iconName: 'fa-filter',
     title: 'Gender and Age Group',
     description: 'Please select gender and age group for each of the objects. You can edit and remove later by selecting from the options.',
   }],
-  selectedStep: null,
   isRequesting: false,
   images: [],
   selectedImage: null,
@@ -74,14 +72,12 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
       return {
         ...state,
         selectedImage: new Image(action.payload.image),
-        selectedStep: 1
       };
 
     case AnnotateActions.DESELECT_IMAGE:
       return {
         ...state,
         selectedImage: null,
-        selectedStep: null
       };
 
     case AnnotateActions.REQUEST_IMAGE:
@@ -96,33 +92,19 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         ...state,
         isRequesting: false,
         selectedImage: new Image(action.payload.result),
-        selectedStep: 1
       };
 
-    case AnnotateActions.SELECT_STEP:
-      return {
-        ...state,
-        selectedStep: action.payload.step,
-      };
-
-    case AnnotateActions.UPDATE_BASE64:
-      return {
-        ...state,
-        base64: action.payload.base64,
-      }
-
-    case AnnotateActions.SAVE_ANNOTATION:
+    case AnnotateActions.SAVE_SKIN_PIXELS_IMAGE:
       return {
         ...state,
         isRequesting: true,
       };
 
-    case AnnotateActions.SAVE_ANNOTATION_COMPLETE:
+    case AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE:
       return {
         ...state,
         isRequesting: false,
         annotation: action.payload.annotation,
-        selectedStep: 2,
       };
 
     default:

@@ -10,6 +10,7 @@ import { StoreModule } from '@ngrx/store';
 import { routerReducer, RouterStoreModule } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreLogMonitorModule, useLogMonitor } from '@ngrx/store-log-monitor';
 
 // Application
 import { AppComponent } from './app.component';
@@ -19,21 +20,24 @@ import { AuthGuard } from './guards/auth.guard';
 import { SafeStylePipe } from './pipes/safe-style.pipe';
 
 // Services
-import { AuthenticationService } from './services/authentication.service';
-import { AdminService } from './services/admin.service';
+import { AuthService } from './services/auth.service';
 import { FlickrService } from './services/flickr.service';
 import { ImageService } from './services/image.service';
 
 // Actions
+import { AuthActions } from './actions/auth.actions';
 import { SearchActions } from './actions/search.actions';
 import { AnnotateActions } from './actions/annotate.actions';
 import { CardLayoutActions } from './actions/card-layout.actions';
+import { ArtboardActions } from './actions/artboard.actions';
 
 // Effects
+import { AuthEffects } from './effects/auth.effects';
 import { SearchEffects } from './effects/search.effects';
 import { AnnotateEffects } from './effects/annotate.effects';
 
 // Reducers
+import { authReducer } from './reducers/auth.reducer';
 import { searchReducer } from './reducers/search.reducer';
 import { annotateReducer } from './reducers/annotate.reducer';
 import { cardLayoutReducer } from './reducers/card-layout.reducer';
@@ -55,6 +59,12 @@ import { CardComponent } from './components/card/card.component';
 import { AnnotateStepsComponent } from './components/annotate-steps/annotate-steps.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
+
+export function instrumentOptions() {
+  return {
+    monitor: useLogMonitor({ visible: true, position: 'right' })
+  };
+}
 
 @NgModule({
   declarations: [
@@ -82,6 +92,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
     CookieModule.forRoot(),
     AppMaterial,
     StoreModule.provideStore({
+      auth: authReducer,
       search: searchReducer,
       annotate: annotateReducer,
       cardLayout: cardLayoutReducer,
@@ -91,20 +102,23 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
       nudityCheck: nudityCheckReducer,
     }),
     RouterStoreModule.connectRouter(),
+    EffectsModule.runAfterBootstrap(AuthEffects),
     EffectsModule.runAfterBootstrap(SearchEffects),
     EffectsModule.runAfterBootstrap(AnnotateEffects),
-    StoreDevtoolsModule.instrumentOnlyWithExtension(),
+    StoreDevtoolsModule.instrumentStore(instrumentOptions),
+    StoreLogMonitorModule,
   ],
   providers: [
     AuthGuard,
-    AuthenticationService,
-    AdminService,
+    AuthService,
     CookieService,
     FlickrService,
     ImageService,
+    AuthActions,
     SearchActions,
     AnnotateActions,
     CardLayoutActions,
+    ArtboardActions,
   ],
   bootstrap: [AppComponent]
 })

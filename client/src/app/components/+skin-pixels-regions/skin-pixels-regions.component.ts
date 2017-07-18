@@ -22,6 +22,8 @@ import {
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
+import { AnnotateState } from '../../reducers/annotate.reducer';
+import { AnnotateActions } from '../../actions/annotate.actions';
 import { ArtboardState } from '../../reducers/artboard.reducer';
 import { ArtboardActions } from '../../actions/artboard.actions';
 import { ArtboardService } from '../../services/artboard.service';
@@ -41,10 +43,8 @@ import { Image as FlickrImage } from '../../models/search.models';
 })
 export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
 
-  artboard$: Observable<any>;
-
-  @Input('image') image: FlickrImage;
-  @Output('annotated') annotated = new EventEmitter<ImageData>();
+  annotate$: Observable<AnnotateState>;
+  artboard$: Observable<ArtboardState>;
 
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
@@ -63,16 +63,19 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   private canvasScale: number = 2.0;
 
   private context: CanvasRenderingContext2D;
-  private subscription;
+  private subscriptions: any[];
   private resultSubject = new Subject<any>();
 
   constructor(
+    public annotateStore: Store<AnnotateState>,
+    public annotateActions: AnnotateActions,
     public artboardStore: Store<ArtboardState>,
     public artboardActions: ArtboardActions,
     private imageService: ImageService,
     private zone: NgZone
   )
   {
+    this.annotate$ = artboardStore.select('annotate');
     this.artboard$ = artboardStore.select('artboard');
 
     Observable.fromEvent(window, 'resize')
@@ -84,8 +87,13 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
     this.resultSubject
       .debounceTime(800)
       .subscribe((resultImage) => {
-        this.annotated.emit(resultImage);
+        this.annotateStore.dispatch(
+          this.artboardActions.updateCanvasBase64(resultImage));
       });
+  }
+
+  handleNext() {
+    this.annotateStore.dispatch(this.annotateActions.saveSkinPixelsImage());
   }
 
   ngAfterViewInit() {
@@ -98,10 +106,13 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
     this.backgroundCanvas = new fabric.StaticCanvas(this.bgCanvas.nativeElement, {
       backgroundColor: 'black'
     });
-    this.initCanvas(this.image);
-    this.subscription = this.artboard$.subscribe((state: ArtboardState) => {
+    const annotateSubscription = this.annotate$.subscribe((state: AnnotateState) => {
+      this.initCanvas(state.selectedImage);
+    });
+    const artboardSubscription = this.artboard$.subscribe((state: ArtboardState) => {
       this.handleCanvasRefresh(state);
     });
+    this.subscriptions = [annotateSubscription, artboardSubscription];
   }
 
   initCanvas(image: FlickrImage) {
@@ -211,7 +222,9 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   refreshMask() {

@@ -65,4 +65,14 @@ export class ArtboardActions {
       }
     }
   }
+
+  static UPDATE_CANVAS_BASE64 = '[Artboard] Update Canvas Base64';
+  updateCanvasBase64(base64: string): Action {
+    return {
+      type: ArtboardActions.UPDATE_CANVAS_BASE64,
+      payload: {
+        base64
+      }
+    }
+  }
 }

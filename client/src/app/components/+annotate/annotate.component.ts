@@ -9,7 +9,8 @@ import { AnnotateActions } from '../../actions/annotate.actions';
 import { Image, ImageState } from '../../models/search.models';
 import { CardLayoutOptions } from '../../models/card-layout.models';
 import { CardLayoutActions } from '../../actions/card-layout.actions';
-import { AdminService } from '../../services/admin.service';
+
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -25,8 +26,6 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   adminURL: string;
 
   private sub: any;
-  private base64: string;
-  private image: Image;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -36,10 +35,9 @@ export class AnnotateComponent implements OnInit, OnDestroy {
     private cardLayoutActions: CardLayoutActions,
     private router: Router,
     private route: ActivatedRoute,
-    private admin: AdminService,
   ) {
     this.annotate$ = store.select('annotate');
-    this.adminURL = admin.adminEndpoint;
+    this.adminURL = environment.adminURL;
   }
 
   ngOnInit() {
@@ -60,28 +58,8 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   }
 
   handleCardSelect(image: Image) {
-    if (image.image) {
-      this.store.dispatch(this.actions.selectImage(image));
-      this.router.navigate(['/annotate', image.id], {queryParams: {step: 1}});
-      this.image = image;
-    }
-  }
-
-  handleStepChange(data: any) {
-    this.store.dispatch(this.actions.selectStep(data.step));
-    this.router.navigate(['/annotate', data.image.id], { queryParams: { step: data.step }});
-  }
-
-  handleImageAnnotated(base64: string) {
-    this.base64 = base64;
-    this.store.dispatch(this.actions.updateBase64(this.base64));
-  }
-
-  handleNext() {
-    if (!this.image) {
-      return;
-    }
-    this.store.dispatch(this.actions.saveAnnotation(this.image, this.base64));
+    this.store.dispatch(this.actions.selectImage(image));
+    this.router.navigate(['/annotate', image.id, '/skin-pixels']);
   }
 
 }

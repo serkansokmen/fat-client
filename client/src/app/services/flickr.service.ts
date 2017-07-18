@@ -142,7 +142,7 @@ export class FlickrService {
       .map((response: Response) => new FlickrImage(response.json()));
   }
 
-  saveAnnotation(image: FlickrImage, base64: string) {
+  saveSkinPixelsImage(image: FlickrImage, base64: string) {
     let body = JSON.stringify({
       image: image.id,
       skin_pixels_image: base64,

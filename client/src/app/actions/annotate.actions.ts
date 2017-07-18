@@ -65,41 +65,18 @@ export class AnnotateActions {
     }
   }
 
-  static SELECT_STEP = '[Annotate] Select Step';
-  selectStep(step: number): Action {
+  static SAVE_SKIN_PIXELS_IMAGE = '[Annotate] Save Skin Pixels Image';
+  saveSkinPixelsImage(): Action {
     return {
-      type: AnnotateActions.SELECT_STEP,
-      payload: {
-        step
-      }
+      type: AnnotateActions.SAVE_SKIN_PIXELS_IMAGE,
+      payload: {}
     }
   }
 
-  static UPDATE_BASE64 = '[Annotate] Update Base64';
-  updateBase64(base64: string): Action {
+  static SAVE_SKIN_PIXELS_IMAGE_COMPLETE = '[Annotate] Save Skin Pixels Image Complete';
+  saveSkinPixelsImageComplete(annotation: any): Action {
     return {
-      type: AnnotateActions.UPDATE_BASE64,
-      payload: {
-        base64
-      }
-    }
-  }
-
-  static SAVE_ANNOTATION = '[Annotate] Save Annotation';
-  saveAnnotation(image: Image, base64: string): Action {
-    return {
-      type: AnnotateActions.SAVE_ANNOTATION,
-      payload: {
-        image,
-        base64
-      }
-    }
-  }
-
-  static SAVE_ANNOTATION_COMPLETE = '[Annotate] Save Annotation Complete';
-  saveAnnotationComplete(annotation: any): Action {
-    return {
-      type: AnnotateActions.SAVE_ANNOTATION_COMPLETE,
+      type: AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE,
       payload: {
         annotation
       }

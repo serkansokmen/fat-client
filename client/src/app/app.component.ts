@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { LocationStrategy } from '@angular/common';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { go } from '@ngrx/router-store';
 import { MdIconRegistry } from '@angular/material';
-import { Router, NavigationStart } from '@angular/router';
-import { AuthenticationService } from './services/authentication.service';
+import { Store } from '@ngrx/store';
+import { AuthState } from './reducers/auth.reducer';
+import { AuthActions } from './actions/auth.actions';
+
+import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
   selector: 'fat-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent  implements OnInit {
+export class AppComponent {
 
   title: string = 'FAT';
   links: any[] = [{
@@ -29,36 +33,26 @@ export class AppComponent  implements OnInit {
     iconName: 'fa-thumbs-o-up',
   }];
   currentLink: any;
+  isAuthenticated: boolean;
 
   constructor(
-    private authenticationService: AuthenticationService,
-    private router: Router,
-    private url: LocationStrategy,
+    public store: Store<AuthState>,
+    public actions: AuthActions,
     private mdIconRegistry: MdIconRegistry,
   ) {
+    this.store.select('auth')
+      .distinctUntilChanged()
+      .subscribe((state: AuthState) => {
+        if (state.token) {
+          go(['/search']);
+        }
+      this.isAuthenticated = state.token && state.token.length > 0;
+    });
     mdIconRegistry.registerFontClassAlias('fontawesome', 'fa');
   }
 
-  ngOnInit() {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        this.currentLink = this.links.filter(link => link.routerLink.indexOf(event.url) > -1)[0] || this.links[0];
-      }
-    });
+  handleLogout() {
+    this.store.dispatch(this.actions.logout());
   }
 
-  logout(event) {
-    this.authenticationService.logout()
-      .subscribe(result => {
-        this.router.navigate(['/login']);
-      });
-  }
-
-  isLoggedIn() {
-    return localStorage.getItem('currentUser') !== null;
-  }
-
-  navigateTo(url: string) {
-    this.router.navigate([url]);
-  }
 }
