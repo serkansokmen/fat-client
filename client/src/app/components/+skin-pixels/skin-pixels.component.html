@@ -1,5 +1,7 @@
-<div class="row">
-  <div class="col-xs-12 col-sm-3">
+<md-sidenav-container>
+  <md-sidenav #nav mode="side" opened="true">
+    <h2 [innerHTML]="(annotate$ | async)?.selectedStep?.title"></h2>
+    <p [innerHTML]="(annotate$ | async)?.selectedStep?.description"></p>
     <hr>
     <md-radio-group (change)="artboardStore.dispatch(artboardActions.selectArtboardTool($event.value))" [value]="(artboard$ | async)?.currentTool">
       <!-- <md-radio-button [value]="artboardTools[0]" selected>Polygon</md-radio-button> -->
@@ -37,11 +39,12 @@
     </div> -->
     <!-- <md-slide-toggle [checked]="(artboard$ | async)?.isDragging"
       (change)="artboardStore.dispatch(artboardActions.setIsDragging($event.checked))">Drag</md-slide-toggle> -->
+  </md-sidenav>
+
+
+  <div class="draw-view">
+    <canvas #bgCanvas class="background" [style.display]="(artboard$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
+    <canvas #drawCanvas></canvas>
   </div>
-  <div class="col-xs-12 col-sm-9">
-    <div class="draw-view">
-      <canvas #bgCanvas class="background" [style.display]="(artboard$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
-      <canvas #drawCanvas></canvas>
-    </div>
-  </div>
-</div>
+
+</md-sidenav-container>

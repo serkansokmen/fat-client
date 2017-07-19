@@ -50,4 +50,8 @@ export class NudityCheckComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
   }
+
+  handleNext() {
+
+  }
 }

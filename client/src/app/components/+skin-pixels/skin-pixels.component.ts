@@ -32,12 +32,12 @@ import { ImageService } from '../../services/image.service';
 import { Image as FlickrImage } from '../../models/search.models';
 
 @Component({
-  selector: 'fat-skin-pixels-regions',
-  templateUrl: './skin-pixels-regions.component.html',
-  styleUrls: ['./skin-pixels-regions.component.scss'],
+  selector: 'fat-skin-pixels',
+  templateUrl: './skin-pixels.component.html',
+  styleUrls: ['./skin-pixels.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
+export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
   artboard$: Observable<ArtboardState>;

@@ -1,5 +1,7 @@
-<div class="row">
-  <div class="col-xs-12 col-sm-3">
+<md-sidenav-container>
+  <md-sidenav #nav mode="side" opened="true">
+    <h2 [innerHTML]="(annotate$ | async)?.selectedStep?.title"></h2>
+    <p [innerHTML]="(annotate$ | async)?.selectedStep?.description"></p>
     <hr>
     <div class="slider-row" *ngFor="let type of (nudityCheck$ | async).checkTypes">
       <md-checkbox [checked]="type?.isActive" (change)="store.dispatch(actions.toggleTypeActive(type))">
@@ -11,10 +13,19 @@
         [value]="type?.weight" min="0" max="100"></md-slider>
       <hr>
     </div>
-  </div>
-  <div class="col-xs-12 col-sm-9">
-    <div class="draw-view">
-      <img [src]="(annotate$ | async)?.selectedImage?.image"/>
+    <hr>
+    <div class="form-controls">
+      <button md-button [routerLink]="['/annotate']" color="warn">
+        <md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon> Cancel
+      </button>
+      <button md-button color="primary" (click)="handleNext()">
+        <md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Next
+      </button>
     </div>
+  </md-sidenav>
+
+  <div class="draw-view">
+    <img [src]="(annotate$ | async)?.selectedImage?.image"/>
   </div>
-</div>
+
+</md-sidenav-container>

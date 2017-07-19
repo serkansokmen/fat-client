@@ -1,9 +1,5 @@
 <md-progress-spinner *ngIf="(annotate$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
 <md-card *ngIf="!(annotate$ | async)?.isRequesting">
-  <md-card-title *ngIf="(annotate$ | async)?.images[0] && (annotate$ | async)?.selectedImage && (annotate$ | async)?.selectedStep">
-    <h2 [innerHTML]="(annotate$ | async)?.selectedStep?.title"></h2>
-    <p [innerHTML]="(annotate$ | async)?.selectedStep?.description"></p>
-  </md-card-title>
   <md-card-content>
     <div class="jumbotron" *ngIf="!(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
       <div class="container">
