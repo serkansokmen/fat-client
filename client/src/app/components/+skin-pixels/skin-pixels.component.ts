@@ -1,4 +1,5 @@
 import { Component,
+  Inject,
   ViewChild,
   ElementRef,
   AfterViewInit,
@@ -10,14 +11,13 @@ import { Component,
   Output,
   ChangeDetectionStrategy,
   NgZone,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
 import {
   fabric,
   Canvas,
-  StaticCanvas,
   Polygon,
-  Group
+  Group,
 } from 'fabric';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -42,27 +42,30 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
   annotate$: Observable<AnnotateState>;
   artboard$: Observable<ArtboardState>;
 
+
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
   @ViewChild('drawCanvas') drawCanvas: ElementRef;
   @ViewChild('bgCanvas') bgCanvas: ElementRef;
 
-  // onResize(event) {
-  //   console.log(event.target.innerWidth);
-  // }
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.canvas.setDimensions({
+      width: event.target.innerWidth,
+      height: event.target.innerHeight});
+    this.canvas.renderAll();
+  }
 
-  private foregroundCanvas: Canvas;
-  private backgroundCanvas: StaticCanvas;
-
-  private canvasWidth: number;
-  private canvasHeight: number;
-  private canvasScale: number = 2.0;
+  private canvas: Canvas;
+  private maskGroup: Group;
+  private fabricImage: any;
 
   private context: CanvasRenderingContext2D;
-  private subscriptions: any[];
+  private subscriptions: any[] = [];
   private resultSubject = new Subject<any>();
 
   constructor(
+    @Inject('Window') window: Window,
     public annotateStore: Store<AnnotateState>,
     public annotateActions: AnnotateActions,
     public artboardStore: Store<ArtboardState>,
@@ -79,87 +82,91 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
     //   .subscribe((event) => {
     //     this.onResize(event);
     //   });
+    // this.refreshCanvasSubject
+      // .distinctUntilChanged()
+      // .subscribe(() => {
+        // const imgData = this.context.getImageData(
+        //   0, 0,
+        //   this.canvas.width,
+        //   this.canvas.height
+        // );
+        // const pixels: Uint8ClampedArray = imgData.data;
+        // const resultData = this.imageService.analyzePixels(pixels,
+        //   this.canvas.width,
+        //   this.canvas.height,
+        //   this.canvasScale);
+        // const resultImage = new ImageData(resultData,
+        //     this.canvas.width,
+        //     this.canvas.height);
+        // this.context.putImageData(resultImage, 0, 0);
+      // });
 
     this.resultSubject
       .debounceTime(800)
       .subscribe((resultImage) => {
-        this.annotateStore.dispatch(
-          this.artboardActions.updateCanvasBase64(resultImage));
+
       });
+    this.subscriptions.push(this.resultSubject);
     this.annotateStore.dispatch(this.annotateActions.selectStep(0));
   }
 
-  handleNext() {
-    this.annotateStore.dispatch(this.annotateActions.saveSkinPixelsImage(this.foregroundCanvas.toDataURL('png')));
-  }
 
   ngAfterViewInit() {
 
-    this.foregroundCanvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
-      // backgroundColor: 'white'
+    this.canvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
+      backgroundColor: 'white'
     });
-    this.context = this.foregroundCanvas.getContext('2d');
+    this.context = this.canvas.getContext('2d');
 
-    this.backgroundCanvas = new fabric.StaticCanvas(this.bgCanvas.nativeElement, {
-      backgroundColor: 'black'
-    });
-    const annotateSubscription = this.annotate$.subscribe((state: AnnotateState) => {
+    this.subscriptions.push(this.annotate$.subscribe((state: AnnotateState) => {
       if (state.selectedImage) {
-        this.initCanvas(state.selectedImage);
+        this.handleAnnotate(state.selectedImage);
       }
-    });
-    const artboardSubscription = this.artboard$.subscribe((state: ArtboardState) => {
-      this.handleCanvasRefresh(state);
-    });
-    this.subscriptions = [annotateSubscription, artboardSubscription];
+    }));
+    this.subscriptions.push(this.artboard$.subscribe((state: ArtboardState) => {
+      this.handleArtboard(state);
+    }));
   }
 
-  initCanvas(image: FlickrImage) {
+  handleAnnotate(image: FlickrImage) {
 
-    this.foregroundCanvas.clear();
-    this.foregroundCanvas.isDrawingMode = true;
-    this.foregroundCanvas.on('mouse:down', (options) => {
-      this.refreshMask();
-    });
+    this.canvas.clear();
+    this.canvas.isDrawingMode = true;
+    this.canvas.setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight});
+    this.canvas.renderAll();
 
     fabric.Image.fromURL(image.image, (img) => {
       img.lockRotation = true;
       img.lockUniScaling = true;
-      this.canvasWidth = img.width * this.canvasScale;
-      this.canvasHeight = img.height * this.canvasScale;
+      img.selectable = false;
+      // if (img.width > img.height) {
+      //   img.scaleToWidth(this.canvas.getWidth());
+      // } else {
+      //   img.scaleToHeight(this.canvas.getHeight());
+      // }
+      this.fabricImage = img;
+      this.canvas.setBackgroundImage(this.fabricImage,
+        this.canvas.renderAll.bind(this.canvas));
+      // this.canvas.add(this.fabricImage);
 
-      img.width = this.canvasWidth;
-      img.height = this.canvasHeight;
-      this.backgroundCanvas.setBackgroundImage(img);
-      this.backgroundCanvas.setDimensions({
-        width: this.canvasWidth,
-        height: this.canvasHeight});
-      this.backgroundCanvas.renderAll();
+      this.maskGroup = new fabric.Group();
+      this.maskGroup.setWidth(this.canvas.getWidth());
+      this.maskGroup.setHeight(this.canvas.getHeight());
+      this.canvas.add(this.maskGroup);
 
-      this.foregroundCanvas.setDimensions({
-        width: this.canvasWidth,
-        height: this.canvasHeight});
-      this.foregroundCanvas.renderAll();
-      // this.refreshMask();
-
-      // fabric.Image.fromURL('assets/photo_2017-06-06_06-45-14.png', (img) => {
-      //   this.foregroundCanvas.add(img);
-      //   img.width = this.backgroundCanvas.getWidth();
-      //   img.height = this.backgroundCanvas.getHeight();
-      //   setTimeout(() => {
-      //     this.refreshMask();
-      //   });
-      // }, { crossOrigin: 'Anonymous' });
     }, { crossOrigin: 'Anonymous' });
   }
 
-  handleCanvasRefresh(state: ArtboardState) {
-    // this.zone.runOutsideAngular(() => {
-    this.foregroundCanvas.setZoom(state.zoom);
-    this.backgroundCanvas.setZoom(state.zoom);
-    this.foregroundCanvas.off('path:created');
+  handleArtboard(state: ArtboardState) {
+    this.canvas.setZoom(state.zoom);
+    this.canvas.off('path:created');
     // canvas.off('mouse:up');
 
+    if (this.fabricImage) {
+      this.fabricImage.set({ visible: state.isShowingOriginal });
+    }
     // if (state.isDragging) {
     //   canvas.on('mouse:down', (options) => {
     //     console.log(options);
@@ -171,75 +178,72 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
     //     console.log(options);
     //   });
     // }
+    const brushColor = state.isAdding ? 'rgba(0,255,0,1)' : 'rgba(255,0,0,1)';
+    const fillColor = state.isAdding ? 'rgba(0,255,0,1)' : 'black';
 
-    this.foregroundCanvas.isDrawingMode = state.currentTool != ArtboardTool.polygon;
+    this.canvas.isDrawingMode = state.currentTool != ArtboardTool.polygon;
+    // this.context.globalCompositeOperation = state.isAdding ? 'xor' : 'destination-out';
+    // this.context.fillStyle = fillColor;
+    this.canvas.freeDrawingBrush.color = brushColor;
+    this.canvas.freeDrawingBrush.width = state.currentTool == ArtboardTool.brush ? state.brushRadius : 1.0;
+    this.canvas.on('path:created', (options) => {
+      // this.store.dispatch(this.artboardActions.lassoPathCreated(options.path));
+      let path = options.path;
+      path.lockRotation = true;
+      path.lockUniScaling = true;
+      path.selectable = false;
+      path.globalCompositeOperation = state.isAdding ? 'source-over' : 'destination-out';
 
-    switch (state.currentTool) {
+      switch (state.currentTool) {
 
-      case ArtboardTool.polygon:
-        break;
+        case ArtboardTool.polygon:
+          break;
 
-      case ArtboardTool.lasso:
-        this.foregroundCanvas.freeDrawingBrush.color = 'rgba(0,255,0,1)';
-        this.foregroundCanvas.freeDrawingBrush.width = 1.0;
-        this.foregroundCanvas.on('path:created', (options) => {
-          // this.store.dispatch(this.artboardActions.lassoPathCreated(options.path));
-          let path = options.path;
-          path.lockRotation = true;
-          path.lockUniScaling = true;
-          path.selectable = false;
-          if (state.isAdding == true) {
-            path.set({ fill: 'rgba(0,255,0,150)', stroke: 'transparent' });
-          } else {
-            path.set({ fill: 'black', stroke: 'transparent' });
-          }
-          this.foregroundCanvas.add(path);
-          this.refreshMask();
-          this.resultSubject.next(this.foregroundCanvas.toDataURL('png'));
-        });
-        break;
+        case ArtboardTool.lasso:
+          path.set({ fill: fillColor, stroke: 'transparent' });
+          break;
 
-      case ArtboardTool.brush:
-        this.foregroundCanvas.freeDrawingBrush.width = state.brushRadius;
-        if (state.isAdding == true) {
-          this.foregroundCanvas.freeDrawingBrush.color = 'rgba(0,255,0,150)';
-          this.foregroundCanvas.set({ fill: 'transparent', stroke: 'rgba(0,255,0,150)' });
-        } else {
-          this.foregroundCanvas.freeDrawingBrush.color = 'black';
-        }
-        this.foregroundCanvas.on('path:created', (options) => {
-          this.refreshMask();
-          this.resultSubject.next(this.foregroundCanvas.toDataURL('png'));
-        });
-        break;
+        case ArtboardTool.brush:
+          path.set({ fill: 'transparent', stroke: fillColor });
+          break;
 
-      default:
-        break;
-    }
-    // this.refreshMask();
-    // });
+        default:
+          break;
+      }
+
+      this.maskGroup.addWithUpdate(path);
+      this.canvas.renderAll();
+    });
+
+  }
+
+  handleNext() {
+    const hideBg = () => {
+      this.canvas.backgroundImage = null;
+    };
+    const showBg = () => {
+      this.canvas.backgroundImage = this.fabricImage;
+    };
+    this.canvas.on('before:render', hideBg);
+    this.canvas.on('after:render', showBg);
+    this.canvas.deactivateAll();
+    this.annotateStore.dispatch(
+      this.annotateActions.saveSkinPixels(
+        this.canvas.toDataURL({
+          format: 'png',
+          left: 0,
+          top: 0,
+          width: this.fabricImage.width,
+          height: this.fabricImage.height,
+        })));
+    this.canvas.off('before:render', hideBg);
+    this.canvas.off('after:render', showBg);
   }
 
   ngOnDestroy() {
     for (let subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
-  }
-
-  refreshMask() {
-    const imgData = this.context.getImageData(
-      0, 0,
-      this.foregroundCanvas.width,
-      this.foregroundCanvas.height
-    );
-    const pixels: Uint8ClampedArray = imgData.data;
-    const resultData = this.imageService.analyzePixels(pixels,
-      this.foregroundCanvas.width,
-      this.foregroundCanvas.height,
-      this.canvasScale);
-    const resultImage = new ImageData(resultData,
-        this.foregroundCanvas.width,
-        this.foregroundCanvas.height);
-    this.context.putImageData(resultImage, 0, 0);
+    this.subscriptions = [];
   }
 }

@@ -111,13 +111,13 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
           return state;
       }
 
-    case AnnotateActions.SAVE_SKIN_PIXELS_IMAGE:
+    case AnnotateActions.SAVE_SKIN_PIXELS:
       return {
         ...state,
         isRequesting: true,
       };
 
-    case AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE:
+    case AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE:
       return {
         ...state,
         isRequesting: false,

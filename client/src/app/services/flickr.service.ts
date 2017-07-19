@@ -129,7 +129,7 @@ export class FlickrService {
     return this.http.get(url, this.jwt());
   }
 
-  saveSkinPixelsImage(image: FlickrImage, base64: string): Observable<any> {
+  saveSkinPixels(image: FlickrImage, base64: string) {
     let body = JSON.stringify({
       image: image.id,
       skin_pixels_image: base64,

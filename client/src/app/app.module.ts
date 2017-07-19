@@ -62,7 +62,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 
 export function instrumentOptions() {
   return {
-    monitor: useLogMonitor({ visible: true, position: 'right' })
+    monitor: useLogMonitor({ visible: false, position: 'bottom' })
   };
 }
 
@@ -109,6 +109,7 @@ export function instrumentOptions() {
     StoreLogMonitorModule,
   ],
   providers: [
+    { provide: 'Window',  useValue: window },
     AuthGuard,
     AuthService,
     CookieService,

@@ -52,25 +52,25 @@ export class AnnotateEffects {
       payload
     }))
 
-  @Effect() saveSkinPixelsImage$ = this.actions$
-    .ofType(AnnotateActions.SAVE_SKIN_PIXELS_IMAGE)
+  @Effect() saveSkinPixels$ = this.actions$
+    .ofType(AnnotateActions.SAVE_SKIN_PIXELS)
     .withLatestFrom(this.store$, (action, state: any) => ({
       image: state.annotate.selectedImage,
       base64: action.payload.base64,
     }))
-    .map(object => this.service
-      .saveSkinPixelsImage(object.image, object.base64)
+    .switchMap(object => this.service
+      .saveSkinPixels(object.image, object.base64)
       .map(res => res.json())
       .catch(err => err.json()))
     .switchMap(annotation => Observable.of({
-        type: AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE,
+        type: AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE,
         payload: {
           annotation
         }
       }));
 
-   @Effect({ dispatch: false }) saveSkinPixelsImageComplete$ = this.actions$
-    .ofType(AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE)
+   @Effect({ dispatch: false }) saveSkinPixelsComplete$ = this.actions$
+    .ofType(AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE)
     .withLatestFrom(this.store$, (action, state: any) =>
       `/annotate/${state.annotate.selectedImage.id}${state.annotate.steps[1].routePath}`)
     .map(url => {

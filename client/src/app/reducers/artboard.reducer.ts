@@ -16,7 +16,7 @@ export interface ArtboardState {
 const initialState: ArtboardState = {
   currentTool: ArtboardTool.lasso,
   brushRadius: 24.0,
-  zoom: 1.0,
+  zoom: 1.5,
   isDragging: false,
   isAdding: true,
   isShowingOriginal: true,
