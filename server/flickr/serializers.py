@@ -9,11 +9,11 @@ class ImageSerializer(serializers.ModelSerializer):
 
     state = serializers.ChoiceField(choices=Image.IMAGE_STATES, allow_null=True)
 
-    def create(self, validated_data):
-        state_val = validated_data.pop('state', '')
-        if state_val is not None:
-            state = Image.IMAGE_STATES[state_val]
-        return Image.objects.create(**validated_data, state=state)
+    # def create(self, validated_data):
+    #     state_val = validated_data.pop('state', '')
+    #     if state_val is not None:
+    #         state = Image.IMAGE_STATES[state_val]
+    #     return Image.objects.create(**validated_data, state=state)
 
     class Meta:
         model = Image
