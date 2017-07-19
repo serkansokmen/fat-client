@@ -1,5 +1,7 @@
 from fat.settings.base import *
 
+DEBUG = True
+SECRET_KEY = 'something-very-secret'
 
 DATABASES = {
     'default': {
@@ -10,3 +12,5 @@ DATABASES = {
         'HOST': '',
     }
 }
+
+EMAIL_BACKEND = 'backends.smtp.EmailBackend'

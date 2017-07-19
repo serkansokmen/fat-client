@@ -20,10 +20,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+# SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'NO').lower() in ('on', 'true', 'y', 'yes')
+# DEBUG = os.getenv('DEBUG', 'NO').lower() in ('on', 'true', 'y', 'yes')
 
 
 ALLOWED_HOSTS = ['*']
@@ -106,9 +106,9 @@ WSGI_APPLICATION = 'fat.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': dj_database_url.config(default=os.environ['DATABASE_URL'], conn_max_age=500)
-}
+# DATABASES = {
+#     'default': dj_database_url.config(default=os.environ['DATABASE_URL'], conn_max_age=500)
+# }
 
 # Subsrtitute User
 # AUTH_USER_MODEL = 'flickr.User'
@@ -207,11 +207,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100
 }
-
-if DEBUG == True:
-    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-else:
-    EMAIL_BACKEND = 'backends.smtp.EmailBackend'
 
 
 # Send an email to the site admins

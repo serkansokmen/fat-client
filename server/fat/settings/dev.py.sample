@@ -1,0 +1,12 @@
+from fat.settings.base import *
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ssokmen$fat_db',
+        'USER': 'ssokmen',
+        'PASSWORD': 'LeQRY?RXhC6HcRkE',
+        'HOST': 'ssokmen.mysql.pythonanywhere-services.com',
+    }
+}
