@@ -55,11 +55,6 @@ export function artboardReducer(state: ArtboardState = initialState, action: Act
         ...state,
         isShowingOriginal: action.payload.isShowingOriginal
       }
-    case ArtboardActions.UPDATE_CANVAS_BASE64:
-      return {
-        ...state,
-        base64: action.payload.base64,
-      }
     default:
       return state;
   }
