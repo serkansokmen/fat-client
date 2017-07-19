@@ -1,6 +1,7 @@
 branch-defaults:
   master:
-    environment: null
+    environment: fat-dev
+    group_suffix: null
 environment-defaults:
   fat-dev:
     branch: null
