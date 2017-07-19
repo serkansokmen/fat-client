@@ -1,6 +1,10 @@
 branch-defaults:
   master:
     environment: fat-prod
+environment-defaults:
+  fat-prod:
+    branch: null
+    repository: null
 global:
   application_name: fat
   branch: null
