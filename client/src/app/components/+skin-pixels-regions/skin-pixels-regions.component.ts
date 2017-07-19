@@ -86,6 +86,7 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
         this.annotateStore.dispatch(
           this.artboardActions.updateCanvasBase64(resultImage));
       });
+    this.annotateStore.dispatch(this.annotateActions.selectStep(0));
   }
 
   handleNext() {

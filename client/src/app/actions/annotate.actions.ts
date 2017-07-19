@@ -27,24 +27,6 @@ export class AnnotateActions {
     }
   }
 
-  static SELECT_IMAGE = '[Annotate] Select Image';
-  selectImage(image: Image): Action {
-    return {
-      type: AnnotateActions.SELECT_IMAGE,
-      payload: {
-        image
-      }
-    }
-  }
-
-  static DESELECT_IMAGE = '[Annotate] Deselect Image';
-  deselectImage(): Action {
-    return {
-      type: AnnotateActions.DESELECT_IMAGE,
-      payload: {}
-    }
-  }
-
   static REQUEST_IMAGE = '[Annotate] Request Image';
   requestImage(id: number): Action {
     return {
@@ -62,6 +44,24 @@ export class AnnotateActions {
       payload: {
         image
       }
+    }
+  }
+
+  static SELECT_IMAGE = '[Annotate] Select Image';
+  selectImage(image: Image): Action {
+    return {
+      type: AnnotateActions.SELECT_IMAGE,
+      payload: {
+        image
+      }
+    }
+  }
+
+  static DESELECT_IMAGE = '[Annotate] Deselect Image';
+  deselectImage(): Action {
+    return {
+      type: AnnotateActions.DESELECT_IMAGE,
+      payload: {}
     }
   }
 

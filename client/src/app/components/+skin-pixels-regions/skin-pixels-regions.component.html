@@ -23,6 +23,14 @@
       {{ (artboard$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
     </md-slide-toggle>
     <hr>
+    <div class="form-controls">
+      <button md-button [routerLink]="['/annotate']" color="warn">
+        <md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon> Cancel
+      </button>
+      <button md-button color="primary" (click)="handleNext()">
+        <md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Next
+      </button>
+    </div>
     <!-- <div>
       Zoom <md-slider thumbLabel (change)="artboardStore.dispatch(artboardActions.setZoom($event.value))"
       [value]="(artboard$ | async)?.zoom" step="0.1" min="1" max="4"></md-slider>

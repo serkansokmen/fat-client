@@ -23,14 +23,6 @@ export class AnnotateEffects {
     private router: Router,
   ) {}
 
-  @Effect() errorStatus401$ = this.actions$
-    .map(action => action.payload)
-    .filter(payload => payload && payload.errorStatus === 401)
-    .switchMap(payload => {
-        this.router.navigate(['/login']);
-        return Observable.empty();
-    });
-
   @Effect() requestAvailableImages$ = this.actions$
     .ofType(AnnotateActions.REQUEST_IMAGES)
     .map(toPayload)
@@ -49,9 +41,17 @@ export class AnnotateEffects {
     .switchMap(result => Observable.of({
         type: AnnotateActions.REQUEST_IMAGE_COMPLETE,
         payload: {
-          image: result
+          image: new Image(result.json())
         }
       }));
+
+  @Effect() requestImageComplete$ = this.actions$
+    .ofType(AnnotateActions.REQUEST_IMAGE_COMPLETE)
+    .map(toPayload)
+    .map(payload => ({
+      type: AnnotateActions.SELECT_IMAGE,
+      payload
+    }))
 
   @Effect() saveSkinPixelsImage$ = this.actions$
     .ofType(AnnotateActions.SAVE_SKIN_PIXELS_IMAGE)

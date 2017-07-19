@@ -1,17 +1,10 @@
-<fat-annotate-steps
-  [items]="(annotate$ | async)?.steps"
-  [step]="(annotate$ | async)?.selectedStep"
-  [selectedImage]="(annotate$ | async)?.selectedImage"
-  (onStepSelect)="handleStepSelect($event)"
-  (onNext)="handleNext($event)"></fat-annotate-steps>
-
-<md-card>
-  <md-card-title *ngIf="(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
-    <h2 [innerHTML]="(annotate$ | async)?.stepTitle"></h2>
-    <p [innerHTML]="(annotate$ | async)?.stepDescription"></p>
+<md-progress-spinner *ngIf="(annotate$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
+<md-card *ngIf="!(annotate$ | async)?.isRequesting">
+  <md-card-title *ngIf="(annotate$ | async)?.images[0] && (annotate$ | async)?.selectedImage && (annotate$ | async)?.selectedStep">
+    <h2 [innerHTML]="(annotate$ | async)?.selectedStep?.title"></h2>
+    <p [innerHTML]="(annotate$ | async)?.selectedStep?.description"></p>
   </md-card-title>
   <md-card-content>
-    <md-progress-spinner *ngIf="(annotate$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
     <div class="jumbotron" *ngIf="!(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
       <div class="container">
         <h2>No approved images yet.</h2>
@@ -19,9 +12,9 @@
         <p>If you are a moderator, you can <a [href]="adminURL" target="_blank">login</a> to the admin panel and approve collected images.</p>
       </div>
     </div>
-    <div class="content" *ngIf="(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
+    <div class="content" *ngIf="(annotate$ | async)?.images[0]">
       <fat-card-list
-        *ngIf="!selectedImage"
+        *ngIf="!(annotate$ | async)?.selectedImage"
         [images]="(annotate$ | async)?.images"
         [cardOptions]="viewMode"
         (onCardClick)="handleCardSelect($event)"></fat-card-list>

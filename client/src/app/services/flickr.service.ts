@@ -109,7 +109,7 @@ export class FlickrService {
   getImages(state: ImageState) {
     let url = `${this.endpoint}images/?state=${state.value}`;
     return this.http.get(url, this.jwt())
-      .map((response: Response) => response.json())
+      .map(res => res.json())
       .map((result: any) => {
         return {
           total: result.count,
@@ -125,12 +125,8 @@ export class FlickrService {
   }
 
   getImage(id: number) {
-    if (!id) {
-      return;
-    }
     let url = `${this.endpoint}images/${id}/`;
-    return this.http.get(url, this.jwt())
-      .map((response: Response) => new FlickrImage(response.json()));
+    return this.http.get(url, this.jwt());
   }
 
   saveSkinPixelsImage(image: FlickrImage, base64: string) {

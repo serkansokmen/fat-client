@@ -68,7 +68,7 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
       return {
         ...state,
         isRequesting: false,
-        images: action.payload.images.map(image => new Image(image)),
+        images: action.payload.images,
         total: action.payload.total,
         previous: action.payload.previous,
         next: action.payload.next,
@@ -77,7 +77,7 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
     case AnnotateActions.SELECT_IMAGE:
       return {
         ...state,
-        selectedImage: new Image(action.payload.image),
+        selectedImage: action.payload.image,
       };
 
     case AnnotateActions.DESELECT_IMAGE:
@@ -97,14 +97,24 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
       return {
         ...state,
         isRequesting: false,
-        selectedImage: new Image(action.payload.result),
+        selectedImage: action.payload.result,
       };
 
     case AnnotateActions.SELECT_STEP:
-      return {
-        ...state,
-        selectedStep: action.payload.step,
-      };
+      switch (typeof action.payload.step) {
+        case 'number':
+          return {
+            ...state,
+            selectedStep: state.steps[action.payload.step],
+          }
+        case 'object':
+          return {
+            ...state,
+            selectedStep: state.steps.filter(step => step.id == action.payload.step.id)[0],
+          }
+        default:
+          return state;
+      }
 
     case AnnotateActions.SAVE_SKIN_PIXELS_IMAGE:
       return {
