@@ -255,44 +255,6 @@ REST_FRAMEWORK = {
 }
 
 
-# Send an email to the site admins
-# on error when DEBUG=False,
-# log to console on error always.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'class': 'django.utils.log.AdminEmailHandler',
-            'filters': ['require_debug_false'],
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'django.log'),
-        },
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console', 'mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'django': {
-            'handlers': ['console', 'mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-    }
-}
-
 FLICKR_API_KEY = '6b989cc3f4f8a9cffc10e0a7a2d0ab2c'
 FLICKR_API_SECRET = 'b5cad94d407bec50'
 FORCE_LOWERCASE_TAGS = True
@@ -307,3 +269,23 @@ FLICKR_LICENSES = (
   {'id': 7, 'name': 'No known copyright restrictions', 'url': 'http://flickr.com/commons/usage/'},
   {'id': 8, 'name': 'United States Government Work', 'url': 'http://www.usa.gov/copyright.shtml'},
 )
+
+
+# Send an email to the site admins
+# on error when DEBUG=False,
+# log to console on error always.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+    }
+}
