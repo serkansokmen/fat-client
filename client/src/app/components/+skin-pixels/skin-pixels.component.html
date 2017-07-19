@@ -19,11 +19,12 @@
       <md-radio-button [value]="true">Add Pixels</md-radio-button>
       <md-radio-button [value]="false">Remove Pixels</md-radio-button>
     </md-radio-group>
-    <hr>
+    <!-- <hr>
     <md-slide-toggle [checked]="(artboard$ | async)?.isShowingOriginal"
       (change)="artboardStore.dispatch(artboardActions.setIsShowingOriginal($event.checked))">
       {{ (artboard$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
-    </md-slide-toggle>
+    </md-slide-toggle> -->
+    <hr>
     <div>
       Zoom <md-slider thumbLabel (change)="artboardStore.dispatch(artboardActions.setZoom($event.value))"
       [value]="(artboard$ | async)?.zoom" step="0.1" min="1" max="4"></md-slider>

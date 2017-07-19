@@ -28,7 +28,6 @@ import { ArtboardState } from '../../reducers/artboard.reducer';
 import { ArtboardActions } from '../../actions/artboard.actions';
 import { ArtboardService } from '../../services/artboard.service';
 import { ArtboardTool } from '../../models/artboard.models';
-import { ImageService } from '../../services/image.service';
 import { Image as FlickrImage } from '../../models/search.models';
 
 @Component({
@@ -70,36 +69,11 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
     public annotateActions: AnnotateActions,
     public artboardStore: Store<ArtboardState>,
     public artboardActions: ArtboardActions,
-    private imageService: ImageService,
     private zone: NgZone
   )
   {
     this.annotate$ = annotateStore.select('annotate');
     this.artboard$ = artboardStore.select('artboard');
-
-    // Observable.fromEvent(window, 'resize')
-    //   .debounceTime(800)
-    //   .subscribe((event) => {
-    //     this.onResize(event);
-    //   });
-    // this.refreshCanvasSubject
-      // .distinctUntilChanged()
-      // .subscribe(() => {
-        // const imgData = this.context.getImageData(
-        //   0, 0,
-        //   this.canvas.width,
-        //   this.canvas.height
-        // );
-        // const pixels: Uint8ClampedArray = imgData.data;
-        // const resultData = this.imageService.analyzePixels(pixels,
-        //   this.canvas.width,
-        //   this.canvas.height,
-        //   this.canvasScale);
-        // const resultImage = new ImageData(resultData,
-        //     this.canvas.width,
-        //     this.canvas.height);
-        // this.context.putImageData(resultImage, 0, 0);
-      // });
 
     this.resultSubject
       .debounceTime(800)
@@ -109,7 +83,6 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
     this.subscriptions.push(this.resultSubject);
     this.annotateStore.dispatch(this.annotateActions.selectStep(0));
   }
-
 
   ngAfterViewInit() {
 
@@ -141,20 +114,23 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
       img.lockRotation = true;
       img.lockUniScaling = true;
       img.selectable = false;
-      // if (img.width > img.height) {
-      //   img.scaleToWidth(this.canvas.getWidth());
-      // } else {
-      //   img.scaleToHeight(this.canvas.getHeight());
-      // }
+      if (img.width > img.height) {
+        img.scaleToWidth(this.canvas.getWidth());
+      } else {
+        img.scaleToHeight(this.canvas.getHeight());
+      }
       this.fabricImage = img;
-      this.canvas.setBackgroundImage(this.fabricImage,
-        this.canvas.renderAll.bind(this.canvas));
+      // this.canvas.setBackgroundImage(this.fabricImage,
+      //   this.canvas.renderAll.bind(this.canvas));
       // this.canvas.add(this.fabricImage);
 
       this.maskGroup = new fabric.Group();
+      this.maskGroup.globalCompositeOperation = 'source-over';
       this.maskGroup.setWidth(this.canvas.getWidth());
       this.maskGroup.setHeight(this.canvas.getHeight());
+      this.maskGroup.set({ fill: 'transparent' });
       this.canvas.add(this.maskGroup);
+      this.canvas.renderAll();
 
     }, { crossOrigin: 'Anonymous' });
   }
