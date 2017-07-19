@@ -20,10 +20,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ.get('SECRET_KEY', 'secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.getenv('DEBUG', 'NO').lower() in ('on', 'true', 'y', 'yes')
+DEBUG = os.getenv('DEBUG', 'NO').lower() in ('on', 'true', 'y', 'yes')
 
 
 ALLOWED_HOSTS = ['*']
@@ -109,6 +109,32 @@ WSGI_APPLICATION = 'fat.wsgi.application'
 # DATABASES = {
 #     'default': dj_database_url.config(default=os.environ['DATABASE_URL'], conn_max_age=500)
 # }
+
+SECRET_KEY = '+ga9m=e%jcqiz_5wszg)r-z!2--b2d5(15ds+i2+%ik6z&!yer'
+
+if 'RDS_DB_NAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
+        }
+    }
+    EMAIL_BACKEND = 'backends.smtp.EmailBackend'
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'at_db',
+            'USER': 'ssokmen',
+            'PASSWORD': 'lost4god8',
+            'HOST': 'localhost',
+        }
+    }
+    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 # Subsrtitute User
 # AUTH_USER_MODEL = 'flickr.User'
