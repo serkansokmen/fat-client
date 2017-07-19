@@ -1,5 +1,8 @@
 .cloak/
 backup/
 .env
-sigmard.pem
-*.rdb
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
