@@ -55,8 +55,14 @@ export class AnnotateEffects {
 
   @Effect() saveSkinPixelsImage$ = this.actions$
     .ofType(AnnotateActions.SAVE_SKIN_PIXELS_IMAGE)
-    .map(toPayload)
-    .switchMap(payload => this.service.saveSkinPixelsImage(payload.image, payload.base64))
+    .withLatestFrom(this.store$, (action, state: any) => ({
+      image: state.annotate.selectedImage,
+      base64: action.payload.base64,
+    }))
+    .map(object => this.service
+      .saveSkinPixelsImage(object.image, object.base64)
+      .map(res => res.json())
+      .catch(err => err.json()))
     .switchMap(annotation => Observable.of({
         type: AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE,
         payload: {

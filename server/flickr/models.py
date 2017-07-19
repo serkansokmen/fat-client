@@ -135,3 +135,11 @@ class Annotation(models.Model):
         verbose_name_plural = _('Annotations')
         get_latest_by = 'updated_at'
         ordering = ['-created_at', '-updated_at',]
+
+    def __str__(self):
+        return '{}'.format(self.image.image)
+
+    def skin_pixels_image_tag(self):
+        return '<img height="200" src="{}" />'.format(self.skin_pixels_image.url)
+    skin_pixels_image_tag.short_description = _('Skin pixels')
+    skin_pixels_image_tag.allow_tags = True

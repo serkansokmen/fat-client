@@ -129,19 +129,12 @@ export class FlickrService {
     return this.http.get(url, this.jwt());
   }
 
-  saveSkinPixelsImage(image: FlickrImage, base64: string) {
+  saveSkinPixelsImage(image: FlickrImage, base64: string): Observable<any> {
     let body = JSON.stringify({
       image: image.id,
       skin_pixels_image: base64,
     });
-
-    return this.http.post(`${this.endpoint}annotations/`, body, this.jwt())
-      .catch(error => {
-        console.error('Error at search', error);
-        return Observable.empty();
-      })
-      .map((response: Response) => response.json())
-      .switchMap(result => Observable.of(result));
+    return this.http.post(`${this.endpoint}annotations/`, body, this.jwt());
   }
 
   private jwt() {

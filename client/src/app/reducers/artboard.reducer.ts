@@ -10,7 +10,7 @@ export interface ArtboardState {
   isDragging: boolean,
   isAdding: boolean,
   isShowingOriginal: boolean,
-  base64: string,
+  base64?: string,
 };
 
 const initialState: ArtboardState = {
@@ -20,7 +20,6 @@ const initialState: ArtboardState = {
   isDragging: false,
   isAdding: true,
   isShowingOriginal: true,
-  base64: null
 };
 
 export function artboardReducer(state: ArtboardState = initialState, action: Action) {

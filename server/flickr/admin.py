@@ -77,6 +77,7 @@ class SearchAdmin(admin.ModelAdmin):
 
 @admin.register(Annotation)
 class AnnotationAdmin(AdminImageMixin, admin.ModelAdmin):
-    list_display = ('image', 'skin_pixels_image')
+    list_display = ('skin_pixels_image_tag', 'image',)
+    list_display_links = ('skin_pixels_image_tag',)
     list_filter = ('image',)
 

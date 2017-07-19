@@ -4,19 +4,19 @@ import { Image } from  '../models/search.models';
 
 
 export interface AnnotateState {
-  steps: any[],
-  selectedStep: any,
-  isRequesting: boolean,
   images: Image[],
-  selectedImage: Image,
-  annotatedImage: any,
-  annotation: any,
+  steps: any[],
+  selectedStep?: any,
+  selectedImage?: Image,
+  annotation?: any,
   total: number,
   previous: string,
   next: string,
+  isRequesting: boolean,
 };
 
 const initialState: AnnotateState = {
+  images: [],
   steps: [{
     id: 1,
     routePath: '/skin-pixels',
@@ -42,15 +42,10 @@ const initialState: AnnotateState = {
     title: 'Gender and Age Group',
     description: 'Please select gender and age group for each of the objects. You can edit and remove later by selecting from the options.',
   }],
-  selectedStep: null,
-  isRequesting: false,
-  images: [],
-  selectedImage: null,
-  annotatedImage: null,
-  annotation: null,
   total: 0,
   previous: null,
   next: null,
+  isRequesting: false,
 };
 
 export function annotateReducer(state: AnnotateState = initialState, action: Action) {

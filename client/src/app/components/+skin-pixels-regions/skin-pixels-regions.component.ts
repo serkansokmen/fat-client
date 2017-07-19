@@ -47,9 +47,9 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   @ViewChild('drawCanvas') drawCanvas: ElementRef;
   @ViewChild('bgCanvas') bgCanvas: ElementRef;
 
-  onResize(event) {
-    console.log(event.target.innerWidth);
-  }
+  // onResize(event) {
+  //   console.log(event.target.innerWidth);
+  // }
 
   private foregroundCanvas: Canvas;
   private backgroundCanvas: StaticCanvas;
@@ -74,11 +74,11 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
     this.annotate$ = annotateStore.select('annotate');
     this.artboard$ = artboardStore.select('artboard');
 
-    Observable.fromEvent(window, 'resize')
-      .debounceTime(800)
-      .subscribe((event) => {
-        this.onResize(event);
-      });
+    // Observable.fromEvent(window, 'resize')
+    //   .debounceTime(800)
+    //   .subscribe((event) => {
+    //     this.onResize(event);
+    //   });
 
     this.resultSubject
       .debounceTime(800)
@@ -90,7 +90,7 @@ export class SkinPixelsRegionsComponent implements AfterViewInit, OnDestroy {
   }
 
   handleNext() {
-    this.annotateStore.dispatch(this.annotateActions.saveSkinPixelsImage());
+    this.annotateStore.dispatch(this.annotateActions.saveSkinPixelsImage(this.foregroundCanvas.toDataURL('png')));
   }
 
   ngAfterViewInit() {
