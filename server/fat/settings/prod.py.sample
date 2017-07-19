@@ -1,6 +1,6 @@
 from fat.settings.base import *
 
-DEBUG = True
+DEBUG = False
 SECRET_KEY = 'something-very-secret'
 
 DATABASES = {

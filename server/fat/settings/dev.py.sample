@@ -1,12 +1,16 @@
 from fat.settings.base import *
 
+DEBUG = True
+SECRET_KEY = 'something-very-secret'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ssokmen$fat_db',
-        'USER': 'ssokmen',
-        'PASSWORD': 'LeQRY?RXhC6HcRkE',
-        'HOST': 'ssokmen.mysql.pythonanywhere-services.com',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
     }
 }
+
+EMAIL_BACKEND = 'backends.smtp.EmailBackend'

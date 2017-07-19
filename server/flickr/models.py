@@ -92,7 +92,7 @@ class Search(models.Model):
         ('any', 'any'),
     )
 
-    tags = models.TextField(unique=True)
+    tags = models.TextField(unique=True, max_length=2048)
     slug = AutoSlugField(populate_from='tags', max_length=255)
     tag_mode = models.CharField(
         max_length=3, choices=TAG_MODES, default=TAG_MODES[0])
