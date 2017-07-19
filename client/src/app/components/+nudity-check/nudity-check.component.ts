@@ -2,7 +2,7 @@ import { Component,
   Input,
   ViewChild,
   ElementRef,
-  AfterViewInit,
+  OnInit,
   OnDestroy,
   HostListener,
   ChangeDetectionStrategy
@@ -29,7 +29,7 @@ import { Image as FlickrImage } from '../../models/search.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [NudityCheckActions]
 })
-export class NudityCheckComponent implements AfterViewInit, OnDestroy {
+export class NudityCheckComponent implements OnInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
   nudityCheck$: Observable<NudityCheckState>;
@@ -45,9 +45,15 @@ export class NudityCheckComponent implements AfterViewInit, OnDestroy {
     this.nudityCheck$ = store.select('nudityCheck');
   }
 
-  ngAfterViewInit() {
+  ngOnInit() {
+    this.annotateStore.dispatch(this.annotateActions.selectStep(1));
   }
 
   ngOnDestroy() {
+  }
+
+  handleNext() {
+    // dispatch udpate annotation action
+    this.annotateStore.dispatch(this.annotateActions.selectStep(2));
   }
 }

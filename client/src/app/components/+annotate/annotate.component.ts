@@ -27,22 +27,24 @@ export class AnnotateComponent implements OnInit, OnDestroy {
 
   private sub: any;
 
-  selectedImage?: Image;
-
   constructor(
     public store: Store<AnnotateState>,
     private actions: AnnotateActions,
     private cardLayoutActions: CardLayoutActions,
+    private route: ActivatedRoute,
   ) {
     this.annotate$ = store.select('annotate');
   }
 
   ngOnInit() {
-    // this.store.dispatch(this.actions.deselectImage());
-    this.store.dispatch(this.actions.requestImages(ImageState.approved));
     this.store.dispatch(this.cardLayoutActions.setActionsVisible(false));
-    this.sub = this.annotate$.distinctUntilChanged().subscribe(state => {
-      this.selectedImage = state.selectedImage;
+    this.sub = this.route.params.subscribe(params => {
+      this.store.dispatch(this.actions.requestImages(ImageState.approved));
+      if (params.id) {
+        this.store.dispatch(this.actions.requestImage(params.id));
+      } else {
+        this.store.dispatch(this.actions.deselectImage());
+      }
     })
   }
 
@@ -51,14 +53,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   }
 
   handleCardSelect(image: Image) {
-    this.store.dispatch(this.actions.selectImage(image));
     this.store.dispatch(go([`/annotate/${image.id}/skin-pixels`]));
-  }
-
-  handleStepSelect(step: any) {
-    this.store.dispatch(this.actions.selectStep(step));
-    console.log('/annotate/' + this.selectedImage.id + step.routePath);
-    this.store.dispatch(go(['/annotate/' + this.selectedImage.id + step.routePath]))
   }
 
 }

@@ -1,5 +1,7 @@
-<div class="row">
-  <div class="col-xs-12 col-sm-3">
+<md-sidenav-container>
+  <md-sidenav #nav mode="side" opened="true">
+    <h2 [innerHTML]="(annotate$ | async)?.selectedStep?.title"></h2>
+    <p [innerHTML]="(annotate$ | async)?.selectedStep?.description"></p>
     <hr>
     <div class="slider-row" *ngFor="let type of (nudityCheck$ | async).checkTypes">
       <md-checkbox [checked]="type?.isActive" (change)="store.dispatch(actions.toggleTypeActive(type))">
@@ -11,10 +13,26 @@
         [value]="type?.weight" min="0" max="100"></md-slider>
       <hr>
     </div>
+  </md-sidenav>
+
+  <div class="draw-view">
+    <img [src]="(annotate$ | async)?.selectedImage?.image"/>
   </div>
-  <div class="col-xs-12 col-sm-9">
-    <div class="draw-view">
-      <img [src]="(annotate$ | async)?.selectedImage?.image"/>
-    </div>
-  </div>
-</div>
+
+  <md-toolbar>
+    <button md-icon-button (click)="nav.toggle()">
+      <md-icon fontSet="fontawesome" fontIcon="fa-sliders"></md-icon>
+    </button>
+    <span class="spacer"></span>
+    <button md-button [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + (annotate$ | async)?.steps[0]?.routePath]" color="accent">
+      <md-icon fontSet="fontawesome" fontIcon="fa-chevron-left"></md-icon> Back
+    </button>
+    <button md-button [routerLink]="['/annotate']" color="warn">
+      <md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon> Cancel
+    </button>
+    <button md-button color="primary" (click)="handleNext()">
+      <md-icon fontSet="fontawesome" fontIcon="fa-chevron-right"></md-icon> Next
+    </button>
+  </md-toolbar>
+
+</md-sidenav-container>

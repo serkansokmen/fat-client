@@ -27,24 +27,6 @@ export class AnnotateActions {
     }
   }
 
-  static SELECT_IMAGE = '[Annotate] Select Image';
-  selectImage(image: Image): Action {
-    return {
-      type: AnnotateActions.SELECT_IMAGE,
-      payload: {
-        image
-      }
-    }
-  }
-
-  static DESELECT_IMAGE = '[Annotate] Deselect Image';
-  deselectImage(): Action {
-    return {
-      type: AnnotateActions.DESELECT_IMAGE,
-      payload: {}
-    }
-  }
-
   static REQUEST_IMAGE = '[Annotate] Request Image';
   requestImage(id: number): Action {
     return {
@@ -65,6 +47,24 @@ export class AnnotateActions {
     }
   }
 
+  static SELECT_IMAGE = '[Annotate] Select Image';
+  selectImage(image: Image): Action {
+    return {
+      type: AnnotateActions.SELECT_IMAGE,
+      payload: {
+        image
+      }
+    }
+  }
+
+  static DESELECT_IMAGE = '[Annotate] Deselect Image';
+  deselectImage(): Action {
+    return {
+      type: AnnotateActions.DESELECT_IMAGE,
+      payload: {}
+    }
+  }
+
   static SELECT_STEP = '[Annotate] Select Step';
   selectStep(step: any): Action {
     return {
@@ -75,18 +75,20 @@ export class AnnotateActions {
     }
   }
 
-  static SAVE_SKIN_PIXELS_IMAGE = '[Annotate] Save Skin Pixels Image';
-  saveSkinPixelsImage(): Action {
+  static SAVE_SKIN_PIXELS = '[Annotate] Save Skin Pixels';
+  saveSkinPixels(base64: string): Action {
     return {
-      type: AnnotateActions.SAVE_SKIN_PIXELS_IMAGE,
-      payload: {}
+      type: AnnotateActions.SAVE_SKIN_PIXELS,
+      payload: {
+        base64
+      }
     }
   }
 
-  static SAVE_SKIN_PIXELS_IMAGE_COMPLETE = '[Annotate] Save Skin Pixels Image Complete';
-  saveSkinPixelsImageComplete(annotation: any): Action {
+  static SAVE_SKIN_PIXELS_COMPLETE = '[Annotate] Save Skin Pixels Complete';
+  saveSkinPixelsComplete(annotation: any): Action {
     return {
-      type: AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE,
+      type: AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE,
       payload: {
         annotation
       }

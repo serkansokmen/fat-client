@@ -4,19 +4,19 @@ import { Image } from  '../models/search.models';
 
 
 export interface AnnotateState {
-  steps: any[],
-  selectedStep: any,
-  isRequesting: boolean,
   images: Image[],
-  selectedImage: Image,
-  annotatedImage: any,
-  annotation: any,
+  steps: any[],
+  selectedStep?: any,
+  selectedImage?: Image,
+  annotation?: any,
   total: number,
   previous: string,
   next: string,
+  isRequesting: boolean,
 };
 
 const initialState: AnnotateState = {
+  images: [],
   steps: [{
     id: 1,
     routePath: '/skin-pixels',
@@ -42,15 +42,10 @@ const initialState: AnnotateState = {
     title: 'Gender and Age Group',
     description: 'Please select gender and age group for each of the objects. You can edit and remove later by selecting from the options.',
   }],
-  selectedStep: null,
-  isRequesting: false,
-  images: [],
-  selectedImage: null,
-  annotatedImage: null,
-  annotation: null,
   total: 0,
   previous: null,
   next: null,
+  isRequesting: false,
 };
 
 export function annotateReducer(state: AnnotateState = initialState, action: Action) {
@@ -68,7 +63,7 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
       return {
         ...state,
         isRequesting: false,
-        images: action.payload.images.map(image => new Image(image)),
+        images: action.payload.images,
         total: action.payload.total,
         previous: action.payload.previous,
         next: action.payload.next,
@@ -77,7 +72,7 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
     case AnnotateActions.SELECT_IMAGE:
       return {
         ...state,
-        selectedImage: new Image(action.payload.image),
+        selectedImage: action.payload.image,
       };
 
     case AnnotateActions.DESELECT_IMAGE:
@@ -97,22 +92,32 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
       return {
         ...state,
         isRequesting: false,
-        selectedImage: new Image(action.payload.result),
+        selectedImage: action.payload.result,
       };
 
     case AnnotateActions.SELECT_STEP:
-      return {
-        ...state,
-        selectedStep: action.payload.step,
-      };
+      switch (typeof action.payload.step) {
+        case 'number':
+          return {
+            ...state,
+            selectedStep: state.steps[action.payload.step],
+          }
+        case 'object':
+          return {
+            ...state,
+            selectedStep: state.steps.filter(step => step.id == action.payload.step.id)[0],
+          }
+        default:
+          return state;
+      }
 
-    case AnnotateActions.SAVE_SKIN_PIXELS_IMAGE:
+    case AnnotateActions.SAVE_SKIN_PIXELS:
       return {
         ...state,
         isRequesting: true,
       };
 
-    case AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE:
+    case AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE:
       return {
         ...state,
         isRequesting: false,

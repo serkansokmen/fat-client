@@ -10,17 +10,16 @@ export interface ArtboardState {
   isDragging: boolean,
   isAdding: boolean,
   isShowingOriginal: boolean,
-  base64: string,
+  base64?: string,
 };
 
 const initialState: ArtboardState = {
   currentTool: ArtboardTool.lasso,
   brushRadius: 24.0,
-  zoom: 1.0,
+  zoom: 1.5,
   isDragging: false,
   isAdding: true,
   isShowingOriginal: true,
-  base64: null
 };
 
 export function artboardReducer(state: ArtboardState = initialState, action: Action) {

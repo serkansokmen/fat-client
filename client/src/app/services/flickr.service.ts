@@ -109,7 +109,7 @@ export class FlickrService {
   getImages(state: ImageState) {
     let url = `${this.endpoint}images/?state=${state.value}`;
     return this.http.get(url, this.jwt())
-      .map((response: Response) => response.json())
+      .map(res => res.json())
       .map((result: any) => {
         return {
           total: result.count,
@@ -125,27 +125,16 @@ export class FlickrService {
   }
 
   getImage(id: number) {
-    if (!id) {
-      return;
-    }
     let url = `${this.endpoint}images/${id}/`;
-    return this.http.get(url, this.jwt())
-      .map((response: Response) => new FlickrImage(response.json()));
+    return this.http.get(url, this.jwt());
   }
 
-  saveSkinPixelsImage(image: FlickrImage, base64: string) {
+  saveSkinPixels(image: FlickrImage, base64: string) {
     let body = JSON.stringify({
       image: image.id,
       skin_pixels_image: base64,
     });
-
-    return this.http.post(`${this.endpoint}annotations/`, body, this.jwt())
-      .catch(error => {
-        console.error('Error at search', error);
-        return Observable.empty();
-      })
-      .map((response: Response) => response.json())
-      .switchMap(result => Observable.of(result));
+    return this.http.post(`${this.endpoint}annotations/`, body, this.jwt());
   }
 
   private jwt() {
@@ -160,5 +149,7 @@ export class FlickrService {
       return new RequestOptions({ headers: headers });
     }
   }
+
+
 
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Router } from '@angular/router';
 import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, toPayload } from '@ngrx/effects';
+import { go } from '@ngrx/router-store';
 import { Observable } from 'rxjs/Observable';
 import { Image, License, ImageState } from '../models/search.models';
 import { AnnotateActions } from '../actions/annotate.actions';
@@ -20,16 +20,7 @@ export class AnnotateEffects {
     private actions$: Actions,
     private store$: Store<AnnotateState>,
     private service: FlickrService,
-    private router: Router,
   ) {}
-
-  @Effect() errorStatus401$ = this.actions$
-    .map(action => action.payload)
-    .filter(payload => payload && payload.errorStatus === 401)
-    .switchMap(payload => {
-        this.router.navigate(['/login']);
-        return Observable.empty();
-    });
 
   @Effect() requestAvailableImages$ = this.actions$
     .ofType(AnnotateActions.REQUEST_IMAGES)
@@ -49,19 +40,41 @@ export class AnnotateEffects {
     .switchMap(result => Observable.of({
         type: AnnotateActions.REQUEST_IMAGE_COMPLETE,
         payload: {
-          image: result
+          image: new Image(result.json())
         }
       }));
 
-  @Effect() saveSkinPixelsImage$ = this.actions$
-    .ofType(AnnotateActions.SAVE_SKIN_PIXELS_IMAGE)
+  @Effect() requestImageComplete$ = this.actions$
+    .ofType(AnnotateActions.REQUEST_IMAGE_COMPLETE)
     .map(toPayload)
-    .switchMap(payload => this.service.saveSkinPixelsImage(payload.image, payload.base64))
+    .map(payload => ({
+      type: AnnotateActions.SELECT_IMAGE,
+      payload
+    }))
+
+  @Effect() saveSkinPixels$ = this.actions$
+    .ofType(AnnotateActions.SAVE_SKIN_PIXELS)
+    .withLatestFrom(this.store$, (action, state: any) => ({
+      image: state.annotate.selectedImage,
+      base64: action.payload.base64,
+    }))
+    .switchMap(object => this.service
+      .saveSkinPixels(object.image, object.base64)
+      .map(res => res.json())
+      .catch(err => err.json()))
     .switchMap(annotation => Observable.of({
-        type: AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE,
+        type: AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE,
         payload: {
           annotation
         }
       }));
+
+   @Effect({ dispatch: false }) saveSkinPixelsComplete$ = this.actions$
+    .ofType(AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE)
+    .withLatestFrom(this.store$, (action, state: any) =>
+      `/annotate/${state.annotate.selectedImage.id}${state.annotate.steps[1].routePath}`)
+    .map(url => {
+      this.store$.dispatch(go([url]));
+    })
 
 }
