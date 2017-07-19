@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Router } from '@angular/router';
 import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, toPayload } from '@ngrx/effects';
+import { go } from '@ngrx/router-store';
 import { Observable } from 'rxjs/Observable';
 import { Image, License, ImageState } from '../models/search.models';
 import { AnnotateActions } from '../actions/annotate.actions';
@@ -20,7 +20,6 @@ export class AnnotateEffects {
     private actions$: Actions,
     private store$: Store<AnnotateState>,
     private service: FlickrService,
-    private router: Router,
   ) {}
 
   @Effect() requestAvailableImages$ = this.actions$
@@ -69,5 +68,13 @@ export class AnnotateEffects {
           annotation
         }
       }));
+
+   @Effect({ dispatch: false }) saveSkinPixelsImageComplete$ = this.actions$
+    .ofType(AnnotateActions.SAVE_SKIN_PIXELS_IMAGE_COMPLETE)
+    .withLatestFrom(this.store$, (action, state: any) =>
+      `/annotate/${state.annotate.selectedImage.id}${state.annotate.steps[1].routePath}`)
+    .map(url => {
+      this.store$.dispatch(go([url]));
+    })
 
 }
