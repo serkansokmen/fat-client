@@ -1,8 +1,8 @@
 branch-defaults:
   master:
-    environment: fat-prod
+    environment: fat-production
 environment-defaults:
-  fat-prod:
+  fat-production:
     branch: null
     repository: null
 global:
