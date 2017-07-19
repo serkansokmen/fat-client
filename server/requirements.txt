@@ -1,5 +1,6 @@
 Django==1.11.2
 Pillow==4.1.1
+django-storages
 djangorestframework==3.6.3
 dj-database-url
 django-cors-middleware
@@ -21,3 +22,4 @@ brotlipy
 requests
 ipdb
 coreapi
+boto

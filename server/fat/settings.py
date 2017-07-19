@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'corsheaders',
+    'storages',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
@@ -129,8 +130,8 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'at_db',
-            'USER': 'ssokmen',
-            'PASSWORD': 'lost4god8',
+            'USER': 'db_user',
+            'PASSWORD': 'db_password',
             'HOST': 'localhost',
         }
     }
@@ -179,7 +180,26 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_URL = '/static/'
+AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
+    'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
+    'Cache-Control': 'max-age=94608000',
+}
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+
+# Tell django-storages that when coming up with the URL for an item in S3 storage, keep
+# it simple - just use this domain plus the path. (If this isn't set, things get complicated).
+# This controls how the `static` template tag from `staticfiles` gets expanded, if you're using it.
+# We also use it in the next setting.
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+if DEBUG:
+    STATIC_URL = '/static/'
+else:
+    # This is used by the `static` template tag from `static`, if you're using that. Or if anything else
+    # refers directly to STATIC_URL. So it's safest to always set it.
+    STATIC_URL = 'https://%s/' % AWS_S3_CUSTOM_DOMAIN
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, 'assets'),
