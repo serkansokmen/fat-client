@@ -15,6 +15,7 @@ export interface SearchState {
   page: number,
   left: number,
   total: number,
+  error?: string,
 };
 
 const initialState: SearchState = {
@@ -69,6 +70,14 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         page: action.payload.page,
         left: action.payload.left,
         total: action.payload.total,
+        error: null,
+      };
+
+    case SearchActions.REQUEST_SEARCH_ERROR:
+      return {
+        ...state,
+        isRequesting: false,
+        error: action.payload.message,
       };
 
     case SearchActions.TOGGLE_IMAGE_DISCARDED:

@@ -43,6 +43,16 @@ export class SearchActions {
     }
   }
 
+  static REQUEST_SEARCH_ERROR = '[Search] Request Search Error';
+  requestSearchError(message: string): Action {
+    return {
+      type: SearchActions.REQUEST_SEARCH_ERROR,
+      payload: {
+        message,
+      }
+    }
+  }
+
   static SELECT_LICENCE = '[Search] Select License';
   selectLicense(license: License): Action {
     return {

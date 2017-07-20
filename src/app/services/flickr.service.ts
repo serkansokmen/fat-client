@@ -22,7 +22,9 @@ export class FlickrService {
     this.endpoint = environment.apiURL;
   }
 
-  search(search: any, licenses: License[], perpage: number, page: number): Observable<any> {
+  search(payload: any): Observable<any> {
+
+    const { search, licenses, perpage, page } = payload;
 
     let url = `${this.endpoint}flickr/` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
