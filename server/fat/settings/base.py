@@ -17,9 +17,19 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 DEBUG = False
 ALLOWED_HOSTS = [
-    'http://fat-dev.us-west-2.elasticbeanstalk.com',
-    'http://fat-static-hosting.s3-website.eu-west-2.amazonaws.com',
+    os.getenv('STATIC_HOSTING_URL'),
+    '.compute-1.amazonaws.com',
 ]
+
+import requests
+EC2_PRIVATE_IP  =   None
+try:
+    EC2_PRIVATE_IP  =   requests.get('http://169.254.169.254/latest/meta-data/local-ipv4', timeout = 0.01).text
+except requests.exceptions.RequestException:
+    pass
+
+if EC2_PRIVATE_IP:
+    ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
 
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
