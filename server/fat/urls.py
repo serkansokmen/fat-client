@@ -17,7 +17,6 @@ router.register(r'images', flickr_api.ImageViewSet)
 router.register(r'annotations', flickr_api.AnnotationViewSet)
 # router.register(r'licenses', flickr_api.LicenseViewSet)
 
-
 urlpatterns = [
     url(r'^api/v1/', include(router.urls)),
 ]
@@ -32,11 +31,8 @@ urlpatterns += [
     url(r'^flickr/', include('flickr.urls')),
 ]
 
-urlpatterns += staticfiles_urlpatterns()
-if settings.DEBUG:
+if settings.DEBUG == True:
+    urlpatterns += static(settings.STATIC_URL,
+        document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT)
-
-# if settings.DEBUG:
-#     urlpatterns += static(settings.STATIC_URL,
-#         document_root=settings.STATIC_ROOT)

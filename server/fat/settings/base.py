@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 '''
 
 import os
-import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,16 +19,12 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'secret-key')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'NO').lower() in ('on', 'true', 'y', 'yes')
 
 
-if DEBUG:
-    ALLOWED_HOSTS = ['*']
-else:
-    ALLOWED_HOSTS = ['http://fat-dev.us-west-2.elasticbeanstalk.com']
 ADMINS = (('Serkan Sokmen', 'e.serkan.sokmen@gmail.com'), )
 
 
@@ -114,31 +109,6 @@ WSGI_APPLICATION = 'fat.wsgi.application'
 #     'default': dj_database_url.config(default=os.environ['DATABASE_URL'], conn_max_age=500)
 # }
 
-SECRET_KEY = '+ga9m=e%jcqiz_5wszg)r-z!2--b2d5(15ds+i2+%ik6z&!yer'
-
-if 'RDS_DB_NAME' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ['RDS_DB_NAME'],
-            'USER': os.environ['RDS_USERNAME'],
-            'PASSWORD': os.environ['RDS_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': os.environ['RDS_PORT'],
-        }
-    }
-    EMAIL_BACKEND = 'backends.smtp.EmailBackend'
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'at_db',
-            'USER': 'db_user',
-            'PASSWORD': 'db_password',
-            'HOST': 'localhost',
-        }
-    }
-    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 # Subsrtitute User
 # AUTH_USER_MODEL = 'flickr.User'
@@ -183,62 +153,15 @@ USE_L10N = True
 USE_TZ = True
 
 
-AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
-    'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
-    'Cache-Control': 'max-age=94608000',
-}
-AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-
-# Tell django-storages that when coming up with the URL for an item in S3 storage, keep
-# it simple - just use this domain plus the path. (If this isn't set, things get complicated).
-# This controls how the `static` template tag from `staticfiles` gets expanded, if you're using it.
-# We also use it in the next setting.
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'assets'),
-# ]
-
-STATICFILES_LOCATION = 'static'
-STATICFILES_STORAGE = 'fat.custom_storages.StaticStorage'
-STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION)
-STATICFILES_BUCKET_NAME = 'fat-media'
-
 # Extra places for collectstatic to find static files.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-MEDIAFILES_LOCATION = 'media'
-MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
-DEFAULT_FILE_STORAGE = 'fat.custom_storages.MediaStorage'
-MEDIAFILES_BUCKET_NAME = 'fat-media'
 
-CORS_ORIGIN_WHITELIST = (
-    'localhost:4200',
-    '127.0.0.1:4200',
-)
-CSRF_TRUSTED_ORIGINS = (
-    'localhost:4200',
-    '127.0.0.1:4200',
-)
+CORS_ORIGIN_WHITELIST = ()
+CSRF_TRUSTED_ORIGINS = ()
 CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOW_HEADERS = (
-#     'accept',
-#     'accept-encoding',
-#     'authorization',
-#     'content-type',
-#     'dnt',
-#     'origin',
-#     'user-agent',
-#     'x-csrftoken',
-#     'x-requested-with',
-# )
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -258,8 +181,8 @@ REST_FRAMEWORK = {
 }
 
 
-FLICKR_API_KEY = '6b989cc3f4f8a9cffc10e0a7a2d0ab2c'
-FLICKR_API_SECRET = 'b5cad94d407bec50'
+FLICKR_API_KEY = os.getenv('FLICKR_API_KEY', '')
+FLICKR_API_SECRET = os.getenv('FLICKR_API_SECRET', '')
 FORCE_LOWERCASE_TAGS = True
 FLICKR_LICENSES = (
   {'id': 0, 'name': 'All Rights Reserved', 'url': ''},
