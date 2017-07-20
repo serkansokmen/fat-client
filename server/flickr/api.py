@@ -33,7 +33,7 @@ def make_search_query(request, flickr_page=0):
     if tags is None:
         return Response({
             'message': _('`tags` field is required to make a query.')
-        }, status=status.HTTP_400_BAD_REQUEST)
+        })
 
     tags = tags.replace(' ', '')
     req = requests.get('https://api.flickr.com/services/rest/?method=flickr.photos.search',
@@ -74,7 +74,7 @@ def flickr(request):
     json = make_search_query(request)
 
     if json is None:
-        return Response({'message': _('An error occured parsing response data.')}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': _('An error occured parsing response data.')})
 
     results = json['photos']
     flickr_pages = int(results['pages'])
@@ -158,7 +158,7 @@ def flickr(request):
 
         images_data = request.data.get('images', None)
         if images_data is None:
-            return Response({'message': _('Some images are required')}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': _('Some images are required')})
 
         (search, created) = Search.objects.get_or_create(
             tags=request.data.get('tags'), defaults=request.data)
@@ -175,7 +175,7 @@ def flickr(request):
         json = make_search_query(request)
 
         if json is None:
-            return Response({'message': _('An error occured parsing response data.')}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': _('An error occured parsing response data.')})
 
         results = json['photos']
         flickr_pages = int(results['pages'])
@@ -222,7 +222,7 @@ class SearchQueryView(views.APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors)
 
 
 class SearchViewSet(viewsets.ModelViewSet):

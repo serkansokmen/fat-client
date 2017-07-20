@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   hmr: false,
-  adminURL: '//127.0.0.1:8000/admin/',
-  apiURL: 'http://127.0.0.1:8000/api/v1/',
-  authURL: 'http://127.0.0.1:8000/auth/'
+  adminURL: 'http://fat-dev.us-west-2.elasticbeanstalk.com/admin/',
+  apiURL: 'http://fat-dev.us-west-2.elasticbeanstalk.com/api/v1/',
+  authURL: 'http://fat-dev.us-west-2.elasticbeanstalk.com/auth/'
 };
