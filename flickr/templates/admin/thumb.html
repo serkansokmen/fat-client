@@ -1,8 +1,0 @@
-{% load thumbnail %}
-
-
-<img src="{{ image_url }}" height="200" alt="">
-
-{% thumbnail image '240x240' crop="top" as im %}
-    <img src="{{ im.url }}" alt="">
-{% endthumbnail %}
