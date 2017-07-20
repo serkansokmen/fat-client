@@ -18,7 +18,6 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 DEBUG = False
 ALLOWED_HOSTS = [
     'http://fat-dev.us-west-2.elasticbeanstalk.com',
-    'fat-dev.us-west-2.elasticbeanstalk.com',
     'http://fat-static-hosting.s3-website.eu-west-2.amazonaws.com',
 ]
 
@@ -26,7 +25,7 @@ ALLOWED_HOSTS = [
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'wszg)r-z!2--b2d5+%ik6z&!ey+ga9m=(15ds+i2e%jcqiz_5r')
-print(SECRET_KEY)
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'NO').lower() in ('on', 'true', 'y', 'yes')
 
@@ -80,9 +79,7 @@ ROOT_URLCONF = 'fat.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(PROJECT_ROOT, '../templates'),
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,12 +118,10 @@ DATABASES = {
 EMAIL_BACKEND = 'backends.smtp.EmailBackend'
 
 CORS_ORIGIN_WHITELIST = (
-    'localhost:4200',
-    '127.0.0.1:4200',
+    os.getenv('STATIC_HOSTING_URL'),
 )
 CSRF_TRUSTED_ORIGINS = (
-    'localhost:4200',
-    '127.0.0.1:4200',
+    os.getenv('STATIC_HOSTING_URL'),
 )
 CORS_ORIGIN_ALLOW_ALL = False
 
