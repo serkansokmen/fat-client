@@ -15,11 +15,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPOSITORY_ROOT = os.path.dirname(BASE_DIR)
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+DEBUG = False
+ALLOWED_HOSTS = [
+    'http://fat-dev.us-west-2.elasticbeanstalk.com',
+]
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'wszg)r-z!2--b2d5+%ik6z&!ey+ga9m=(15ds+i2e%jcqiz_5r')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'NO').lower() in ('on', 'true', 'y', 'yes')
@@ -97,17 +102,32 @@ WSGI_APPLICATION = 'fat.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('RDS_DB_NAME'),
+        'USER': os.getenv('RDS_USERNAME'),
+        'PASSWORD': os.getenv('RDS_PASSWORD'),
+        'HOST': os.getenv('RDS_HOSTNAME'),
+        'PORT': os.getenv('RDS_PORT'),
+    }
+}
 
 # DATABASES = {
 #     'default': dj_database_url.config(default=os.environ['DATABASE_URL'], conn_max_age=500)
 # }
+
+EMAIL_BACKEND = 'backends.smtp.EmailBackend'
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:4200',
+    '127.0.0.1:4200',
+)
+CSRF_TRUSTED_ORIGINS = (
+    'localhost:4200',
+    '127.0.0.1:4200',
+)
+CORS_ORIGIN_ALLOW_ALL = False
 
 
 # Subsrtitute User
@@ -159,6 +179,30 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
+AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
+    'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
+    'Cache-Control': 'max-age=94608000',
+}
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+
+# Tell django-storages that when coming up with the URL for an item in S3 storage, keep
+# it simple - just use this domain plus the path. (If this isn't set, things get complicated).
+# This controls how the `static` template tag from `staticfiles` gets expanded, if you're using it.
+# We also use it in the next setting.
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+STATICFILES_LOCATION = 'static'
+STATICFILES_STORAGE = 'fat.custom_storages.StaticStorage'
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION)
+STATICFILES_BUCKET_NAME = AWS_STORAGE_BUCKET_NAME
+
+MEDIAFILES_LOCATION = 'media'
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+DEFAULT_FILE_STORAGE = 'fat.custom_storages.MediaStorage'
+MEDIAFILES_BUCKET_NAME = AWS_STORAGE_BUCKET_NAME
+
 CORS_ORIGIN_WHITELIST = ()
 CSRF_TRUSTED_ORIGINS = ()
 CORS_ORIGIN_ALLOW_ALL = True
@@ -181,8 +225,8 @@ REST_FRAMEWORK = {
 }
 
 
-FLICKR_API_KEY = os.getenv('FLICKR_API_KEY', '')
-FLICKR_API_SECRET = os.getenv('FLICKR_API_SECRET', '')
+FLICKR_API_KEY = os.getenv('FLICKR_API_KEY')
+FLICKR_API_SECRET = os.getenv('FLICKR_API_SECRET')
 FORCE_LOWERCASE_TAGS = True
 FLICKR_LICENSES = (
   {'id': 0, 'name': 'All Rights Reserved', 'url': ''},
