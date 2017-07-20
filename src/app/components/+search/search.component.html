@@ -36,7 +36,7 @@
         <p><button md-button color="accent" type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon> Search</button></p>
         <!-- <p><button md-button color="accent" type="button" (click)="handleToggleSelectAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-check"></md-icon> Select All</button></p> -->
         <p><button md-button color="warn" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-minus-circle"></md-icon> Discard all</button></p>
-        <p><button md-raised-button color="primary" type="button" (click)="handleSave($event, state$?.page)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Save & Next</button></p>
+        <p><button md-raised-button color="primary" type="button" (click)="handleSave($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Save & Next</button></p>
       </div>
     </form>
   </md-sidenav>

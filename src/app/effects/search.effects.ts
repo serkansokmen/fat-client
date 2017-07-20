@@ -8,7 +8,15 @@ import { Image, License, ImageState } from '../models/search.models';
 import { SearchActions } from '../actions/search.actions';
 import { FlickrService } from '../services/flickr.service';
 import { SearchState } from '../reducers/search.reducer';
+
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/withLatestFrom';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/empty';
+import 'rxjs/add/observable/of';
 
 @Injectable()
 export class SearchEffects {
