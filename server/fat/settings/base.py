@@ -18,14 +18,15 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 DEBUG = False
 ALLOWED_HOSTS = [
     'http://fat-dev.us-west-2.elasticbeanstalk.com',
+    'fat-dev.us-west-2.elasticbeanstalk.com',
+    'http://fat-static-hosting.s3-website.eu-west-2.amazonaws.com',
 ]
 
-# Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'wszg)r-z!2--b2d5+%ik6z&!ey+ga9m=(15ds+i2e%jcqiz_5r')
-
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'wszg)r-z!2--b2d5+%ik6z&!ey+ga9m=(15ds+i2e%jcqiz_5r')
+print(SECRET_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'NO').lower() in ('on', 'true', 'y', 'yes')
 
