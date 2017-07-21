@@ -115,11 +115,11 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
       img.lockRotation = true;
       img.lockUniScaling = true;
       img.selectable = false;
-      if (img.width > img.height) {
-        img.scaleToWidth(this.canvas.getWidth());
-      } else {
-        img.scaleToHeight(this.canvas.getHeight());
-      }
+      // if (img.width > img.height) {
+      //   img.scaleToWidth(this.canvas.getWidth());
+      // } else {
+      //   img.scaleToHeight(this.canvas.getHeight());
+      // }
       this.fabricImage = img;
       // this.canvas.setBackgroundImage(this.fabricImage,
       //   this.canvas.renderAll.bind(this.canvas));
@@ -196,10 +196,12 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
 
   handleNext() {
     const hideBg = () => {
-      this.canvas.backgroundImage = null;
+      // this.canvas.backgroundImage = null;
+      this.fabricImage.set({ visible: false });
     };
     const showBg = () => {
-      this.canvas.backgroundImage = this.fabricImage;
+      // this.canvas.backgroundImage = this.fabricImage;
+      this.fabricImage.set({ visible: true });
     };
     this.canvas.on('before:render', hideBg);
     this.canvas.on('after:render', showBg);
