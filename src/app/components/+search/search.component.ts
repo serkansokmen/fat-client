@@ -68,10 +68,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     this.state$.subscribe(state => {
 
-      if (this.images != state.images && state.images.length == 0 && state.total > 0) {
-        this.handleSearch(null);
-      }
-
       if (state.search && state.search.id != this.form.value.id) {
         this.form.patchValue(state.search);
       }
