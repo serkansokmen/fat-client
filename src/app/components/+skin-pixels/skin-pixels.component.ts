@@ -127,8 +127,8 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
 
       this.maskGroup = new fabric.Group();
       this.maskGroup.globalCompositeOperation = 'source-over';
-      this.maskGroup.setWidth(this.canvas.getWidth());
-      this.maskGroup.setHeight(this.canvas.getHeight());
+      this.maskGroup.setWidth(img.getWidth());
+      this.maskGroup.setHeight(img.getHeight());
       this.maskGroup.set({ fill: 'transparent' });
       this.canvas.add(this.maskGroup);
       this.canvas.renderAll();
@@ -189,6 +189,7 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
       }
 
       this.maskGroup.addWithUpdate(path);
+      this.canvas.remove(path);
       this.canvas.renderAll();
     });
 
