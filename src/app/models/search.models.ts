@@ -5,16 +5,12 @@ export class ImageState {
     public label: string,
   ) {}
 
-  static indeterminate = new ImageState(0, 'Indeterminate');
+  static selected = new ImageState(0, 'Selected');
   static discarded = new ImageState(1, 'Discarded');
-  static approved = new ImageState(2, 'Approved');
-  static processed = new ImageState(3, 'Completed');
 
   static statesAvailable = [
+    ImageState.selected,
     ImageState.discarded,
-    ImageState.approved,
-    ImageState.processed,
-    ImageState.indeterminate
   ];
 
   static getState(value: number): ImageState {
@@ -86,37 +82,6 @@ export class Image {
     this.isFamily = data.isFamily;
     this.state = data.state;
     this.image = data.image;
-  }
-
-  toJSON(): any {
-    return Object.assign({}, this, {
-      license: this.license ? this.license.id : null,
-      ispublic: this.isPublic ? 1 : 0,
-      isfriend: this.isFriend ? 1 : 0,
-      isfamily: this.isFamily ? 1 : 0,
-      state: this.state ? this.state.value : ImageState.indeterminate,
-    });
-  }
-
-  static fromJSON(json: any): Image {
-    if (typeof json === 'string') {
-      return JSON.parse(json, Image.reviver);
-    } else {
-      let image = Object.create(Image.prototype);
-      return Object.assign({}, image, {
-        id: json.id,
-        license: json.license ? License.getLicense(json.license) : null,
-        isPublic: json.ispublic == 1 ? true : (json.ispublic == 0 ? false : null),
-        isFriend: json.isfriend == 1 ? true : (json.ispublic == 0 ? false : null),
-        isFamily: json.isfamily == 1 ? true : (json.ispublic == 0 ? false : null),
-        state: json.state ? ImageState.getState(json.state) : ImageState.indeterminate,
-        image: json.image,
-      });
-    }
-  }
-
-  static reviver(key: string, value: any): any {
-    return key === '' ? Image.fromJSON(value) : value;
   }
 
   static getImageURL(image: Image): string {

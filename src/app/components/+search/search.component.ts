@@ -45,10 +45,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.state$ = store.select('search');
     this.cardLayout$ = store.select('cardLayout');
     this.imageStates = [
-      { key: 'Indeterminate', value: 0 },
-      { key: 'Discarded', value: 1 },
+      { key: 'Selected', value: 0 },
+      { key: 'Annotated', value: 1 },
       { key: 'Approved', value: 2 },
-      { key: 'Completed', value: 3 },
+      { key: 'Discarded', value: 3 },
     ];
     this.images = [];
     this.currentPage = 0;
@@ -58,7 +58,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     this.form = this.formBuilder.group({
       id: [null],
-      tags: ['train,child,-drawing', Validators.required],
+      tags: ['train,-child', Validators.required],
       userID: [''],
       tagMode: ['all', Validators.required],
       perpage: [10, Validators.required],
@@ -67,10 +67,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.cardLayoutActions.setActionsVisible(true));
 
     this.state$.subscribe(state => {
-
-      if (this.images != state.images && state.images.length == 0 && state.total > 0) {
-        this.handleSearch(null);
-      }
 
       if (state.search && state.search.id != this.form.value.id) {
         this.form.patchValue(state.search);

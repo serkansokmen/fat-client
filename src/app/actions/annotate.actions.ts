@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Image, ImageState } from '../models/search.models';
+import { Image } from '../models/search.models';
 
 
 @Injectable()
 export class AnnotateActions {
 
   static REQUEST_IMAGES = '[Annotate] Request Images';
-  requestImages(state: ImageState): Action {
+  requestImages(): Action {
     return {
       type: AnnotateActions.REQUEST_IMAGES,
       payload: {
-        state
       }
     }
   }

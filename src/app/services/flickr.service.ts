@@ -22,7 +22,9 @@ export class FlickrService {
     this.endpoint = environment.apiURL;
   }
 
-  search(search: any, licenses: License[], perpage: number, page: number): Observable<any> {
+  search(payload: any): Observable<any> {
+
+    const { search, licenses, perpage, page } = payload;
 
     let url = `${this.endpoint}flickr/` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
@@ -61,7 +63,7 @@ export class FlickrService {
         return {
           ...image,
           license: image.license.id,
-          state: image.state ? image.state.value : ImageState.indeterminate.value
+          state: image.state ? image.state.value : ImageState.selected.value
         }
       })
     });
@@ -106,8 +108,8 @@ export class FlickrService {
       .switchMap(result => Observable.of(result.results.map(search => ({ id: search.id, tags: search.tags }))));
   }
 
-  getImages(state: ImageState) {
-    let url = `${this.endpoint}images/?state=${state.value}`;
+  getImages() {
+    let url = `${this.endpoint}images/`;
     return this.http.get(url, this.jwt())
       .map(res => res.json())
       .map((result: any) => {

@@ -4,7 +4,7 @@ import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, toPayload } from '@ngrx/effects';
 import { go } from '@ngrx/router-store';
 import { Observable } from 'rxjs/Observable';
-import { Image, License, ImageState } from '../models/search.models';
+import { Image, License } from '../models/search.models';
 import { AnnotateActions } from '../actions/annotate.actions';
 import { AnnotateState } from '../reducers/annotate.reducer';
 import { FlickrService } from '../services/flickr.service';
@@ -31,7 +31,7 @@ export class AnnotateEffects {
   @Effect() requestAvailableImages$ = this.actions$
     .ofType(AnnotateActions.REQUEST_IMAGES)
     .map(toPayload)
-    .switchMap(payload => this.service.getImages(payload.state))
+    .switchMap(payload => this.service.getImages())
     .switchMap(result => Observable.of({
         type: AnnotateActions.REQUEST_IMAGES_COMPLETE,
         payload: {

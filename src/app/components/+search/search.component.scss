@@ -7,6 +7,17 @@
     margin-bottom: 20px;
     padding-bottom: 5px;
     border-bottom: 1px solid #e2e2e2;
+    span {
+      display: block;
+      font-size: 10px;
+      color: rgba(0, 0, 0, 0.38);
+    }
+  }
+
+  .is-loading {
+    .pagination-label span {
+      display: none;
+    }
   }
 
   md-slider {
