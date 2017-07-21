@@ -63,7 +63,7 @@ export class FlickrService {
         return {
           ...image,
           license: image.license.id,
-          state: image.state ? image.state.value : ImageState.indeterminate.value
+          state: image.state ? image.state.value : ImageState.selected.value
         }
       })
     });
@@ -108,8 +108,8 @@ export class FlickrService {
       .switchMap(result => Observable.of(result.results.map(search => ({ id: search.id, tags: search.tags }))));
   }
 
-  getImages(state: ImageState) {
-    let url = `${this.endpoint}images/?state=${state.value}`;
+  getImages() {
+    let url = `${this.endpoint}images/`;
     return this.http.get(url, this.jwt())
       .map(res => res.json())
       .map((result: any) => {

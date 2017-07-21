@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
-import { Image, ImageState } from '../../models/search.models';
+import { Image } from '../../models/search.models';
 import { CardLayoutOptions } from '../../models/card-layout.models';
 import { CardLayoutActions } from '../../actions/card-layout.actions';
 
@@ -24,7 +24,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
   viewMode = CardLayoutOptions.thumbs;
-
+  adminURL = environment.adminURL;
   private sub: any;
 
   constructor(
@@ -39,7 +39,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.dispatch(this.cardLayoutActions.setActionsVisible(false));
     this.sub = this.route.params.subscribe(params => {
-      this.store.dispatch(this.actions.requestImages(ImageState.approved));
+      this.store.dispatch(this.actions.requestImages());
       if (params.id) {
         this.store.dispatch(this.actions.requestImage(params.id));
       } else {

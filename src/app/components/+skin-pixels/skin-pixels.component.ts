@@ -75,11 +75,11 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
     this.annotate$ = annotateStore.select('annotate');
     this.artboard$ = artboardStore.select('artboard');
 
-    this.resultSubject
-      .debounceTime(800)
-      .subscribe((resultImage) => {
+    // this.resultSubject
+    //   .debounceTime(800)
+    //   .subscribe((resultImage) => {
 
-      });
+    //   });
     this.subscriptions.push(this.resultSubject);
     this.annotateStore.dispatch(this.annotateActions.selectStep(0));
   }

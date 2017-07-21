@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, toPayload } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import { Image, License, ImageState } from '../models/search.models';
+import { Image, License } from '../models/search.models';
 import { SearchActions } from '../actions/search.actions';
 import { FlickrService } from '../services/flickr.service';
 import { SearchState } from '../reducers/search.reducer';

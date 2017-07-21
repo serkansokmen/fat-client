@@ -88,7 +88,7 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         images: state.images.map(image => image.id != action.payload.image.id ?
           image : new Image({
             ...image,
-            state: image.state == ImageState.discarded ? ImageState.indeterminate : ImageState.discarded
+            state: image.state == ImageState.discarded ? ImageState.selected : ImageState.discarded
           }))
       }
 
