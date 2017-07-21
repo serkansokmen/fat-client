@@ -26,6 +26,16 @@ export class ArtboardActions {
     }
   }
 
+  static UPDATE_CURRENT_MASK = '[Artboard] Update Current Mask';
+  updateCurrentMask(mask: any): Action {
+    return {
+      type: ArtboardActions.UPDATE_CURRENT_MASK,
+      payload: {
+        mask
+      }
+    }
+  }
+
   static SET_ZOOM = '[Artboard] Set Zoom';
   setZoom(zoom: number): Action {
     return {

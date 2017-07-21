@@ -20,12 +20,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   title: string = 'FAT';
   links: any[] = [{
-    title: 'Collect images',
+    title: 'Collect',
     routerLink: '/search',
     isDisabled: false,
     iconName: 'fa-search',
   }, {
-    title: 'Annotate approved images',
+    title: 'Annotate',
     routerLink: '/annotate',
     isDisabled: false,
     iconName: 'fa-paint-brush',

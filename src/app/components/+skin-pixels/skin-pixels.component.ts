@@ -191,6 +191,7 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
       this.maskGroup.addWithUpdate(path);
       this.canvas.remove(path);
       this.canvas.renderAll();
+      // this.artboardStore.dispatch(this.artboardActions.updateCurrentMask(this.maskGroup));
     });
 
   }
@@ -213,8 +214,8 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
           format: 'png',
           left: 0,
           top: 0,
-          width: this.fabricImage.width,
-          height: this.fabricImage.height,
+          // width: this.fabricImage.getWidth(),
+          // height: this.fabricImage.getHeight(),
         })));
     this.canvas.off('before:render', hideBg);
     this.canvas.off('after:render', showBg);

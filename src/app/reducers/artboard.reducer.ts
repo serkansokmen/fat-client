@@ -11,6 +11,7 @@ export interface ArtboardState {
   isAdding: boolean,
   isShowingOriginal: boolean,
   base64?: string,
+  currentMask?: any;
 };
 
 const initialState: ArtboardState = {
@@ -39,6 +40,11 @@ export function artboardReducer(state: ArtboardState = initialState, action: Act
       return {
         ...state,
         zoom: action.payload.zoom
+      }
+    case ArtboardActions.UPDATE_CURRENT_MASK:
+      return {
+        ...state,
+        currentMask: action.payload.mask
       }
     case ArtboardActions.SET_IS_DRAGGING:
       return {
