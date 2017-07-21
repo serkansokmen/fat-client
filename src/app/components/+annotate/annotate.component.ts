@@ -38,8 +38,8 @@ export class AnnotateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.dispatch(this.cardLayoutActions.setActionsVisible(false));
+    this.store.dispatch(this.actions.requestImages());
     this.sub = this.route.params.subscribe(params => {
-      this.store.dispatch(this.actions.requestImages());
       if (params.id) {
         this.store.dispatch(this.actions.requestImage(params.id));
       } else {

@@ -72,7 +72,7 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
 
     const annotateSubscription = this.annotate$.subscribe(state => {
       if (state.selectedImage) {
-        fabric.Image.fromURL(state.selectedImage.image, (img) => {
+        fabric.Image.fromURL(state.selectedImage.flickr_url, (img) => {
           img.lockRotation = true;
           img.lockUniScaling = true;
           bgCanvas.setWidth(img.width)

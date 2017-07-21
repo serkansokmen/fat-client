@@ -110,7 +110,8 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
       height: window.innerHeight});
     this.canvas.renderAll();
 
-    fabric.Image.fromURL(image.image, (img) => {
+    // fabric.Image.fromURL(image.image, (img) => {
+    fabric.Image.fromURL(image.flickr_url, (img) => {
       img.lockRotation = true;
       img.lockUniScaling = true;
       img.selectable = false;
@@ -122,7 +123,7 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
       this.fabricImage = img;
       // this.canvas.setBackgroundImage(this.fabricImage,
       //   this.canvas.renderAll.bind(this.canvas));
-      // this.canvas.add(this.fabricImage);
+      this.canvas.add(this.fabricImage);
 
       this.maskGroup = new fabric.Group();
       this.maskGroup.globalCompositeOperation = 'source-over';

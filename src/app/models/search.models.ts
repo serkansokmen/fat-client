@@ -67,6 +67,8 @@ export class Image {
   public isFamily: boolean;
   public state: ImageState;
   public image: string;
+  public flickr_thumbnail: string;
+  public flickr_url: string;
 
   constructor(data: any) {
     this.id = data.id;
@@ -82,6 +84,8 @@ export class Image {
     this.isFamily = data.isFamily;
     this.state = data.state;
     this.image = data.image;
+    this.flickr_thumbnail = data.flickr_thumbnail;
+    this.flickr_url = data.flickr_url;
   }
 
   static getImageURL(image: Image): string {

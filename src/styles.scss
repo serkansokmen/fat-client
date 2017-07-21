@@ -62,12 +62,7 @@ md-toolbar {
   canvas {
     width: 100%;
     height: 100%;
-    background-blend-mode: multiply;
-  }
-  canvas.background {
-    position: absolute;
-    top: 0;
-    left: 0;
+    // background-blend-mode: multiply;
   }
 
   img {
