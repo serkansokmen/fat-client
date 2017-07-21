@@ -29,11 +29,6 @@ export class AppComponent implements OnInit, OnDestroy {
     routerLink: '/annotate',
     isDisabled: false,
     iconName: 'fa-paint-brush',
-  }, {
-    title: 'Review annotated images',
-    routerLink: '/review',
-    isDisabled: true,
-    iconName: 'fa-thumbs-o-up',
   }];
   currentLink: any;
   isAuthenticated: boolean;
