@@ -199,11 +199,11 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
   handleNext() {
     const hideBg = () => {
       // this.canvas.backgroundImage = null;
-      this.fabricImage.set({ visible: false });
+      // this.fabricImage.set({ visible: false });
     };
     const showBg = () => {
       // this.canvas.backgroundImage = this.fabricImage;
-      this.fabricImage.set({ visible: true });
+      // this.fabricImage.set({ visible: true });
     };
     this.canvas.on('before:render', hideBg);
     this.canvas.on('after:render', showBg);
@@ -214,8 +214,9 @@ export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
           format: 'png',
           left: 0,
           top: 0,
-          // width: this.fabricImage.getWidth(),
-          // height: this.fabricImage.getHeight(),
+          multiplier: 1,
+          width: this.fabricImage.getWidth(),
+          height: this.fabricImage.getHeight(),
         })));
     this.canvas.off('before:render', hideBg);
     this.canvas.off('after:render', showBg);
