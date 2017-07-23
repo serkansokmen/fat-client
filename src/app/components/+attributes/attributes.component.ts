@@ -116,7 +116,6 @@ export class AttributesComponent implements AfterViewInit, OnDestroy {
 
         graphics.on('selected', event => {
           this.store.dispatch(this.actions.selectObject(face));
-          console.log('selected', face);
         });
 
         this.canvas.add(graphics);

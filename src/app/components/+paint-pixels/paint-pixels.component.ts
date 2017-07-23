@@ -31,12 +31,12 @@ import { ArtboardTool } from '../../models/artboard.models';
 import { Image as FlickrImage } from '../../models/search.models';
 
 @Component({
-  selector: 'fat-skin-pixels',
-  templateUrl: './skin-pixels.component.html',
-  styleUrls: ['./skin-pixels.component.scss'],
+  selector: 'fat-paint-pixels',
+  templateUrl: './paint-pixels.component.html',
+  styleUrls: ['./paint-pixels.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SkinPixelsComponent implements AfterViewInit, OnDestroy {
+export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
   artboard$: Observable<ArtboardState>;

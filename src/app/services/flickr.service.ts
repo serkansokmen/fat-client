@@ -132,7 +132,6 @@ export class FlickrService {
   }
 
   saveSkinPixels(image: FlickrImage, base64: string) {
-    console.log(image.id, base64);
     let body = JSON.stringify({
       image: image.id,
       skin_pixels_image: base64,

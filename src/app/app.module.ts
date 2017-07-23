@@ -49,7 +49,7 @@ import { nudityCheckReducer } from './reducers/nudity-check.reducer';
 import { LoginComponent } from './components/+login/login.component';
 import { SearchComponent } from './components/+search/search.component';
 import { AnnotateComponent } from './components/+annotate/annotate.component';
-import { SkinPixelsComponent } from './components/+skin-pixels/skin-pixels.component';
+import { PaintPixelsComponent } from './components/+paint-pixels/paint-pixels.component';
 import { NudityCheckComponent } from './components/+nudity-check/nudity-check.component';
 import { ObjectXComponent } from './components/+object-x/object-x.component';
 import { AttributesComponent } from './components/+attributes/attributes.component';
@@ -73,7 +73,7 @@ export function instrumentOptions() {
     SearchComponent,
     SafeStylePipe,
     CardComponent,
-    SkinPixelsComponent,
+    PaintPixelsComponent,
     PageNotFoundComponent,
     NudityCheckComponent,
     ObjectXComponent,

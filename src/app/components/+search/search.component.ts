@@ -89,7 +89,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     this.sub = this.route.params.subscribe(params => {
       if (params.slug) {
-        console.log(params.slug);
+        // console.log(params.slug);
       }
       this.handleSearch(null);
       this.store.dispatch(this.cardLayoutActions.selectViewMode(CardLayoutOptions.thumbs));
