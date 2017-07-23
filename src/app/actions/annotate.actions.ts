@@ -46,16 +46,6 @@ export class AnnotateActions {
     }
   }
 
-  static SELECT_IMAGE = '[Annotate] Select Image';
-  selectImage(image: Image): Action {
-    return {
-      type: AnnotateActions.SELECT_IMAGE,
-      payload: {
-        image
-      }
-    }
-  }
-
   static DESELECT_IMAGE = '[Annotate] Deselect Image';
   deselectImage(): Action {
     return {

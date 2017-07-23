@@ -50,14 +50,6 @@ export class AnnotateEffects {
         }
       }));
 
-  @Effect() requestImageComplete$ = this.actions$
-    .ofType(AnnotateActions.REQUEST_IMAGE_COMPLETE)
-    .map(toPayload)
-    .map(payload => ({
-      type: AnnotateActions.SELECT_IMAGE,
-      payload
-    }))
-
   @Effect() savePaintImage$ = this.actions$
     .ofType(AnnotateActions.SAVE_PAINT_IMAGE)
     .withLatestFrom(this.store$, (action, state: any) => ({

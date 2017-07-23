@@ -42,12 +42,6 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         next: action.payload.next,
       };
 
-    case AnnotateActions.SELECT_IMAGE:
-      return {
-        ...state,
-        selectedImage: action.payload.image,
-      };
-
     case AnnotateActions.DESELECT_IMAGE:
       return {
         ...state,
@@ -65,7 +59,7 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
       return {
         ...state,
         isRequesting: false,
-        selectedImage: action.payload.result,
+        selectedImage: action.payload.image,
       };
 
     case AnnotateActions.REQUEST_ANNOTATION:
