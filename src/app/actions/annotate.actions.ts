@@ -64,20 +64,20 @@ export class AnnotateActions {
     }
   }
 
-  static SAVE_SKIN_PIXELS = '[Annotate] Save Skin Pixels';
+  static SAVE_PAINT_IMAGE = '[Annotate] Save Paint Image';
   savePaintImage(base64: string): Action {
     return {
-      type: AnnotateActions.SAVE_SKIN_PIXELS,
+      type: AnnotateActions.SAVE_PAINT_IMAGE,
       payload: {
         base64
       }
     }
   }
 
-  static SAVE_SKIN_PIXELS_COMPLETE = '[Annotate] Save Skin Pixels Complete';
+  static SAVE_PAINT_IMAGE_COMPLETE = '[Annotate] Save Paint Image Complete';
   savePaintImageComplete(annotation: any): Action {
     return {
-      type: AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE,
+      type: AnnotateActions.SAVE_PAINT_IMAGE_COMPLETE,
       payload: {
         annotation
       }

@@ -82,13 +82,13 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         annotation: action.payload.annotation,
       };
 
-    case AnnotateActions.SAVE_SKIN_PIXELS:
+    case AnnotateActions.SAVE_PAINT_IMAGE:
       return {
         ...state,
         isRequesting: true,
       };
 
-    case AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE:
+    case AnnotateActions.SAVE_PAINT_IMAGE_COMPLETE:
       return {
         ...state,
         isRequesting: false,

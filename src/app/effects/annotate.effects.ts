@@ -59,7 +59,7 @@ export class AnnotateEffects {
     }))
 
   @Effect() savePaintImage$ = this.actions$
-    .ofType(AnnotateActions.SAVE_SKIN_PIXELS)
+    .ofType(AnnotateActions.SAVE_PAINT_IMAGE)
     .withLatestFrom(this.store$, (action, state: any) => ({
       image: state.annotate.selectedImage,
       base64: action.payload.base64,
@@ -70,14 +70,14 @@ export class AnnotateEffects {
       .map(res => res.json())
       .catch(err => err.json()))
     .switchMap(annotation => Observable.of({
-        type: AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE,
+        type: AnnotateActions.SAVE_PAINT_IMAGE_COMPLETE,
         payload: {
           annotation
         }
       }));
 
    @Effect({ dispatch: false }) savePaintImageComplete$ = this.actions$
-    .ofType(AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE)
+    .ofType(AnnotateActions.SAVE_PAINT_IMAGE_COMPLETE)
     .withLatestFrom(this.store$, (action, state: any) => {
       return `/annotate/${state.annotate.selectedImage.id}/${state.annotate.annotation.id}/nudity-check`
     })
