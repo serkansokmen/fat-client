@@ -41,11 +41,9 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
   annotate$: Observable<AnnotateState>;
   artboard$: Observable<ArtboardState>;
 
-
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
   @ViewChild('drawCanvas') drawCanvas: ElementRef;
-  @ViewChild('bgCanvas') bgCanvas: ElementRef;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -115,15 +113,10 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
       img.lockRotation = true;
       img.lockUniScaling = true;
       img.selectable = false;
-      // if (img.width > img.height) {
-      //   img.scaleToWidth(this.canvas.getWidth());
-      // } else {
-      //   img.scaleToHeight(this.canvas.getHeight());
-      // }
       this.fabricImage = img;
-      // this.canvas.setBackgroundImage(this.fabricImage,
-      //   this.canvas.renderAll.bind(this.canvas));
-      this.canvas.add(this.fabricImage);
+      this.canvas.setBackgroundImage(this.fabricImage,
+        this.canvas.renderAll.bind(this.canvas));
+      // this.canvas.add(this.fabricImage);
 
       this.maskGroup = new fabric.Group();
       this.maskGroup.globalCompositeOperation = 'source-over';
@@ -198,16 +191,16 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
 
   handleNext() {
     const hideBg = () => {
-      // this.canvas.backgroundImage = null;
-      // this.fabricImage.set({ visible: false });
+      this.canvas.backgroundImage = null;
     };
     const showBg = () => {
-      // this.canvas.backgroundImage = this.fabricImage;
-      // this.fabricImage.set({ visible: true });
+      this.canvas.backgroundImage = this.fabricImage;
     };
     this.canvas.on('before:render', hideBg);
     this.canvas.on('after:render', showBg);
     this.canvas.deactivateAll();
+    const zoom = this.canvas.getZoom();
+    this.canvas.setZoom(1.0);
     this.annotateStore.dispatch(
       this.annotateActions.saveSkinPixels(
         this.canvas.toDataURL({
@@ -218,6 +211,7 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
           width: this.fabricImage.getWidth(),
           height: this.fabricImage.getHeight(),
         })));
+    this.canvas.setZoom(zoom);
     this.canvas.off('before:render', hideBg);
     this.canvas.off('after:render', showBg);
   }
