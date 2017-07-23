@@ -19,10 +19,10 @@ const initialState: AnnotateState = {
   images: [],
   steps: [{
     id: 1,
-    routePath: '/skin-pixels',
+    routePath: '/paint-pixels',
     iconName: 'fa-paint-brush',
-    title: 'Fine Tune Marked Skin Pixels',
-    description: 'Please use the lasso & brush tool to remove or fully include regions and pixels. Try to get pixel perfect results.',
+    title: 'Paint Pixels',
+    description: 'Please use the lasso & brush tools to remove or fully include regions and pixels. Try to get pixel perfect results.',
   }, {
     id: 2,
     routePath: '/nudity-check',

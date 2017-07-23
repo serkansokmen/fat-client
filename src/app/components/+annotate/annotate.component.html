@@ -3,9 +3,8 @@
   <md-card-content>
     <div class="jumbotron" *ngIf="!(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
       <div class="container">
-        <h2>No approved images yet.</h2>
-        <p>Collected images will appear here as soon as they are approved by the moderators.</p>
-        <p>If you are a moderator, you can <a [href]="adminURL" target="_blank">login</a> to the admin panel and approve collected images.</p>
+        <h2>No images yet.</h2>
+        <p>You can add more images using <a [routerLink]="['/search']">search</a>.</p>
       </div>
     </div>
     <div class="content" *ngIf="(annotate$ | async)?.images[0]">

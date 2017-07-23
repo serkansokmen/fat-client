@@ -29,6 +29,11 @@
       Zoom <md-slider thumbLabel (change)="artboardStore.dispatch(artboardActions.setZoom($event.value))"
       [value]="(artboard$ | async)?.zoom" step="0.1" min="1" max="4"></md-slider>
     </div>
+    <hr>
+    <div class="form-controls">
+      <button md-button color="warn" [routerLink]="['/annotate']">Cancel</button>
+      <button md-button color="primary" (click)="handleNext()">Save and Continue</button>
+    </div>
     <!-- <md-slide-toggle [checked]="(artboard$ | async)?.isDragging"
       (change)="artboardStore.dispatch(artboardActions.setIsDragging($event.checked))">Drag</md-slide-toggle> -->
   </md-sidenav>
@@ -36,19 +41,6 @@
   <div class="draw-view">
     <canvas #drawCanvas></canvas>
   </div>
-
-  <md-toolbar>
-    <button md-icon-button (click)="nav.toggle()">
-      <md-icon fontSet="fontawesome" fontIcon="fa-sliders"></md-icon>
-    </button>
-    <span class="spacer"></span>
-    <button md-icon-button [routerLink]="['/annotate']" color="warn">
-        <md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon>
-      </button>
-      <button md-icon-button color="primary" (click)="handleNext()">
-        <md-icon fontSet="fontawesome" fontIcon="fa-chevron-right"></md-icon>
-      </button>
-  </md-toolbar>
 
 
 </md-sidenav-container>

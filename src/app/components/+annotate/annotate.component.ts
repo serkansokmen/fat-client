@@ -53,7 +53,7 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   }
 
   handleCardSelect(image: Image) {
-    this.store.dispatch(go([`/annotate/${image.id}/skin-pixels`]));
+    this.store.dispatch(go([`/annotate/${image.id}/paint-pixels`]));
   }
 
 }

@@ -15,8 +15,8 @@ const appRoutes: Routes = [
     { path: 'annotate', component: AnnotateComponent, canActivate: [ AuthGuard ] },
     { path: 'annotate/:id', component: AnnotateComponent, canActivate: [ AuthGuard ],
       children: [
-        { path: '', pathMatch: 'full', redirectTo: 'skin-pixels' },
-        { path: 'skin-pixels', component: PaintPixelsComponent },
+        { path: '', pathMatch: 'full', redirectTo: 'paint-pixels' },
+        { path: 'paint-pixels', component: PaintPixelsComponent },
         { path: 'nudity-check', component: NudityCheckComponent },
         { path: 'object-x', component: ObjectXComponent },
         { path: 'attributes', component: AttributesComponent },
