@@ -13,15 +13,12 @@ const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'search', component: SearchComponent, canActivate: [ AuthGuard ] },
     { path: 'annotate', component: AnnotateComponent, canActivate: [ AuthGuard ] },
-    { path: 'annotate/:id', component: AnnotateComponent, canActivate: [ AuthGuard ],
-      children: [
-        { path: '', pathMatch: 'full', redirectTo: 'paint-pixels' },
-        { path: 'paint-pixels', component: PaintPixelsComponent },
-        { path: 'nudity-check', component: NudityCheckComponent },
-        { path: 'object-x', component: ObjectXComponent },
-        { path: 'attributes', component: AttributesComponent },
-      ]
-    },
+    { path: 'annotate/:image_id', component: AnnotateComponent, canActivate: [ AuthGuard ] },
+    { path: 'annotate/:image_id/new', component: PaintPixelsComponent, canActivate: [ AuthGuard ] },
+    { path: 'annotate/:image_id/:annotation_id', component: PaintPixelsComponent, canActivate: [ AuthGuard ] },
+    { path: 'annotate/:image_id/:annotation_id/nudity-check', component: NudityCheckComponent },
+    { path: 'annotate/:image_id/:annotation_id/object-x', component: ObjectXComponent },
+    { path: 'annotate/:image_id/:annotation_id/attributes', component: AttributesComponent },
     { path: '404', component: PageNotFoundComponent },
     { path: '**', pathMatch: 'full', redirectTo: '/404' }
 ];

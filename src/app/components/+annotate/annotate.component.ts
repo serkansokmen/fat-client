@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
@@ -11,8 +11,6 @@ import { Image } from '../../models/search.models';
 import { CardLayoutOptions } from '../../models/card-layout.models';
 import { CardLayoutActions } from '../../actions/card-layout.actions';
 
-import { environment } from '../../../environments/environment';
-
 
 @Component({
   selector: 'fat-annotate',
@@ -20,12 +18,10 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./annotate.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AnnotateComponent implements OnInit, OnDestroy {
+export class AnnotateComponent implements OnInit {
 
   annotate$: Observable<AnnotateState>;
   viewMode = CardLayoutOptions.thumbs;
-  adminURL = environment.adminURL;
-  private sub: any;
 
   constructor(
     public store: Store<AnnotateState>,
@@ -39,21 +35,10 @@ export class AnnotateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.dispatch(this.cardLayoutActions.setActionsVisible(false));
     this.store.dispatch(this.actions.requestImages());
-    this.sub = this.route.params.subscribe(params => {
-      if (params.id) {
-        this.store.dispatch(this.actions.requestImage(params.id));
-      } else {
-        this.store.dispatch(this.actions.deselectImage());
-      }
-    })
-  }
-
-  ngOnDestroy() {
-    this.sub.unsubscribe();
   }
 
   handleCardSelect(image: Image) {
-    this.store.dispatch(go([`/annotate/${image.id}/paint-pixels`]));
+    this.store.dispatch(go([`/annotate/${image.id}/new`]));
   }
 
 }

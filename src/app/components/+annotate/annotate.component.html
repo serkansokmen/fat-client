@@ -9,11 +9,9 @@
     </div>
     <div class="content" *ngIf="(annotate$ | async)?.images[0]">
       <fat-card-list
-        *ngIf="!(annotate$ | async)?.selectedImage"
         [images]="(annotate$ | async)?.images"
         [cardOptions]="viewMode"
         (onCardClick)="handleCardSelect($event)"></fat-card-list>
-      <router-outlet></router-outlet>
     </div>
   </md-card-content>
 </md-card>

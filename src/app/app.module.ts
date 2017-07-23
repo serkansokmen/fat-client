@@ -56,7 +56,6 @@ import { AttributesComponent } from './components/+attributes/attributes.compone
 
 import { CardListComponent } from './components/card-list/card-list.component';
 import { CardComponent } from './components/card/card.component';
-import { AnnotateStepsComponent } from './components/annotate-steps/annotate-steps.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
 
@@ -78,7 +77,6 @@ export function instrumentOptions() {
     NudityCheckComponent,
     ObjectXComponent,
     AttributesComponent,
-    AnnotateStepsComponent,
     AnnotateComponent,
     CardListComponent,
   ],

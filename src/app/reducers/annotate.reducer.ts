@@ -5,8 +5,6 @@ import { Image } from  '../models/search.models';
 
 export interface AnnotateState {
   images: Image[],
-  steps: any[],
-  selectedStep?: any,
   selectedImage?: Image,
   annotation?: any,
   total: number,
@@ -17,31 +15,6 @@ export interface AnnotateState {
 
 const initialState: AnnotateState = {
   images: [],
-  steps: [{
-    id: 1,
-    routePath: '/paint-pixels',
-    iconName: 'fa-paint-brush',
-    title: 'Paint Pixels',
-    description: 'Please use the lasso & brush tools to remove or fully include regions and pixels. Try to get pixel perfect results.',
-  }, {
-    id: 2,
-    routePath: '/nudity-check',
-    iconName: 'fa-sliders',
-    title: 'Semantic Nudity Percentage',
-    description: '',
-  }, {
-    id: 3,
-    routePath: '/object-x',
-    iconName: 'fa-pencil-square-o',
-    title: 'Mark Objects',
-    description: 'Please select an object type and add related rectangles on top of the image by dragging and drawing the smallest bounding rectangle around each object. You can edit and remove later by selecting from the options.',
-  }, {
-    id: 4,
-    routePath: '/attributes',
-    iconName: 'fa-filter',
-    title: 'Gender and Age Group',
-    description: 'Please select gender and age group for each of the objects. You can edit and remove later by selecting from the options.',
-  }],
   total: 0,
   previous: null,
   next: null,
@@ -94,22 +67,6 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         isRequesting: false,
         selectedImage: action.payload.result,
       };
-
-    case AnnotateActions.SELECT_STEP:
-      switch (typeof action.payload.step) {
-        case 'number':
-          return {
-            ...state,
-            selectedStep: state.steps[action.payload.step],
-          }
-        case 'object':
-          return {
-            ...state,
-            selectedStep: state.steps.filter(step => step.id == action.payload.step.id)[0],
-          }
-        default:
-          return state;
-      }
 
     case AnnotateActions.SAVE_SKIN_PIXELS:
       return {

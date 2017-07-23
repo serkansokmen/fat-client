@@ -1,7 +1,7 @@
 <md-sidenav-container>
   <md-sidenav #nav mode="side" opened="true">
-    <h2 [innerHTML]="(annotate$ | async)?.selectedStep?.title"></h2>
-    <p [innerHTML]="(annotate$ | async)?.selectedStep?.description"></p>
+    <h2>Paint Pixels</h2>
+    <p>Please use the lasso & brush tools to remove or fully include regions and pixels. Try to get pixel perfect results.</p>
     <hr>
     <md-radio-group (change)="artboardStore.dispatch(artboardActions.selectArtboardTool($event.value))" [value]="(artboard$ | async)?.currentTool">
       <!-- <md-radio-button [value]="artboardTools[0]" selected>Polygon</md-radio-button> -->
@@ -42,5 +42,5 @@
     <canvas #drawCanvas></canvas>
   </div>
 
-
 </md-sidenav-container>
+

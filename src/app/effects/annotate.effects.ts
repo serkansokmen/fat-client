@@ -77,8 +77,9 @@ export class AnnotateEffects {
 
    @Effect({ dispatch: false }) saveSkinPixelsComplete$ = this.actions$
     .ofType(AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE)
-    .withLatestFrom(this.store$, (action, state: any) =>
-      `/annotate/${state.annotate.selectedImage.id}${state.annotate.steps[1].routePath}`)
+    .withLatestFrom(this.store$, (action, state: any) => {
+      return `/annotate/${state.annotate.selectedImage.id}/${state.annotate.annotation.id}/nudity-check`
+    })
     .map(url => {
       this.store$.dispatch(go([url]));
     })

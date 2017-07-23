@@ -4,19 +4,13 @@ import { Component,
   ElementRef,
   AfterViewInit,
   OnDestroy,
-  SimpleChanges,
-  SimpleChange,
   HostListener,
-  Input,
-  Output,
   ChangeDetectionStrategy,
-  NgZone,
-  EventEmitter,
 } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import {
   fabric,
   Canvas,
-  Polygon,
   Group,
 } from 'fabric';
 import { Observable } from 'rxjs/Observable';
@@ -67,19 +61,13 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
     public annotateActions: AnnotateActions,
     public artboardStore: Store<ArtboardState>,
     public artboardActions: ArtboardActions,
-    private zone: NgZone
+    private route: ActivatedRoute,
   )
   {
     this.annotate$ = annotateStore.select('annotate');
     this.artboard$ = artboardStore.select('artboard');
 
-    // this.resultSubject
-    //   .debounceTime(800)
-    //   .subscribe((resultImage) => {
-
-    //   });
     this.subscriptions.push(this.resultSubject);
-    this.annotateStore.dispatch(this.annotateActions.selectStep(0));
   }
 
   ngAfterViewInit() {
@@ -89,13 +77,20 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
     });
     this.context = this.canvas.getContext('2d');
 
-    this.subscriptions.push(this.annotate$.subscribe((state: AnnotateState) => {
-      if (state.selectedImage) {
-        this.handleAnnotate(state.selectedImage);
+    this.subscriptions.push(this.route.params.subscribe(params => {
+      if (params.image_id) {
+        this.annotateStore.dispatch(this.annotateActions.requestImage(params.image_id));
+        this.subscriptions.push(this.annotate$.subscribe((state: AnnotateState) => {
+          if (state.selectedImage) {
+            this.handleAnnotate(state.selectedImage);
+          }
+        }));
+        this.subscriptions.push(this.artboard$.subscribe((state: ArtboardState) => {
+          this.handleArtboard(state);
+        }));
+      } else {
+        this.annotateStore.dispatch(this.annotateActions.deselectImage());
       }
-    }));
-    this.subscriptions.push(this.artboard$.subscribe((state: ArtboardState) => {
-      this.handleArtboard(state);
     }));
   }
 
@@ -107,7 +102,7 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
       width: window.innerWidth,
       height: window.innerHeight});
     this.canvas.renderAll();
-
+    console.log(image);
     // fabric.Image.fromURL(image.image, (img) => {
     fabric.Image.fromURL(image.flickr_url, (img) => {
       img.lockRotation = true;
@@ -132,32 +127,17 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
   handleArtboard(state: ArtboardState) {
     this.canvas.setZoom(state.zoom);
     this.canvas.off('path:created');
-    // canvas.off('mouse:up');
 
     if (this.fabricImage) {
       this.fabricImage.set({ visible: state.isShowingOriginal });
     }
-    // if (state.isDragging) {
-    //   canvas.on('mouse:down', (options) => {
-    //     console.log(options);
-    //   });
-    //   canvas.on('mouse:move', (options) => {
-    //     console.log(options);
-    //   });
-    //   canvas.on('mouse:up', (options) => {
-    //     console.log(options);
-    //   });
-    // }
     const brushColor = state.isAdding ? 'rgba(0,255,0,1)' : 'rgba(255,0,0,1)';
     const fillColor = state.isAdding ? 'rgba(0,255,0,1)' : 'black';
 
     this.canvas.isDrawingMode = state.currentTool != ArtboardTool.polygon;
-    // this.context.globalCompositeOperation = state.isAdding ? 'xor' : 'destination-out';
-    // this.context.fillStyle = fillColor;
     this.canvas.freeDrawingBrush.color = brushColor;
     this.canvas.freeDrawingBrush.width = state.currentTool == ArtboardTool.brush ? state.brushRadius : 1.0;
     this.canvas.on('path:created', (options) => {
-      // this.store.dispatch(this.artboardActions.lassoPathCreated(options.path));
       let path = options.path;
       path.lockRotation = true;
       path.lockUniScaling = true;
@@ -184,7 +164,6 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
       this.maskGroup.addWithUpdate(path);
       this.canvas.remove(path);
       this.canvas.renderAll();
-      // this.artboardStore.dispatch(this.artboardActions.updateCurrentMask(this.maskGroup));
     });
 
   }

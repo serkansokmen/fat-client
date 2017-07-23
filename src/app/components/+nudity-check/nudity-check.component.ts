@@ -46,7 +46,7 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.annotateStore.dispatch(this.annotateActions.selectStep(1));
+
   }
 
   ngOnDestroy() {
@@ -54,6 +54,6 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
 
   handleNext() {
     // dispatch udpate annotation action
-    this.annotateStore.dispatch(this.annotateActions.selectStep(2));
+    // this.annotateStore.dispatch();
   }
 }

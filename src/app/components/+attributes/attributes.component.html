@@ -1,4 +1,6 @@
 <div class="row">
+  <h2>Gender and Age Group</h2>
+  <p>Please select gender and age group for each of the objects. You can edit and remove later by selecting from the options.</p>
   <div class="col-xs-12 col-sm-3" *ngIf="(objectX$ | async)?.objects.length > 0 && !(objectX$ | async)?.selectedObject">
     Please select one of the {{ (objectX$ | async)?.selectedObjectType?.pluralName }}
   </div>

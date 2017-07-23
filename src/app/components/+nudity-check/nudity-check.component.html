@@ -1,7 +1,7 @@
 <md-sidenav-container>
   <md-sidenav #nav mode="side" opened="true">
-    <h2 [innerHTML]="(annotate$ | async)?.selectedStep?.title"></h2>
-    <p [innerHTML]="(annotate$ | async)?.selectedStep?.description"></p>
+    <h2>Semantic Nudity Percentage</h2>
+    <p></p>
     <hr>
     <div class="slider-row" *ngFor="let type of (nudityCheck$ | async).checkTypes">
       <md-checkbox [checked]="type?.isActive" (change)="store.dispatch(actions.toggleTypeActive(type))">
@@ -14,7 +14,6 @@
     </div>
     <hr>
     <div class="form-controls">
-      <button md-button color="accent" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + (annotate$ | async)?.steps[0]?.routePath]">Back</button>
       <button md-button color="warn" [routerLink]="['/annotate']">Cancel</button>
       <button md-button color="primary" (click)="handleNext()">Next</button>
     </div>
