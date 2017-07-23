@@ -1,6 +1,6 @@
 <md-sidenav-container>
   <md-sidenav #nav mode="side" opened="true">
-    <h2>Semantic Nudity Percentage</h2>
+    <h2>Semantic Nudity Check</h2>
     <p></p>
     <hr>
     <div class="slider-row" *ngFor="let type of (nudityCheck$ | async).checkTypes">
@@ -20,7 +20,10 @@
   </md-sidenav>
 
   <div class="draw-view">
-    <img [src]="(annotate$ | async)?.selectedImage?.flickr_url"/>
+    <div class="image-container">
+      <div class="original" [style.background-image]="'url(' + (annotate$ | async)?.selectedImage?.flickr_url + ')'"></div>
+      <div class="skin-pixels" [style.background-image]="'url(' + (annotate$ | async)?.annotation?.skin_pixels_image + ')'"></div>
+    </div>
   </div>
 
 </md-sidenav-container>

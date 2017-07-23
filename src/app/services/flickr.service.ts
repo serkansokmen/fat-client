@@ -131,6 +131,11 @@ export class FlickrService {
     return this.http.get(url, this.jwt());
   }
 
+  getAnnotation(id: number) {
+    let url = `${this.endpoint}annotations/${id}/`;
+    return this.http.get(url, this.jwt());
+  }
+
   saveSkinPixels(image: FlickrImage, base64: string) {
     let body = JSON.stringify({
       image: image.id,

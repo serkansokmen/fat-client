@@ -84,4 +84,15 @@ export class AnnotateEffects {
       this.store$.dispatch(go([url]));
     })
 
+  @Effect() requestAnnotation$ = this.actions$
+    .ofType(AnnotateActions.REQUEST_ANNOTATION)
+    .map(toPayload)
+    .switchMap(payload => this.service.getAnnotation(payload.id))
+    .switchMap(result => Observable.of({
+        type: AnnotateActions.REQUEST_ANNOTATION_COMPLETE,
+        payload: {
+          annotation: result.json()
+        }
+      }));
+
 }

@@ -68,6 +68,20 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         selectedImage: action.payload.result,
       };
 
+    case AnnotateActions.REQUEST_ANNOTATION:
+      return {
+        ...state,
+        isRequesting: true,
+        annotation: null,
+      };
+
+    case AnnotateActions.REQUEST_ANNOTATION_COMPLETE:
+      return {
+        ...state,
+        isRequesting: false,
+        annotation: action.payload.annotation,
+      };
+
     case AnnotateActions.SAVE_SKIN_PIXELS:
       return {
         ...state,

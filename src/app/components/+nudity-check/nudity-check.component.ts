@@ -7,20 +7,13 @@ import { Component,
   HostListener,
   ChangeDetectionStrategy
 } from '@angular/core';
-import {
-  fabric,
-  Canvas,
-  StaticCanvas,
-  Image
-} from 'fabric';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
 import { NudityCheckState } from '../../reducers/nudity-check.reducer';
 import { NudityCheckActions } from '../../actions/nudity-check.actions';
-import { ObjectX, Gender, DrawMode } from '../../models/object-x.models';
-import { Image as FlickrImage } from '../../models/search.models';
 
 @Component({
   selector: 'fat-nudity-check',
@@ -34,11 +27,14 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
   annotate$: Observable<AnnotateState>;
   nudityCheck$: Observable<NudityCheckState>;
 
+   private subscriptions: any[] = [];
+
   constructor(
     public store: Store<NudityCheckState>,
     public actions: NudityCheckActions,
     public annotateStore: Store<AnnotateState>,
     public annotateActions: AnnotateActions,
+    private route: ActivatedRoute,
   )
   {
     this.annotate$ = annotateStore.select('annotate');
@@ -46,10 +42,21 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
+    this.subscriptions.push(this.route.params.subscribe(params => {
+      if (params.image_id) {
+        this.annotateStore.dispatch(this.annotateActions.requestImage(params.image_id));
+      }
+      if (params.annotation_id) {
+        this.annotateStore.dispatch(this.annotateActions.requestAnnotation(params.annotation_id));
+      }
+    }));
   }
 
   ngOnDestroy() {
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
+    this.subscriptions = [];
   }
 
   handleNext() {

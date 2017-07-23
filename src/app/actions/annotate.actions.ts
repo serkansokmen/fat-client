@@ -84,4 +84,24 @@ export class AnnotateActions {
     }
   }
 
+  static REQUEST_ANNOTATION = '[Annotate] Request Annotation';
+  requestAnnotation(id: number): Action {
+    return {
+      type: AnnotateActions.REQUEST_ANNOTATION,
+      payload: {
+        id
+      }
+    }
+  }
+
+  static REQUEST_ANNOTATION_COMPLETE = '[Annotate] Request Annotation Complete';
+  requestAnnotationComplete(annotation: any): Action {
+    return {
+      type: AnnotateActions.REQUEST_ANNOTATION_COMPLETE,
+      payload: {
+        annotation
+      }
+    }
+  }
+
 }
