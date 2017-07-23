@@ -43,9 +43,6 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(this.route.params.subscribe(params => {
-      if (params.image_id) {
-        this.annotateStore.dispatch(this.annotateActions.requestImage(params.image_id));
-      }
       if (params.annotation_id) {
         this.annotateStore.dispatch(this.annotateActions.requestAnnotation(params.annotation_id));
       }

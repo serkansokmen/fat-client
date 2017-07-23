@@ -65,7 +65,7 @@ export class AnnotateActions {
   }
 
   static SAVE_SKIN_PIXELS = '[Annotate] Save Skin Pixels';
-  saveSkinPixels(base64: string): Action {
+  savePaintImage(base64: string): Action {
     return {
       type: AnnotateActions.SAVE_SKIN_PIXELS,
       payload: {
@@ -75,7 +75,7 @@ export class AnnotateActions {
   }
 
   static SAVE_SKIN_PIXELS_COMPLETE = '[Annotate] Save Skin Pixels Complete';
-  saveSkinPixelsComplete(annotation: any): Action {
+  savePaintImageComplete(annotation: any): Action {
     return {
       type: AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE,
       payload: {

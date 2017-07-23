@@ -181,7 +181,7 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
     const zoom = this.canvas.getZoom();
     this.canvas.setZoom(1.0);
     this.annotateStore.dispatch(
-      this.annotateActions.saveSkinPixels(
+      this.annotateActions.savePaintImage(
         this.canvas.toDataURL({
           format: 'png',
           left: 0,

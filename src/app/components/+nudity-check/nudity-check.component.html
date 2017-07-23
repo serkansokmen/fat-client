@@ -21,8 +21,8 @@
 
   <div class="draw-view">
     <div class="image-container">
-      <div class="original" [style.background-image]="'url(' + (annotate$ | async)?.selectedImage?.flickr_url + ')'"></div>
-      <div class="skin-pixels" [style.background-image]="'url(' + (annotate$ | async)?.annotation?.skin_pixels_image + ')'"></div>
+      <div class="original" [style.background-image]="'url(' + (annotate$ | async)?.annotation?.image_url + ')'"></div>
+      <div class="skin-pixels" [style.background-image]="'url(' + (annotate$ | async)?.annotation?.paint_image + ')'"></div>
     </div>
   </div>
 

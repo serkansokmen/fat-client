@@ -136,12 +136,16 @@ export class FlickrService {
     return this.http.get(url, this.jwt());
   }
 
-  saveSkinPixels(image: FlickrImage, base64: string) {
+  saveAnnotation(image: FlickrImage, base64: string, annotationID: number = null) {
     let body = JSON.stringify({
       image: image.id,
-      skin_pixels_image: base64,
+      paint_image: base64,
     });
-    return this.http.post(`${this.endpoint}annotations/`, body, this.jwt());
+    if (annotationID == null) {
+      return this.http.post(`${this.endpoint}annotations/`, body, this.jwt());
+    } else {
+      return this.http.put(`${this.endpoint}annotations/${annotationID}`, body, this.jwt());
+    }
   }
 
   private jwt() {
