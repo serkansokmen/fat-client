@@ -42,6 +42,8 @@
     <button md-icon-button (click)="nav.toggle()">
       <md-icon fontSet="fontawesome" fontIcon="fa-sliders"></md-icon>
     </button>
+    <button md-icon-button color="warn" (click)="undo()" [style.opacity]="undoCount > 0 ? 1.0 : 1.0"><md-icon fontSet="fontawesome" fontIcon="fa-undo"></md-icon></button>
+    <button md-icon-button color="warn" (click)="repeat()" [style.opacity]="repeatCount > 0 ? 1.0 : 1.0"><md-icon fontSet="fontawesome" fontIcon="fa-repeat"></md-icon></button>
     <span class="spacer"></span>
     <button md-button color="warn" [routerLink]="['/annotate']">Cancel</button>
     <button md-raised-button color="primary" (click)="handleNext()">Save and Continue</button>

@@ -6,6 +6,7 @@ import { Component,
   OnDestroy,
   HostListener,
   ChangeDetectionStrategy,
+  NgZone,
 } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {
@@ -35,6 +36,9 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
   annotate$: Observable<AnnotateState>;
   artboard$: Observable<ArtboardState>;
 
+  undoCount: number = 0;
+  repeatCount: number = 0;
+
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
   @ViewChild('drawCanvas') drawCanvas: ElementRef;
@@ -54,6 +58,8 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
   private context: CanvasRenderingContext2D;
   private subscriptions: any[] = [];
   private resultSubject = new Subject<any>();
+  private undoItems: any[] = [];
+  private repeatItems: any[] = [];
 
   constructor(
     @Inject('Window') window: Window,
@@ -62,12 +68,38 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
     public artboardStore: Store<ArtboardState>,
     public artboardActions: ArtboardActions,
     private route: ActivatedRoute,
+    private zone: NgZone,
   )
   {
     this.annotate$ = annotateStore.select('annotate');
     this.artboard$ = artboardStore.select('artboard');
 
     this.subscriptions.push(this.resultSubject);
+  }
+
+  undo() {
+    let path = this.undoItems.pop();
+    if (path) {
+      this.repeatItems.push(path);
+      this.maskGroup.remove(path);
+      this.canvas.renderAll();
+      this.refreshHistoryCounts();
+    }
+  }
+
+  repeat() {
+    let path = this.repeatItems.pop();
+    if (path) {
+      this.undoItems.push(path);
+      this.maskGroup.add(path);
+      this.canvas.renderAll();
+      this.refreshHistoryCounts();
+    }
+  }
+
+  private refreshHistoryCounts() {
+    this.undoCount = this.undoItems.length;
+    this.repeatCount = this.repeatItems.length;
   }
 
   ngAfterViewInit() {
@@ -136,32 +168,37 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
     this.canvas.freeDrawingBrush.color = brushColor;
     this.canvas.freeDrawingBrush.width = state.currentTool == ArtboardTool.brush ? state.brushRadius : 1.0;
     this.canvas.on('path:created', (options) => {
-      let path = options.path;
-      path.lockRotation = true;
-      path.lockUniScaling = true;
-      path.selectable = false;
-      path.globalCompositeOperation = state.isAdding ? 'source-over' : 'destination-out';
 
-      switch (state.currentTool) {
+      this.zone.runOutsideAngular(() => {
+        let path = options.path;
+        path.lockRotation = true;
+        path.lockUniScaling = true;
+        path.selectable = false;
+        path.globalCompositeOperation = state.isAdding ? 'source-over' : 'destination-out';
 
-        case ArtboardTool.polygon:
-          break;
+        switch (state.currentTool) {
+          case ArtboardTool.polygon:
+            break;
+          case ArtboardTool.lasso:
+            path.set({ fill: fillColor, stroke: 'transparent' });
+            break;
+          case ArtboardTool.brush:
+            path.set({ fill: 'transparent', stroke: fillColor });
+            break;
 
-        case ArtboardTool.lasso:
-          path.set({ fill: fillColor, stroke: 'transparent' });
-          break;
+          default:
+            break;
+        }
+        this.maskGroup.addWithUpdate(path);
+        this.canvas.remove(path);
+        this.canvas.renderAll();
 
-        case ArtboardTool.brush:
-          path.set({ fill: 'transparent', stroke: fillColor });
-          break;
-
-        default:
-          break;
-      }
-
-      this.maskGroup.addWithUpdate(path);
-      this.canvas.remove(path);
-      this.canvas.renderAll();
+        this.zone.run(() => {
+          this.undoItems.push(path);
+          this.repeatItems = [];
+          this.refreshHistoryCounts();
+        });
+      });
     });
 
   }
