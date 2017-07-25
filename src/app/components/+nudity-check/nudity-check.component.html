@@ -14,7 +14,7 @@
     </div>
     <hr>
     <div class="form-controls">
-      <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage.id + '/' + (annotate$ | async)?.annotation.id]">Cancel</button>
+      <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + '/' + (annotate$ | async)?.annotation?.id]">Cancel</button>
       <button md-button color="primary" (click)="handleNext()">Next</button>
     </div>
   </md-sidenav>

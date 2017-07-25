@@ -23,7 +23,7 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
 
-   private subscriptions: any[] = [];
+  private subscriptions: any[] = [];
 
   constructor(
     public store: Store<AnnotateState>,
@@ -36,9 +36,9 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(this.route.params.subscribe(params => {
-      // if (params.image_id) {
-      //   this.store.dispatch(this.actions.requestImage(params.image_id));
-      // }
+      if (params.image_id) {
+        this.store.dispatch(this.actions.requestImage(params.image_id));
+      }
       if (params.annotation_id) {
         this.store.dispatch(this.actions.requestAnnotation(params.annotation_id));
       }

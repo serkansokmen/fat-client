@@ -108,8 +108,8 @@ export class FlickrService {
       .switchMap(result => Observable.of(result.results.map(search => ({ id: search.id, tags: search.tags }))));
   }
 
-  getImages() {
-    let url = `${this.endpoint}images`;
+  getImages(annotatedOnly: boolean) {
+    let url = annotatedOnly ? `${this.endpoint}images?annotated_only=true` : `${this.endpoint}images`;
     return this.http.get(url, this.jwt())
       .map(res => res.json())
       .map((result: any) => {
@@ -126,7 +126,7 @@ export class FlickrService {
       });
   }
 
-  getImage(id: number) {
+  getImage(id: number, annotatedOnly: boolean) {
     let url = `${this.endpoint}images/${id}`;
     return this.http.get(url, this.jwt());
   }

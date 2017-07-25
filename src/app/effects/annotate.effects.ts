@@ -31,10 +31,10 @@ export class AnnotateEffects {
     private service: FlickrService,
   ) {}
 
-  @Effect() requestAvailableImages$ = this.actions$
+  @Effect() requestImages$ = this.actions$
     .ofType(AnnotateActions.REQUEST_IMAGES)
     .map(toPayload)
-    .switchMap(payload => this.service.getImages())
+    .switchMap(payload => this.service.getImages(true))
     .switchMap(result => Observable.of({
         type: AnnotateActions.REQUEST_IMAGES_COMPLETE,
         payload: {
@@ -45,7 +45,7 @@ export class AnnotateEffects {
   @Effect() requestImage$ = this.actions$
     .ofType(AnnotateActions.REQUEST_IMAGE)
     .map(toPayload)
-    .switchMap(payload => this.service.getImage(payload.id))
+    .switchMap(payload => this.service.getImage(payload.id, false))
     .switchMap(result => Observable.of({
         type: AnnotateActions.REQUEST_IMAGE_COMPLETE,
         payload: {
