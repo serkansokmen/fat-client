@@ -169,30 +169,32 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
   }
 
   handleNext() {
-    const hideBg = () => {
-      this.canvas.backgroundImage = null;
-    };
-    const showBg = () => {
-      this.canvas.backgroundImage = this.fabricImage;
-    };
-    this.canvas.on('before:render', hideBg);
-    this.canvas.on('after:render', showBg);
-    this.canvas.deactivateAll();
-    const zoom = this.canvas.getZoom();
-    this.canvas.setZoom(1.0);
-    this.annotateStore.dispatch(
-      this.annotateActions.savePaintImage(
-        this.canvas.toDataURL({
-          format: 'png',
-          left: 0,
-          top: 0,
-          multiplier: 1,
-          width: this.fabricImage.getWidth(),
-          height: this.fabricImage.getHeight(),
-        })));
-    this.canvas.setZoom(zoom);
-    this.canvas.off('before:render', hideBg);
-    this.canvas.off('after:render', showBg);
+    if (window.confirm('Are you sure you are finished woth your annotation?')) {
+      const hideBg = () => {
+        this.canvas.backgroundImage = null;
+      };
+      const showBg = () => {
+        this.canvas.backgroundImage = this.fabricImage;
+      };
+      this.canvas.on('before:render', hideBg);
+      this.canvas.on('after:render', showBg);
+      this.canvas.deactivateAll();
+      const zoom = this.canvas.getZoom();
+      this.canvas.setZoom(1.0);
+      this.annotateStore.dispatch(
+        this.annotateActions.savePaintImage(
+          this.canvas.toDataURL({
+            format: 'png',
+            left: 0,
+            top: 0,
+            multiplier: 1,
+            width: this.fabricImage.getWidth(),
+            height: this.fabricImage.getHeight(),
+          })));
+      this.canvas.setZoom(zoom);
+      this.canvas.off('before:render', hideBg);
+      this.canvas.off('after:render', showBg);
+    }
   }
 
   ngOnDestroy() {
