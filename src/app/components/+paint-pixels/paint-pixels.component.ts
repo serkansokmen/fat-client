@@ -43,7 +43,7 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
   onResize(event) {
     this.canvas.setDimensions({
       width: event.target.innerWidth,
-      height: event.target.innerHeight});
+      height: event.target.innerHeight - 130});
     this.canvas.renderAll();
   }
 
@@ -100,7 +100,7 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
     this.canvas.isDrawingMode = true;
     this.canvas.setDimensions({
       width: window.innerWidth,
-      height: window.innerHeight});
+      height: window.innerHeight - 130});
     this.canvas.renderAll();
 
     fabric.Image.fromURL(image.flickr_url, (img) => {
