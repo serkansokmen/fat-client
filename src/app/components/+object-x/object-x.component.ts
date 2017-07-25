@@ -2,11 +2,13 @@ import { Component,
   Input,
   ViewChild,
   ElementRef,
+  OnInit,
   AfterViewInit,
   OnDestroy,
   HostListener,
   ChangeDetectionStrategy
 } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import {
   fabric,
   Canvas,
@@ -29,7 +31,7 @@ import { Image as FlickrImage } from '../../models/search.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ObjectXActions]
 })
-export class ObjectXComponent implements AfterViewInit, OnDestroy {
+export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
   objectX$: Observable<ObjectXState>;
@@ -37,56 +39,63 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
   visibleObjectTypes: ObjectXType[];
 
   @ViewChild('drawCanvas') drawCanvas: ElementRef;
-  @ViewChild('bgCanvas') bgCanvas: ElementRef;
+
   private canvas: Canvas;
   private context: CanvasRenderingContext2D;
-  private subscriptions: any[];
+  private subscriptions: any[] = [];
 
   private selectedObjectType;
   private isStarted;
   private drawX: number;
   private drawY: number;
+  private fabricImage: any;
 
   constructor(
-    public store: Store<ObjectXState>,
-    public actions: ObjectXActions,
-    public annotateStore: Store<AnnotateState>,
-    public annotateActions: AnnotateActions,
+    public store: Store<AnnotateState>,
+    public actions: AnnotateActions,
+    public objectXStore: Store<ObjectXState>,
+    public objectXActions: ObjectXActions,
+    private route: ActivatedRoute,
   )
   {
     this.annotate$ = store.select('annotate');
-    this.objectX$ = store.select('objectX');
+    this.objectX$ = objectXStore.select('objectX');
     this.objects = [];
     this.visibleObjectTypes = [];
+  }
+
+  ngOnInit() {
+    this.subscriptions.push(this.route.params.subscribe(params => {
+      if (params.image_id) {
+        this.store.dispatch(this.actions.requestImage(params.image_id));
+      }
+      if (params.annotation_id) {
+        this.store.dispatch(this.actions.requestAnnotation(params.annotation_id));
+      }
+    }));
   }
 
   ngAfterViewInit() {
 
     this.canvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
-      isDrawingMode: false
-    });
-    var bgCanvas: StaticCanvas = new fabric.StaticCanvas(this.bgCanvas.nativeElement, {
-      backgroundColor: 'black'
+      isDrawingMode: false,
     });
     this.context = this.canvas.getContext('2d');
 
     const annotateSubscription = this.annotate$.subscribe(state => {
-      if (state.selectedImage) {
+      if (state.selectedImage && !this.fabricImage) {
         fabric.Image.fromURL(state.selectedImage.flickr_url, (img) => {
+          this.fabricImage = img
           img.lockRotation = true;
           img.lockUniScaling = true;
-          bgCanvas.setWidth(img.width)
-          bgCanvas.setHeight(img.height);
-          bgCanvas.setBackgroundImage(img);
-          bgCanvas.renderAll();
-
+          this.canvas.setBackgroundImage(img,
+            this.canvas.renderAll.bind(this.canvas));
           this.canvas.setWidth(img.width);
           this.canvas.setHeight(img.height);
         });
+        this.objectXStore.dispatch(this.objectXActions.setDrawMode(DrawMode.add));
       }
     });
-
-    this.store.dispatch(this.actions.setDrawMode(DrawMode.add));
 
     const objectXSubscription = this.objectX$.subscribe((state: ObjectXState) => {
 
@@ -100,6 +109,8 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
       this.canvas.off('object:modified');
       this.canvas.off('object:selected');
       this.canvas.clear();
+      this.canvas.setBackgroundImage(this.fabricImage,
+        this.canvas.renderAll.bind(this.canvas));
 
       let objects = state.objects.filter(object => this.visibleObjectTypes.indexOf(object.type) > -1);
       for (let object of objects) {
@@ -150,6 +161,7 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
     for (let subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
+    this.subscriptions = [];
   }
 
   isTypeVisible(type?: ObjectXType) {
@@ -245,21 +257,21 @@ export class ObjectXComponent implements AfterViewInit, OnDestroy {
     //   this.store.dispatch(this.actions.selectObject(object));
     // });
     // this.canvas.setActiveObject(graphics);
-    this.store.dispatch(this.actions.addObject(object));
-    this.store.dispatch(this.actions.setVisibleObjectTypes(object.type, true));
+    this.objectXStore.dispatch(this.objectXActions.addObject(object));
+    this.objectXStore.dispatch(this.objectXActions.setVisibleObjectTypes(object.type, true));
   }
 
   onRemoveCanvasMouseDown(event) {
     let graphics = this.canvas.getActiveObject();
     this.canvas.remove(graphics);
-    this.store.dispatch(this.actions.removeObject(graphics));
+    this.objectXStore.dispatch(this.objectXActions.removeObject(graphics));
   }
 
   onEditCanvasMouseDown(event) {
     let graphics = this.canvas.getActiveObject();
     if (graphics) {
       let object = new ObjectX(graphics, this.selectedObjectType);
-      this.store.dispatch(this.actions.updateObject(object, graphics));
+      this.objectXStore.dispatch(this.objectXActions.updateObject(object, graphics));
     }
   }
 }

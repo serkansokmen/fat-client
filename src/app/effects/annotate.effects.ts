@@ -74,7 +74,7 @@ export class AnnotateEffects {
    @Effect({ dispatch: false }) savePaintImageComplete$ = this.actions$
     .ofType(AnnotateActions.SAVE_PAINT_IMAGE_COMPLETE)
     .withLatestFrom(this.store$, (action, state: any) => {
-      return `/annotate/${state.annotate.selectedImage.id}/${state.annotate.annotation.id}/nudity-check`
+      return `/annotate/${state.annotate.selectedImage.id}/${state.annotate.annotation.id}/nudity-check`;
     })
     .map(url => {
       this.store$.dispatch(go([url]));
@@ -109,29 +109,35 @@ export class AnnotateEffects {
     .ofType(AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS)
     .withLatestFrom(this.store$, (action, state: any) => {
       return {
-        annotation: state.annotate.annotation,
+        image: state.annotate.selectedImage.id,
+        annotation: state.annotate.annotation.id,
         checkTypes: state.annotate.checkTypes
       }
     })
-    .map(query => {
-      console.log(query);
-      return query;
+
+    .map(object => {
+      return `/annotate/${object.image}/${object.annotation}/object-x`;
     })
-    .mergeMap(data => {
-      let requests = [];
-      for (let type of data.checkTypes) {
-        this.service.updateAnnotationSemanticChecks(data.annotation.id, type.id, type.value);
-      }
-      requests.push(go([`annotate/${data.annotation.image}/${data.annotation.id}/object-x`]));
-      requests.push({
-        type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE,
-        payload: {}
-      })
-      return Observable.forkJoin(requests)
+    .map(url => {
+      this.store$.dispatch(go([url]));
     })
-    .map(results => {
-      return results[results.length - 1];
-    })
+
+    // .mergeMap(data => {
+    //   let requests = [];
+    //   for (let type of data.checkTypes) {
+    //     requests.push(this.service.updateAnnotationSemanticChecks(data.annotation.id, type.id, type.value));
+    //   }
+    //   requests.push(go([`annotate/${data.annotation.image}/${data.annotation.id}/object-x`]));
+    //   requests.push({
+    //     type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE,
+    //     payload: {}
+    //   })
+    //   return Observable.forkJoin(requests)
+    // })
+    // .map(results => {
+    //   console.log(results);
+    //   return results[results.length - 1];
+    // })
     // .map(result => {
     //   console.log(result);
     //   return result;

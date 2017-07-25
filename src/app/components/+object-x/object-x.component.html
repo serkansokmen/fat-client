@@ -1,60 +1,65 @@
-<h2>Mark Objects</h2>
-<p>Please select an object type and add related rectangles on top of the image by dragging and drawing the smallest bounding rectangle around each object. You can edit and remove later by selecting from the options.</p>
-
-<div class="row">
-  <div class="col-xs-12 col-sm-3">
+<md-sidenav-container>
+  <md-sidenav #nav mode="side" opened="true">
+    <h2>Mark Objects</h2>
+    <p>Please select an object type and add related rectangles on top of the image by dragging and drawing the smallest bounding rectangle around each object. You can edit and remove later by selecting from the options.</p>
     <hr>
     <div>
-      Editing Mode:
-      <button md-raised-button [mdMenuTriggerFor]="appMenu">
+      Object Type:
+      <button md-raised-button color="accent" [mdMenuTriggerFor]="appMenu">
         <span [style.color]="(objectX$ | async)?.selectedObjectType?.color">{{ (objectX$ | async)?.selectedObjectType?.pluralName }}</span>
-        <md-icon fontSet="fontawesome" fontIcon="fa-chevron-down"></md-icon>
+        <!-- <md-icon fontSet="fontawesome" fontIcon="fa-chevron-down"></md-icon> -->
       </button>
-      <hr>
       <md-menu #appMenu="mdMenu">
         <button md-menu-item *ngFor="let type of (objectX$ | async)?.objectTypes"
-          (click)="store.dispatch(actions.selectObjectType(type))">
+          (click)="objectXStore.dispatch(objectXActions.selectObjectType(type))">
           <span [style.color]="type.color">{{ type.name }}</span>
         </button>
       </md-menu>
     </div>
     <hr>
-    <md-radio-group (change)="store.dispatch(actions.setDrawMode($event.value))"
+    <md-radio-group (change)="objectXStore.dispatch(objectXActions.setDrawMode($event.value))"
       [value]="(objectX$ | async)?.drawMode">
-      <md-radio-button [value]="0">Add</md-radio-button>
-      <md-radio-button [value]="2">Modify</md-radio-button>
-      <md-radio-button [value]="1">Remove</md-radio-button>
+      <md-radio-button color="primary" [value]="0">Add</md-radio-button>
+      <md-radio-button color="primary" [value]="2">Modify</md-radio-button>
+      <md-radio-button color="primary" [value]="1">Remove</md-radio-button>
     </md-radio-group>
-    <hr>
+    <!-- <hr>
     <md-slide-toggle [checked]="(objectX$ | async)?.isShowingOriginal"
-      (change)="store.dispatch(actions.setIsShowingOriginal($event.checked))">
+      (change)="objectXStore.dispatch(objectXActions.setIsShowingOriginal($event.checked))">
       {{ (objectX$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
-    </md-slide-toggle>
+    </md-slide-toggle> -->
     <hr>
     <div *ngFor="let type of (objectX$ | async)?.objectTypes">
-      <md-checkbox [disabled]="getTypeCount(type) == 0"
+      <md-checkbox color="primary" *ngIf="getTypeCount(type) > 0"
         [checked]="getTypeCount(type) > 0"
-        (change)="store.dispatch(actions.setVisibleObjectTypes(type, $event?.checked))">
+        (change)="objectXStore.dispatch(objectXActions.setVisibleObjectTypes(type, $event?.checked))">
+        <span>{{ type?.pluralName }} ({{ getTypeCount(type) }})</span>
       </md-checkbox>
-      <span [style.color]="getTypeCount(type) == 0 ? '#ccc' : 'black'">{{ type?.name }} ({{ getTypeCount(type) }})</span>
-      <hr>
     </div>
-    <hr>
+    <hr *ngIf="(objectX$ | async)?.objects > 0">
     <div *ngFor="let object of (objectX$ | async)?.objects">
-      <button md-button (click)="store.dispatch(actions.selectObject(object))"><small><i>{{ object?.guid }}</i></small><br></button>
-      <div>
+      <button md-button (click)="objectXStore.dispatch(objectXActions.selectObject(object))"><small><i>{{ object?.guid }}</i></small><br></button>
+      <!-- <div>
         x: {{ object?.graphics.getLeft() }} <br>
         y: {{ object?.graphics.getTop() }} <br>
         width: {{ object?.graphics.getWidth() }} <br>
         height: {{ object?.graphics.getHeight() }} <br>
-      </div>
-      <hr>
+      </div> -->
+      <!-- <hr> -->
     </div>
+  </md-sidenav>
+
+  <div class="draw-view">
+    <canvas #drawCanvas></canvas>
   </div>
-  <div class="col-xs-12 col-sm-9">
-    <div class="draw-view">
-      <canvas #bgCanvas class="background" [style.display]="(objectX$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
-      <canvas #drawCanvas></canvas>
-    </div>
-  </div>
-</div>
+
+  <md-toolbar color="accent">
+    <button md-icon-button (click)="nav.toggle()">
+      <md-icon fontSet="fontawesome" fontIcon="fa-sliders"></md-icon>
+    </button>
+    <span class="spacer"></span>
+    <!-- <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + '/' + (annotate$ | async)?.annotation?.id]">Cancel</button> -->
+    <button md-raised-button color="primary" [disabled]="!(objectX$ | async)?.objects" (click)="handleNext()">Save and Continue</button>
+  </md-toolbar>
+
+</md-sidenav-container>

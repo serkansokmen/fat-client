@@ -102,8 +102,7 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
       width: window.innerWidth,
       height: window.innerHeight});
     this.canvas.renderAll();
-    console.log(image);
-    // fabric.Image.fromURL(image.image, (img) => {
+
     fabric.Image.fromURL(image.flickr_url, (img) => {
       img.lockRotation = true;
       img.lockUniScaling = true;
@@ -111,7 +110,6 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
       this.fabricImage = img;
       this.canvas.setBackgroundImage(this.fabricImage,
         this.canvas.renderAll.bind(this.canvas));
-      // this.canvas.add(this.fabricImage);
 
       this.maskGroup = new fabric.Group();
       this.maskGroup.globalCompositeOperation = 'source-over';
