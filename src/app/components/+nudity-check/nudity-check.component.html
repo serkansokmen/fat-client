@@ -4,7 +4,7 @@
     <p></p>
     <hr>
     <div class="slider-row" *ngFor="let type of (annotate$ | async)?.checkTypes">
-      <md-checkbox [checked]="type?.isActive" (change)="store.dispatch(actions.toggleTypeActive(type))">
+      <md-checkbox color="primary" [checked]="type?.isActive" (change)="store.dispatch(actions.toggleTypeActive(type))">
         <span>{{ type?.label }}</span>
       </md-checkbox>
       <md-slider thumbLabel
@@ -13,10 +13,6 @@
         [value]="type?.value" min="0" max="100"></md-slider>
     </div>
     <hr>
-    <div class="form-controls">
-      <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + '/' + (annotate$ | async)?.annotation?.id]">Cancel</button>
-      <button md-button color="primary" (click)="handleNext()">Next</button>
-    </div>
   </md-sidenav>
 
   <div class="draw-view">
@@ -25,5 +21,14 @@
       <div class="skin-pixels" [style.background-image]="'url(' + (annotate$ | async)?.annotation?.paint_image + ')'"></div>
     </div>
   </div>
+
+  <md-toolbar color="accent">
+    <button md-icon-button (click)="nav.toggle()">
+      <md-icon fontSet="fontawesome" fontIcon="fa-sliders"></md-icon>
+    </button>
+    <span class="spacer"></span>
+    <!-- <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + '/' + (annotate$ | async)?.annotation?.id]">Cancel</button> -->
+    <button md-raised-button color="primary" [disabled]="!(annotate$ | async)?.checkTypes" (click)="handleNext()">Save and Continue</button>
+  </md-toolbar>
 
 </md-sidenav-container>
