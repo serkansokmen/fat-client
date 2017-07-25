@@ -20,7 +20,8 @@ const appRoutes: Routes = [
     { path: 'annotate/:image_id/:annotation_id/object-x', component: ObjectXComponent },
     { path: 'annotate/:image_id/:annotation_id/attributes', component: AttributesComponent },
     { path: '404', component: PageNotFoundComponent },
-    { path: '**', pathMatch: 'full', redirectTo: '/404' }
+    { path: '', pathMatch: 'full', redirectTo: '/search' },
+    { path: '**', pathMatch: 'full', redirectTo: '/404' },
 ];
 
 export const routing = RouterModule.forRoot(appRoutes);
