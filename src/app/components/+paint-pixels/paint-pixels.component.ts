@@ -117,7 +117,7 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
       this.maskGroup.globalCompositeOperation = 'source-over';
       this.maskGroup.setWidth(img.getWidth());
       this.maskGroup.setHeight(img.getHeight());
-      this.maskGroup.set({ fill: 'transparent' });
+      this.maskGroup.set({ fill: 'transparent', opacity: 0.5 });
       this.canvas.add(this.maskGroup);
       this.canvas.renderAll();
 
