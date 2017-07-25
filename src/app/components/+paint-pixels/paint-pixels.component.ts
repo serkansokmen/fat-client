@@ -161,7 +161,7 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
     if (this.fabricImage) {
       this.fabricImage.set({ visible: state.isShowingOriginal });
     }
-    const brushColor = state.isAdding ? 'rgba(0,255,0,1)' : 'rgba(255,0,0,1)';
+    const brushColor = state.isAdding ? 'rgba(0,255,0,0.5)' : 'rgba(255,0,0,0.5)';
     const fillColor = state.isAdding ? 'rgba(0,255,0,1)' : 'black';
 
     this.canvas.isDrawingMode = state.currentTool != ArtboardTool.polygon;
@@ -175,15 +175,15 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
         path.lockUniScaling = true;
         path.selectable = false;
         path.globalCompositeOperation = state.isAdding ? 'source-over' : 'destination-out';
-
+        let pathColor = state.isAdding ? 'rgba(0,255,0,1.0)' : 'rgba(255,0,0,1.0)';
         switch (state.currentTool) {
           case ArtboardTool.polygon:
             break;
           case ArtboardTool.lasso:
-            path.set({ fill: fillColor, stroke: 'transparent' });
+            path.set({ fill: pathColor, stroke: 'transparent' });
             break;
           case ArtboardTool.brush:
-            path.set({ fill: 'transparent', stroke: fillColor });
+            path.set({ fill: 'transparent', stroke: pathColor });
             break;
 
           default:
