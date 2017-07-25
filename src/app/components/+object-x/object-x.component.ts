@@ -274,4 +274,8 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
       this.objectXStore.dispatch(this.objectXActions.updateObject(object, graphics));
     }
   }
+
+  handleNext() {
+    console.log('wip');
+  }
 }
