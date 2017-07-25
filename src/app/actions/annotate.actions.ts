@@ -94,4 +94,61 @@ export class AnnotateActions {
     }
   }
 
+  static UPDATE_ANNOTATION_SEMANTIC_CHECKS = '[Annotate] Update Annotation Semantic Checks';
+  updateAnnotationSemanticChecks(): Action {
+    return {
+      type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS,
+      payload: { }
+    }
+  }
+
+  static UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE = '[Annotate] Update Annotation Semantic Checks Complete';
+  updateAnnotationSemanticChecksComplete(annotation: any): Action {
+    return {
+      type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE,
+      payload: {
+        annotation
+      }
+    }
+  }
+
+  static REQUEST_CHECK_TYPES = '[Annotate] Request Check Types';
+  requestCheckTypes(): Action {
+    return {
+      type: AnnotateActions.REQUEST_CHECK_TYPES,
+      payload: { }
+    }
+  }
+
+  static REQUEST_CHECK_TYPES_COMPLETE = '[Annotate] Request Check Types Complete';
+  requestCheckTypesComplete(types: any[]): Action {
+    return {
+      type: AnnotateActions.REQUEST_CHECK_TYPES_COMPLETE,
+      payload: {
+        types
+      }
+    }
+  }
+
+  static SET_CHECK_TYPE_WEIGHT = '[Annotate] Set Check Type Weight';
+  setWeight(type: any, value: number): Action {
+    return {
+      type: AnnotateActions.SET_CHECK_TYPE_WEIGHT,
+      payload: {
+        type,
+        value
+      }
+    }
+  }
+
+  static TOGGLE_CHECK_TYPE_ACTIVE = '[Annotate] Set Check Type Active';
+  toggleTypeActive(type: any): Action {
+    return {
+      type: AnnotateActions.TOGGLE_CHECK_TYPE_ACTIVE,
+      payload: {
+        type
+      }
+    }
+  }
+
 }

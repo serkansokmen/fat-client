@@ -14,8 +14,11 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/empty';
+import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/of';
 
 @Injectable()
@@ -87,5 +90,59 @@ export class AnnotateEffects {
           annotation: result.json()
         }
       }));
+
+  @Effect() requestAnnotationComplete$ = this.actions$
+    .ofType(AnnotateActions.REQUEST_ANNOTATION_COMPLETE)
+    .map(toPayload)
+    .switchMap(payload => this.service.getSemanticChecks())
+    .switchMap(result => Observable.of({
+        type: AnnotateActions.REQUEST_CHECK_TYPES_COMPLETE,
+        payload: {
+          types: result.json().results.map(result => ({
+            ...result,
+            isActive: true,
+          })),
+        }
+      }));
+
+  @Effect() updateAnnotationSemanticChecks$ = this.actions$
+    .ofType(AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS)
+    .withLatestFrom(this.store$, (action, state: any) => {
+      return {
+        annotation: state.annotate.annotation,
+        checkTypes: state.annotate.checkTypes
+      }
+    })
+    .map(query => {
+      console.log(query);
+      return query;
+    })
+    .mergeMap(data => {
+      let requests = [];
+      for (let type of data.checkTypes) {
+        this.service.updateAnnotationSemanticChecks(data.annotation.id, type.id, type.value);
+      }
+      requests.push(go([`annotate/${data.annotation.image}/${data.annotation.id}/object-x`]));
+      requests.push({
+        type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE,
+        payload: {}
+      })
+      return Observable.forkJoin(requests)
+    })
+    .map(results => {
+      return results[results.length - 1];
+    })
+    // .map(result => {
+    //   console.log(result);
+    //   return result;
+    // })
+    // // .map(toPayload)
+    // // .switchMap(payload => )
+    // .switchMap(annotation => Observable.of({
+    //     type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE,
+    //     payload: {
+    //       annotation
+    //     }
+    //   }));
 
 }

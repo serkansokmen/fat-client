@@ -11,6 +11,7 @@ export interface AnnotateState {
   previous: string,
   next: string,
   isRequesting: boolean,
+  checkTypes: any[]
 };
 
 const initialState: AnnotateState = {
@@ -19,6 +20,7 @@ const initialState: AnnotateState = {
   previous: null,
   next: null,
   isRequesting: false,
+  checkTypes: []
 };
 
 export function annotateReducer(state: AnnotateState = initialState, action: Action) {
@@ -88,6 +90,54 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         isRequesting: false,
         annotation: action.payload.annotation,
       };
+
+    case AnnotateActions.REQUEST_CHECK_TYPES:
+      return {
+        ...state,
+        isRequesting: true,
+      };
+
+    case AnnotateActions.REQUEST_CHECK_TYPES_COMPLETE:
+      return {
+        ...state,
+        isRequesting: false,
+        checkTypes: action.payload.types,
+      }
+
+    case AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS:
+      return {
+        ...state,
+        isRequesting: true,
+      };
+
+    case AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE:
+      return {
+        ...state,
+        isRequesting: false,
+        annotation: action.payload.annotation,
+      }
+
+    case AnnotateActions.TOGGLE_CHECK_TYPE_ACTIVE:
+      return {
+        ...state,
+        checkTypes: state.checkTypes.map(type => {
+          if (type == action.payload.type) {
+            type.isActive = !type.isActive;
+          }
+          return type;
+        })
+      }
+
+    case AnnotateActions.SET_CHECK_TYPE_WEIGHT:
+      return {
+        ...state,
+        checkTypes: state.checkTypes.map(type => {
+          if (type == action.payload.type) {
+            type.value = action.payload.value;
+          }
+          return type;
+        })
+      }
 
     default:
       return state;

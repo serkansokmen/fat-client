@@ -43,7 +43,6 @@ import { annotateReducer } from './reducers/annotate.reducer';
 import { cardLayoutReducer } from './reducers/card-layout.reducer';
 import { artboardReducer } from './reducers/artboard.reducer';
 import { objectXReducer } from './reducers/object-x.reducer';
-import { nudityCheckReducer } from './reducers/nudity-check.reducer';
 
 // Components
 import { LoginComponent } from './components/+login/login.component';
@@ -97,7 +96,6 @@ export function instrumentOptions() {
       router: routerReducer,
       artboard: artboardReducer,
       objectX: objectXReducer,
-      nudityCheck: nudityCheckReducer,
     }),
     RouterStoreModule.connectRouter(),
     EffectsModule.runAfterBootstrap(AuthEffects),

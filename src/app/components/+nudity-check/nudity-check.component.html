@@ -3,18 +3,18 @@
     <h2>Semantic Nudity Check</h2>
     <p></p>
     <hr>
-    <div class="slider-row" *ngFor="let type of (nudityCheck$ | async).checkTypes">
+    <div class="slider-row" *ngFor="let type of (annotate$ | async)?.checkTypes">
       <md-checkbox [checked]="type?.isActive" (change)="store.dispatch(actions.toggleTypeActive(type))">
         <span>{{ type?.label }}</span>
       </md-checkbox>
       <md-slider thumbLabel
         (change)="store.dispatch(actions.setWeight(type, $event.value))"
         [disabled]="!type?.isActive"
-        [value]="type?.weight" min="0" max="100"></md-slider>
+        [value]="type?.value" min="0" max="100"></md-slider>
     </div>
     <hr>
     <div class="form-controls">
-      <button md-button color="warn" [routerLink]="['/annotate']">Cancel</button>
+      <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage.id + '/' + (annotate$ | async)?.annotation.id]">Cancel</button>
       <button md-button color="primary" (click)="handleNext()">Next</button>
     </div>
   </md-sidenav>

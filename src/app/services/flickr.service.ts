@@ -148,6 +148,20 @@ export class FlickrService {
     }
   }
 
+  getSemanticChecks() {
+    return this.http.get(`${this.endpoint}semantic-check-types`, this.jwt());
+  }
+
+  updateAnnotationSemanticChecks(annotationID: number, semanticCheckID: number, value: number) {
+    let body = JSON.stringify({
+      annotation: annotationID,
+      semantic_check: semanticCheckID,
+      value: value * 0.01,
+    });
+    console.log(body);
+    return this.http.post(`${this.endpoint}semantic-checks`, body, this.jwt());
+  }
+
   private jwt() {
     // create authorization header with jwt token
     let token = JSON.parse(localStorage.getItem('token'));
