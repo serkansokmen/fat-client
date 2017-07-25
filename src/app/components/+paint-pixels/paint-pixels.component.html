@@ -3,11 +3,16 @@
     <h2>Paint Pixels</h2>
     <p>Please use the lasso & brush tools to remove or fully include regions and pixels. Try to get pixel perfect results.</p>
     <hr>
-    <md-radio-group (change)="artboardStore.dispatch(artboardActions.selectArtboardTool($event.value))" [value]="(artboard$ | async)?.currentTool">
-      <!-- <md-radio-button [value]="artboardTools[0]" selected>Polygon</md-radio-button> -->
+    <p>Tools</p>
+    <md-button-toggle-group name="currentTool" vertical="false"
+      (change)="artboardStore.dispatch(artboardActions.selectArtboardTool($event.value))" [value]="(artboard$ | async)?.currentTool">
+      <md-button-toggle [value]="artboardTools[1]"><md-icon>mode_edit</md-icon> Lasso</md-button-toggle>
+      <md-button-toggle [value]="artboardTools[2]"><md-icon>format_paint</md-icon> Brush</md-button-toggle>
+    </md-button-toggle-group>
+    <!-- <md-radio-group (change)="artboardStore.dispatch(artboardActions.selectArtboardTool($event.value))" [value]="(artboard$ | async)?.currentTool">
       <md-radio-button color="primary" [value]="artboardTools[1]">Lasso</md-radio-button>
       <md-radio-button color="primary" [value]="artboardTools[2]">Brush</md-radio-button>
-    </md-radio-group>
+    </md-radio-group> -->
     <hr>
     <div [style.opacity]="(artboard$ | async)?.currentTool == artboardTools[2] ? 1.0 : 0.5">
       Pointer Size <md-slider color="primary" thumbLabel [disabled]="(artboard$ | async)?.currentTool != artboardTools[2]"
@@ -15,10 +20,12 @@
       [value]="(artboard$ | async)?.brushRadius" min="1" max="50"></md-slider>
     </div>
     <hr>
-    <md-radio-group (change)="artboardStore.dispatch(artboardActions.setPixelAdding($event.value))" [value]="(artboard$ | async)?.isAdding">
-      <md-radio-button color="primary" [value]="true">Add Pixels</md-radio-button>
-      <md-radio-button color="primary" [value]="false">Remove Pixels</md-radio-button>
-    </md-radio-group>
+    <p>Drawing Mode</p>
+    <md-button-toggle-group name="currentMode" vertical="false"
+      (change)="artboardStore.dispatch(artboardActions.setPixelAdding($event.value))" [value]="(artboard$ | async)?.isAdding">
+      <md-button-toggle [value]="true"><md-icon>add_circle_outline</md-icon> Add</md-button-toggle>
+      <md-button-toggle [value]="false"><md-icon>remove_circle_outline</md-icon> Erase</md-button-toggle>
+    </md-button-toggle-group>
     <!-- <hr>
     <md-slide-toggle [checked]="(artboard$ | async)?.isShowingOriginal"
       (change)="artboardStore.dispatch(artboardActions.setIsShowingOriginal($event.checked))">
@@ -42,8 +49,8 @@
     <button md-icon-button (click)="nav.toggle()">
       <md-icon fontSet="fontawesome" fontIcon="fa-sliders"></md-icon>
     </button>
-    <button md-icon-button color="warn" (click)="undo()" [style.opacity]="undoCount > 0 ? 1.0 : 1.0"><md-icon fontSet="fontawesome" fontIcon="fa-undo"></md-icon></button>
-    <button md-icon-button color="warn" (click)="repeat()" [style.opacity]="repeatCount > 0 ? 1.0 : 1.0"><md-icon fontSet="fontawesome" fontIcon="fa-repeat"></md-icon></button>
+    <button md-icon-button color="warn" (click)="undo()" [style.opacity]="undoCount > 0 ? 1.0 : 1.0"><md-icon>undo</md-icon></button>
+    <button md-icon-button color="warn" (click)="repeat()" [style.opacity]="repeatCount > 0 ? 1.0 : 1.0"><md-icon>redo</md-icon></button>
     <span class="spacer"></span>
     <button md-button color="warn" [routerLink]="['/annotate']">Cancel</button>
     <button md-raised-button color="primary" (click)="handleNext()">Save and Continue</button>
