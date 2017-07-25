@@ -26,7 +26,7 @@ export class FlickrService {
 
     const { search, licenses, perpage, page } = payload;
 
-    let url = `${this.endpoint}flickr/` +
+    let url = `${this.endpoint}flickr` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
       `${search.userID ? '&user_id=' + search.userID : ''}` +
       `&tags=${search.tags.split(',').map(str => str.trim()).join(',')}` +
@@ -69,14 +69,14 @@ export class FlickrService {
     });
 
     if (search.id == null) {
-      return this.http.post(`${this.endpoint}flickr/`, body, this.jwt())
+      return this.http.post(`${this.endpoint}flickr`, body, this.jwt())
         .catch(error => {
           console.error('Error at search', error);
           return Observable.empty();
         })
         .map((response: Response) => response.json())
     } else {
-      return this.http.put(`${this.endpoint}flickr/`, body, this.jwt())
+      return this.http.put(`${this.endpoint}flickr`, body, this.jwt())
         .catch(error => {
           console.error('Error at search', error);
           return Observable.empty();
@@ -109,7 +109,7 @@ export class FlickrService {
   }
 
   getImages() {
-    let url = `${this.endpoint}images/`;
+    let url = `${this.endpoint}images`;
     return this.http.get(url, this.jwt())
       .map(res => res.json())
       .map((result: any) => {
@@ -127,12 +127,12 @@ export class FlickrService {
   }
 
   getImage(id: number) {
-    let url = `${this.endpoint}images/${id}/`;
+    let url = `${this.endpoint}images/${id}`;
     return this.http.get(url, this.jwt());
   }
 
   getAnnotation(id: number) {
-    let url = `${this.endpoint}annotations/${id}/`;
+    let url = `${this.endpoint}annotations/${id}`;
     return this.http.get(url, this.jwt());
   }
 
@@ -142,7 +142,7 @@ export class FlickrService {
       paint_image: base64,
     });
     if (annotationID == null) {
-      return this.http.post(`${this.endpoint}annotations/`, body, this.jwt());
+      return this.http.post(`${this.endpoint}annotations`, body, this.jwt());
     } else {
       return this.http.put(`${this.endpoint}annotations/${annotationID}`, body, this.jwt());
     }
