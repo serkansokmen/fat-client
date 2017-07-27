@@ -55,7 +55,7 @@ export class AnnotateActions {
   }
 
   static CREATE_ANNOTATION = '[Annotate] Create Annotation';
-  createAnnotation(base64: string, semanticChecks: any[]): Action {
+  createAnnotation(base64: string, semanticChecks: any[] = []): Action {
     return {
       type: AnnotateActions.CREATE_ANNOTATION,
       payload: {
@@ -95,50 +95,12 @@ export class AnnotateActions {
     }
   }
 
-  static UPDATE_ANNOTATION_SEMANTIC_CHECKS = '[Annotate] Update Annotation Semantic Checks';
-  updateAnnotationSemanticChecks(): Action {
-    return {
-      type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS,
-      payload: {}
-    }
-  }
-
-  static UPDATE_ANNOTATION_OBJECTS = '[Annotate] Update Annotation Objects';
-  updateAnnotationObjects(): Action {
-    return {
-      type: AnnotateActions.UPDATE_ANNOTATION_OBJECTS,
-      payload: {
-      }
-    }
-  }
-
   static UPDATE_ANNOTATION_COMPLETE = '[Annotate] Update Annotation Complete';
   updateAnnotationComplete(annotation: any): Action {
     return {
       type: AnnotateActions.UPDATE_ANNOTATION_COMPLETE,
       payload: {
         annotation
-      }
-    }
-  }
-
-  static SET_SEMANTIC_CHECK_WEIGHT = '[Annotate] Set Semantic Check Weight';
-  setSemanticCheckWeight(check: any, value: number): Action {
-    return {
-      type: AnnotateActions.SET_SEMANTIC_CHECK_WEIGHT,
-      payload: {
-        check,
-        value
-      }
-    }
-  }
-
-  static TOGGLE_SEMANTIC_CHECK_ACTIVE = '[Annotate] Set Semantic Check Active';
-  toggleSemanticCheckActive(check: any): Action {
-    return {
-      type: AnnotateActions.TOGGLE_SEMANTIC_CHECK_ACTIVE,
-      payload: {
-        check
       }
     }
   }

@@ -70,7 +70,7 @@ export class AnnotateEffects {
         }
       }));
 
-   @Effect({ dispatch: false }) savePaintImageComplete$ = this.actions$
+   @Effect({ dispatch: false }) createAnnotationComplete$ = this.actions$
     .ofType(AnnotateActions.CREATE_ANNOTATION_COMPLETE)
     .withLatestFrom(this.store$, (action, state: any) => {
       return `/annotate/${state.annotate.selectedImage.id}/${state.annotate.annotation.id}/nudity-check`;
@@ -90,20 +90,20 @@ export class AnnotateEffects {
         }
       }));
 
-  @Effect() updateAnnotationSemanticChecks$ = this.actions$
-    .ofType(AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS)
-    .withLatestFrom(this.store$, (action, state: any) => ({
-      image: state.annotate.selectedImage.id,
-      annotation: state.annotate.annotation,
-      semantic_checks: state.annotate.defaultSemanticChecks,
-    }))
-    .switchMap(data => this.service.updateAnnotation(
-      data.annotation, data.image))
-    .map(response => response.json())
-    .map(result => {
-      let url = `/annotate/${result.image}/${result.annotation}/object-x`;
-      return this.store$.dispatch(go([url]));
-    });
+  // @Effect() updateAnnotation$ = this.actions$
+  //   .ofType(AnnotateActions.UPDATE_ANNOTATION)
+  //   .withLatestFrom(this.store$, (action, state: any) => ({
+  //     image: state.annotate.selectedImage.id,
+  //     annotation: state.annotate.annotation,
+  //     semantic_checks: state.annotate.defaultSemanticChecks,
+  //   }))
+  //   .switchMap(data => this.service.updateAnnotation(
+  //     data.annotation, data.image))
+  //   .map(response => response.json())
+  //   .map(result => {
+  //     let url = `/annotate/${result.image}/${result.annotation}/object-x`;
+  //     return this.store$.dispatch(go([url]));
+  //   });
     // .map(results => {
     //   console.log(results);
     //   return results[results.length - 1];

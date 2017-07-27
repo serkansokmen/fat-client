@@ -55,6 +55,45 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
 
   handleNext() {
     // dispatch udpate annotation action
-    this.store.dispatch(this.actions.updateAnnotationSemanticChecks());
+
   }
+
+  // case AnnotateActions.REQUEST_DEFAULT_SEMANTIC_CHECKS_COMPLETE:
+  //     return {
+  //       ...state,
+  //       isRequesting: false,
+  //       defaultSemanticChecks: action.payload.results.map(result => ({
+  //         ...result,
+  //         isActive: true,
+  //         value: 0.0,
+  //       })),
+  //     }
+
+  //   case AnnotateActions.TOGGLE_SEMANTIC_CHECK_ACTIVE:
+  //     return {
+  //       ...state,
+  //       annotation: {
+  //         ...state.annotation,
+  //         semantic_checks: state.annotation.semantic_checks.map(check => {
+  //           if (check == action.payload.check) {
+  //             check.isActive = !check.isActive;
+  //           }
+  //           return check;
+  //         })
+  //       }
+  //     }
+
+  //   case AnnotateActions.SET_SEMANTIC_CHECK_WEIGHT:
+  //     return {
+  //       ...state,
+  //       annotation: {
+  //         ...state.annotation,
+  //         semantic_checks: state.annotation.semantic_checks.map(check => {
+  //           if (check == action.payload.check) {
+  //             check.value = action.payload.value;
+  //           }
+  //           return check;
+  //         })
+  //       }
+  //     }
 }
