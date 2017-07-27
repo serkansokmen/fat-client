@@ -11,7 +11,7 @@ export interface AnnotateState {
   previous: string,
   next: string,
   isRequesting: boolean,
-  checkTypes: any[]
+  defaultSemanticChecks: any[]
 };
 
 const initialState: AnnotateState = {
@@ -20,7 +20,7 @@ const initialState: AnnotateState = {
   previous: null,
   next: null,
   isRequesting: false,
-  checkTypes: []
+  defaultSemanticChecks: []
 };
 
 export function annotateReducer(state: AnnotateState = initialState, action: Action) {
@@ -64,6 +64,19 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         selectedImage: action.payload.image,
       };
 
+    case AnnotateActions.CREATE_ANNOTATION:
+      return {
+        ...state,
+        isRequesting: true,
+      };
+
+    case AnnotateActions.CREATE_ANNOTATION_COMPLETE:
+      return {
+        ...state,
+        isRequesting: false,
+        annotation: action.payload.annotation,
+      };
+
     case AnnotateActions.REQUEST_ANNOTATION:
       return {
         ...state,
@@ -78,30 +91,50 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         annotation: action.payload.annotation,
       };
 
-    case AnnotateActions.SAVE_PAINT_IMAGE:
+
+    case AnnotateActions.REQUEST_DEFAULT_SEMANTIC_CHECKS:
       return {
         ...state,
         isRequesting: true,
       };
 
-    case AnnotateActions.SAVE_PAINT_IMAGE_COMPLETE:
+    case AnnotateActions.REQUEST_DEFAULT_SEMANTIC_CHECKS_COMPLETE:
       return {
         ...state,
         isRequesting: false,
-        annotation: action.payload.annotation,
-      };
+        defaultSemanticChecks: action.payload.results.map(result => ({
+          ...result,
+          isActive: true,
+          value: 0.0,
+        })),
+      }
 
-    case AnnotateActions.REQUEST_CHECK_TYPES:
+    case AnnotateActions.TOGGLE_SEMANTIC_CHECK_ACTIVE:
       return {
         ...state,
-        isRequesting: true,
-      };
+        annotation: {
+          ...state.annotation,
+          semantic_checks: state.annotation.semantic_checks.map(check => {
+            if (check == action.payload.check) {
+              check.isActive = !check.isActive;
+            }
+            return check;
+          })
+        }
+      }
 
-    case AnnotateActions.REQUEST_CHECK_TYPES_COMPLETE:
+    case AnnotateActions.SET_SEMANTIC_CHECK_WEIGHT:
       return {
         ...state,
-        isRequesting: false,
-        checkTypes: action.payload.types,
+        annotation: {
+          ...state.annotation,
+          semantic_checks: state.annotation.semantic_checks.map(check => {
+            if (check == action.payload.check) {
+              check.value = action.payload.value;
+            }
+            return check;
+          })
+        }
       }
 
     case AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS:
@@ -110,33 +143,17 @@ export function annotateReducer(state: AnnotateState = initialState, action: Act
         isRequesting: true,
       };
 
-    case AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE:
+    case AnnotateActions.UPDATE_ANNOTATION_OBJECTS:
+      return {
+        ...state,
+        isRequesting: true,
+      };
+
+    case AnnotateActions.UPDATE_ANNOTATION_COMPLETE:
       return {
         ...state,
         isRequesting: false,
         annotation: action.payload.annotation,
-      }
-
-    case AnnotateActions.TOGGLE_CHECK_TYPE_ACTIVE:
-      return {
-        ...state,
-        checkTypes: state.checkTypes.map(type => {
-          if (type == action.payload.type) {
-            type.isActive = !type.isActive;
-          }
-          return type;
-        })
-      }
-
-    case AnnotateActions.SET_CHECK_TYPE_WEIGHT:
-      return {
-        ...state,
-        checkTypes: state.checkTypes.map(type => {
-          if (type == action.payload.type) {
-            type.value = action.payload.value;
-          }
-          return type;
-        })
       }
 
     default:

@@ -54,20 +54,21 @@ export class AnnotateActions {
     }
   }
 
-  static SAVE_PAINT_IMAGE = '[Annotate] Save Paint Image';
-  savePaintImage(base64: string): Action {
+  static CREATE_ANNOTATION = '[Annotate] Create Annotation';
+  createAnnotation(base64: string, semanticChecks: any[]): Action {
     return {
-      type: AnnotateActions.SAVE_PAINT_IMAGE,
+      type: AnnotateActions.CREATE_ANNOTATION,
       payload: {
-        base64
+        base64,
+        semanticChecks
       }
     }
   }
 
-  static SAVE_PAINT_IMAGE_COMPLETE = '[Annotate] Save Paint Image Complete';
-  savePaintImageComplete(annotation: any): Action {
+  static CREATE_ANNOTATION_COMPLETE = '[Annotate] Create Annotation Complete';
+  createAnnotationComplete(annotation: any): Action {
     return {
-      type: AnnotateActions.SAVE_PAINT_IMAGE_COMPLETE,
+      type: AnnotateActions.CREATE_ANNOTATION_COMPLETE,
       payload: {
         annotation
       }
@@ -98,55 +99,46 @@ export class AnnotateActions {
   updateAnnotationSemanticChecks(): Action {
     return {
       type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS,
-      payload: { }
+      payload: {}
     }
   }
 
-  static UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE = '[Annotate] Update Annotation Semantic Checks Complete';
-  updateAnnotationSemanticChecksComplete(annotation: any): Action {
+  static UPDATE_ANNOTATION_OBJECTS = '[Annotate] Update Annotation Objects';
+  updateAnnotationObjects(): Action {
     return {
-      type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE,
+      type: AnnotateActions.UPDATE_ANNOTATION_OBJECTS,
+      payload: {
+      }
+    }
+  }
+
+  static UPDATE_ANNOTATION_COMPLETE = '[Annotate] Update Annotation Complete';
+  updateAnnotationComplete(annotation: any): Action {
+    return {
+      type: AnnotateActions.UPDATE_ANNOTATION_COMPLETE,
       payload: {
         annotation
       }
     }
   }
 
-  static REQUEST_CHECK_TYPES = '[Annotate] Request Check Types';
-  requestCheckTypes(): Action {
+  static SET_SEMANTIC_CHECK_WEIGHT = '[Annotate] Set Semantic Check Weight';
+  setSemanticCheckWeight(check: any, value: number): Action {
     return {
-      type: AnnotateActions.REQUEST_CHECK_TYPES,
-      payload: { }
-    }
-  }
-
-  static REQUEST_CHECK_TYPES_COMPLETE = '[Annotate] Request Check Types Complete';
-  requestCheckTypesComplete(types: any[]): Action {
-    return {
-      type: AnnotateActions.REQUEST_CHECK_TYPES_COMPLETE,
+      type: AnnotateActions.SET_SEMANTIC_CHECK_WEIGHT,
       payload: {
-        types
-      }
-    }
-  }
-
-  static SET_CHECK_TYPE_WEIGHT = '[Annotate] Set Check Type Weight';
-  setWeight(type: any, value: number): Action {
-    return {
-      type: AnnotateActions.SET_CHECK_TYPE_WEIGHT,
-      payload: {
-        type,
+        check,
         value
       }
     }
   }
 
-  static TOGGLE_CHECK_TYPE_ACTIVE = '[Annotate] Set Check Type Active';
-  toggleTypeActive(type: any): Action {
+  static TOGGLE_SEMANTIC_CHECK_ACTIVE = '[Annotate] Set Semantic Check Active';
+  toggleSemanticCheckActive(check: any): Action {
     return {
-      type: AnnotateActions.TOGGLE_CHECK_TYPE_ACTIVE,
+      type: AnnotateActions.TOGGLE_SEMANTIC_CHECK_ACTIVE,
       payload: {
-        type
+        check
       }
     }
   }

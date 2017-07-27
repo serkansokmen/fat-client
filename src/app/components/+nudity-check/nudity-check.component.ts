@@ -35,6 +35,7 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // this.store.dispatch(this.actions.requestDefaultSemanticChecks());
     this.subscriptions.push(this.route.params.subscribe(params => {
       if (params.image_id) {
         this.store.dispatch(this.actions.requestImage(params.image_id));

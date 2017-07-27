@@ -53,26 +53,25 @@ export class AnnotateEffects {
         }
       }));
 
-  @Effect() savePaintImage$ = this.actions$
-    .ofType(AnnotateActions.SAVE_PAINT_IMAGE)
+  @Effect() createAnnotation$ = this.actions$
+    .ofType(AnnotateActions.CREATE_ANNOTATION)
     .withLatestFrom(this.store$, (action, state: any) => ({
       image: state.annotate.selectedImage,
       base64: action.payload.base64,
-      annotationID: state.annotate ? state.annotate.id : null,
     }))
     .switchMap(object => this.service
-      .saveAnnotation(object.image, object.base64, object.annotationID)
+      .createAnnotation(object.image, object.base64)
       .map(res => res.json())
       .catch(err => err.json()))
     .switchMap(annotation => Observable.of({
-        type: AnnotateActions.SAVE_PAINT_IMAGE_COMPLETE,
+        type: AnnotateActions.CREATE_ANNOTATION_COMPLETE,
         payload: {
           annotation
         }
       }));
 
    @Effect({ dispatch: false }) savePaintImageComplete$ = this.actions$
-    .ofType(AnnotateActions.SAVE_PAINT_IMAGE_COMPLETE)
+    .ofType(AnnotateActions.CREATE_ANNOTATION_COMPLETE)
     .withLatestFrom(this.store$, (action, state: any) => {
       return `/annotate/${state.annotate.selectedImage.id}/${state.annotate.annotation.id}/nudity-check`;
     })
@@ -91,49 +90,20 @@ export class AnnotateEffects {
         }
       }));
 
-  @Effect() requestAnnotationComplete$ = this.actions$
-    .ofType(AnnotateActions.REQUEST_ANNOTATION_COMPLETE)
-    .map(toPayload)
-    .switchMap(payload => this.service.getSemanticChecks())
-    .switchMap(result => Observable.of({
-        type: AnnotateActions.REQUEST_CHECK_TYPES_COMPLETE,
-        payload: {
-          types: result.json().results.map(result => ({
-            ...result,
-            isActive: true,
-          })),
-        }
-      }));
-
   @Effect() updateAnnotationSemanticChecks$ = this.actions$
     .ofType(AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS)
-    .withLatestFrom(this.store$, (action, state: any) => {
-      return {
-        image: state.annotate.selectedImage.id,
-        annotation: state.annotate.annotation.id,
-        checkTypes: state.annotate.checkTypes
-      }
-    })
-
-    .map(object => {
-      return `/annotate/${object.image}/${object.annotation}/object-x`;
-    })
-    .map(url => {
-      this.store$.dispatch(go([url]));
-    })
-
-    // .mergeMap(data => {
-    //   let requests = [];
-    //   for (let type of data.checkTypes) {
-    //     requests.push(this.service.updateAnnotationSemanticChecks(data.annotation.id, type.id, type.value));
-    //   }
-    //   requests.push(go([`annotate/${data.annotation.image}/${data.annotation.id}/object-x`]));
-    //   requests.push({
-    //     type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE,
-    //     payload: {}
-    //   })
-    //   return Observable.forkJoin(requests)
-    // })
+    .withLatestFrom(this.store$, (action, state: any) => ({
+      image: state.annotate.selectedImage.id,
+      annotation: state.annotate.annotation,
+      semantic_checks: state.annotate.defaultSemanticChecks,
+    }))
+    .switchMap(data => this.service.updateAnnotation(
+      data.annotation, data.image))
+    .map(response => response.json())
+    .map(result => {
+      let url = `/annotate/${result.image}/${result.annotation}/object-x`;
+      return this.store$.dispatch(go([url]));
+    });
     // .map(results => {
     //   console.log(results);
     //   return results[results.length - 1];
@@ -145,7 +115,7 @@ export class AnnotateEffects {
     // // .map(toPayload)
     // // .switchMap(payload => )
     // .switchMap(annotation => Observable.of({
-    //     type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS_COMPLETE,
+    //     type: AnnotateActions.UPDATE_ANNOTATION_COMPLETE,
     //     payload: {
     //       annotation
     //     }
