@@ -1,14 +1,14 @@
 <md-sidenav-container>
   <md-sidenav #nav mode="side" opened="true">
-    <h2>Semantic Nudity Check</h2>
+    <h2>Semantics</h2>
     <p></p>
     <hr>
-    <div class="slider-row" *ngFor="let semanticCheck of defaultSemanticChecks">
+    <div class="slider-row" *ngFor="let semanticCheck of semanticChecks">
       <md-checkbox color="primary" [checked]="semanticCheck.isActive" (change)="semanticCheck.isActive = $event.checked">
         <span>{{ semanticCheck.label }}</span>
       </md-checkbox>
       <md-slider thumbLabel
-        (change)="store.dispatch(actions.setSemanticCheckWeight(check, $event.value))"
+        (change)="semanticCheck.value = $event.value"
         [disabled]="!semanticCheck?.isActive"
         [value]="semanticCheck?.value" min="0" max="100"></md-slider>
     </div>
@@ -28,7 +28,7 @@
     </button>
     <span class="spacer"></span>
     <!-- <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + '/' + (annotate$ | async)?.annotation?.id]">Cancel</button> -->
-    <button md-raised-button color="primary" [disabled]="!(annotate$ | async)?.defaultSemanticChecks" (click)="handleNext()">Save and Continue</button>
+    <button md-raised-button color="primary" (click)="handleNext()">Save and Continue</button>
   </md-toolbar>
 
 </md-sidenav-container>

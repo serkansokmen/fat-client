@@ -97,13 +97,7 @@ export class AnnotateEffects {
   //     annotation: state.annotate.annotation,
   //     semantic_checks: state.annotate.defaultSemanticChecks,
   //   }))
-  //   .switchMap(data => this.service.updateAnnotation(
-  //     data.annotation, data.image))
-  //   .map(response => response.json())
-  //   .map(result => {
-  //     let url = `/annotate/${result.image}/${result.annotation}/object-x`;
-  //     return this.store$.dispatch(go([url]));
-  //   });
+
     // .map(results => {
     //   console.log(results);
     //   return results[results.length - 1];

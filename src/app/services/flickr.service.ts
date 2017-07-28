@@ -149,17 +149,15 @@ export class FlickrService {
     return this.http.get(`${this.endpoint}semantic-checks`, this.jwt());
   }
 
-  updateAnnotation(annotation: any, imageID: number) {
+  updateAnnotation(annotation: any, semanticChecks: any[]) {
     let body = JSON.stringify({
-      image: imageID,
-      semantic_checks: annotation.semantic_checks.map(check => ({
+      semantic_checks: semanticChecks.map(check => ({
         semantic_check: check.id,
         annotation: annotation.id,
         value: check.value,
       })),
-      // objects: []
     });
-    return this.http.put(`${this.endpoint}annotations/${annotation.id}`, body, this.jwt());
+    return this.http.patch(`${this.endpoint}annotations/${annotation.id}`, body, this.jwt());
   }
 
   private jwt() {
