@@ -2,6 +2,7 @@ import { Component,
   Inject,
   ViewChild,
   ElementRef,
+  OnInit,
   AfterViewInit,
   OnDestroy,
   HostListener,
@@ -31,7 +32,7 @@ import { Image as FlickrImage } from '../../models/search.models';
   styleUrls: ['./paint-pixels.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
+export class PaintPixelsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
   artboard$: Observable<ArtboardState>;
@@ -100,6 +101,10 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
   private refreshHistoryCounts() {
     this.undoCount = this.undoItems.length;
     this.repeatCount = this.repeatItems.length;
+  }
+
+  ngOnInit() {
+
   }
 
   ngAfterViewInit() {
@@ -217,7 +222,7 @@ export class PaintPixelsComponent implements AfterViewInit, OnDestroy {
       const zoom = this.canvas.getZoom();
       this.canvas.setZoom(1.0);
       this.annotateStore.dispatch(
-        this.annotateActions.savePaintImage(
+        this.annotateActions.createAnnotation(
           this.canvas.toDataURL({
             format: 'png',
             left: 0,

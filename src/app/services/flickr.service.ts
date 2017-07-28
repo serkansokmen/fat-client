@@ -136,30 +136,28 @@ export class FlickrService {
     return this.http.get(url, this.jwt());
   }
 
-  saveAnnotation(image: FlickrImage, base64: string, annotationID: number = null) {
+  createAnnotation(image: FlickrImage, base64: string, semanticChecks: any[] = []) {
     let body = JSON.stringify({
       image: image.id,
       paint_image: base64,
+      semantic_checks: semanticChecks,
     });
-    if (annotationID == null) {
-      return this.http.post(`${this.endpoint}annotations`, body, this.jwt());
-    } else {
-      return this.http.put(`${this.endpoint}annotations/${annotationID}`, body, this.jwt());
-    }
+    return this.http.post(`${this.endpoint}annotations`, body, this.jwt());
   }
 
-  getSemanticChecks() {
-    return this.http.get(`${this.endpoint}semantic-check-types`, this.jwt());
+  getDefaultSemanticChecks() {
+    return this.http.get(`${this.endpoint}semantic-checks`, this.jwt());
   }
 
-  updateAnnotationSemanticChecks(annotationID: number, semanticCheckID: number, value: number) {
+  updateAnnotation(annotation: any, semanticChecks: any[]) {
     let body = JSON.stringify({
-      annotation: annotationID,
-      semantic_check: semanticCheckID,
-      value: value * 0.01,
+      semantic_checks: semanticChecks.map(check => ({
+        semantic_check: check.id,
+        annotation: annotation.id,
+        value: check.value,
+      })),
     });
-    console.log(body);
-    return this.http.post(`${this.endpoint}semantic-checks`, body, this.jwt());
+    return this.http.patch(`${this.endpoint}annotations/${annotation.id}`, body, this.jwt());
   }
 
   private jwt() {
