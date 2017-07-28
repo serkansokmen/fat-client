@@ -10,6 +10,7 @@ import { Component,
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { go } from '@ngrx/router-store';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
 import { FlickrService } from '../../services/flickr.service';
@@ -27,7 +28,7 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
   private subscriptions: any[] = [];
   private selectedImage: any;
   private annotation: any;
-  private semanticChecks: any[];
+  public semanticChecks: any[];
 
   constructor(
     public store: Store<AnnotateState>,
@@ -72,8 +73,10 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
     // dispatch udpate annotation action
     this.service
       .updateAnnotation(this.annotation, this.semanticChecks)
-      .subscribe(result => {
-        console.log(result.json());
+      .subscribe(response => {
+        const result = response.json();
+        let url = `/annotate/${result.image}/${result.id}/object-x`;
+        this.store.dispatch(go([url]));
       });
     // .map(response => response.json())
     // .map(result => {

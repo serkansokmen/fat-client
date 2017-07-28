@@ -139,6 +139,7 @@ export class PaintPixelsComponent implements OnInit, AfterViewInit, OnDestroy {
       width: window.innerWidth,
       height: window.innerHeight - 130});
     this.canvas.renderAll();
+    this.fabricImage = null;
 
     fabric.Image.fromURL(image.flickr_url, (img) => {
       img.lockRotation = true;
