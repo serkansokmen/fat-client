@@ -72,7 +72,7 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
   handleNext() {
     // dispatch udpate annotation action
     this.service
-      .updateAnnotation(this.annotation, this.semanticChecks.filter(c => c.isActive))
+      .updateAnnotation(this.annotation, this.semanticChecks.filter(c => c.isActive), [])
       .subscribe(response => {
         const result = response.json();
         let url = `/annotate/${result.image}/${result.id}/object-x`;

@@ -25,6 +25,7 @@ import { ObjectXState } from '../../reducers/object-x.reducer';
 import { ObjectXActions } from '../../actions/object-x.actions';
 import { ObjectX, ObjectXType, DrawMode } from '../../models/object-x.models';
 import { Image as FlickrImage } from '../../models/search.models';
+import { FlickrService } from '../../services/flickr.service';
 
 @Component({
   selector: 'fat-object-x',
@@ -60,6 +61,7 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
   private drawY: number;
   private fabricImage: any;
   private params: any;
+  private annotation: any;
 
   constructor(
     @Inject('Window') window: Window,
@@ -68,6 +70,7 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
     public objectXStore: Store<ObjectXState>,
     public objectXActions: ObjectXActions,
     private route: ActivatedRoute,
+    private service: FlickrService,
   )
   {
     this.annotate$ = store.select('annotate');
@@ -96,6 +99,7 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
     this.context = this.canvas.getContext('2d');
 
     const annotateSubscription = this.annotate$.subscribe(state => {
+      this.annotation = state.annotation;
       if (state.selectedImage && !this.fabricImage) {
         fabric.Image.fromURL(state.selectedImage.flickr_url, (img) => {
           this.fabricImage = img
@@ -291,13 +295,12 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   handleNext() {
-    console.log('wip');
-    // this.service
-    //   .updateAnnotation(this.annotation, this.semanticChecks)
-    //   .subscribe(response => {
-    //     const result = response.json();
-    let url = `/annotate/${this.params.image_id}/${this.params.annotation_id}/attributes`;
-    this.store.dispatch(go([url]));
-      // });
+    this.service
+      .updateAnnotation(this.annotation, [], this.objects)
+      .subscribe(response => {
+        const result = response.json();
+        let url = `/annotate/${this.params.image_id}/${this.params.annotation_id}/attributes`;
+        this.store.dispatch(go([url]));
+      });
   }
 }
