@@ -17,17 +17,22 @@
       </md-menu>
     </div>
     <hr>
-    <md-radio-group (change)="objectXStore.dispatch(objectXActions.setDrawMode($event.value))"
+    <md-button-toggle-group (change)="objectXStore.dispatch(objectXActions.setDrawMode($event.value))"
       [value]="(objectX$ | async)?.drawMode">
-      <md-radio-button color="primary" [value]="0">Add</md-radio-button>
-      <md-radio-button color="primary" [value]="2">Modify</md-radio-button>
-      <md-radio-button color="primary" [value]="1">Remove</md-radio-button>
-    </md-radio-group>
+      <md-button-toggle color="primary" [value]="0"><md-icon>add_circle_outline</md-icon> Add</md-button-toggle>
+      <md-button-toggle color="primary" [value]="1"><md-icon>remove_circle_outline</md-icon> Remove</md-button-toggle>
+      <md-button-toggle color="primary" [value]="2"><md-icon>open_with</md-icon> Move</md-button-toggle>
+    </md-button-toggle-group>
     <!-- <hr>
     <md-slide-toggle [checked]="(objectX$ | async)?.isShowingOriginal"
       (change)="objectXStore.dispatch(objectXActions.setIsShowingOriginal($event.checked))">
       {{ (objectX$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
     </md-slide-toggle> -->
+    <hr>
+    <div>
+      Zoom <md-slider color="primary" thumbLabel (change)="objectXStore.dispatch(objectXActions.setZoom($event.value))"
+      [value]="(objectX$ | async)?.zoom" step="0.1" min="1" max="4"></md-slider>
+    </div>
     <hr>
     <div *ngFor="let type of (objectX$ | async)?.objectTypes">
       <md-checkbox color="primary" *ngIf="getTypeCount(type) > 0"

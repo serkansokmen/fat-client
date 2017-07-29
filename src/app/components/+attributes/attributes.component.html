@@ -1,39 +1,46 @@
-<div class="row">
-  <h2>Gender and Age Group</h2>
-  <p>Please select gender and age group for each of the objects. You can edit and remove later by selecting from the options.</p>
-  <div class="col-xs-12 col-sm-3" *ngIf="(objectX$ | async)?.objects.length > 0 && !(objectX$ | async)?.selectedObject">
-    Please select one of the {{ (objectX$ | async)?.selectedObjectType?.pluralName }}
-  </div>
-  <div class="col-xs-12 col-sm-3" *ngIf="(objectX$ | async)?.selectedObject">
-    <hr>
-    <md-radio-group
-      (change)="store.dispatch(actions.setGender($event.value))"
-      [value]="(objectX$ | async)?.selectedObject?.gender">
-      <md-radio-button *ngFor="let gender of (objectX$ | async)?.genders" [value]="gender">{{ gender.toString() }}</md-radio-button>
-    </md-radio-group>
-    <hr>
-    <md-radio-group
-      (change)="store.dispatch(actions.setAgeGroup($event.value))"
-      [value]="(objectX$ | async)?.selectedObject?.ageGroup">
-      <md-radio-button *ngFor="let ageGroup of (objectX$ | async)?.ageGroups" [value]="ageGroup">{{ ageGroup.toString() }}</md-radio-button>
-    </md-radio-group>
-    <hr>
-    <div>
-      <label>{{ (objectX$ | async)?.selectedObject?.guid }}</label>
-      Gender: {{ (objectX$ | async)?.selectedObject?.gender }} <br>
-      Age Group: {{ (objectX$ | async)?.selectedObject?.ageGroup }} <br>
+<md-sidenav-container>
+  <md-sidenav #nav mode="side" opened="true">
+    <div *ngIf="(objectX$ | async)?.selectedObject">
+      <md-button-toggle-group
+        (change)="store.dispatch(actions.setGender($event.value))"
+        [value]="(objectX$ | async)?.selectedObject?.gender">
+        <md-button-toggle *ngFor="let gender of (objectX$ | async)?.genders" [value]="gender">{{ gender.toString() }}</md-button-toggle>
+      </md-button-toggle-group>
+      <hr>
+      <md-button-toggle-group
+        (change)="store.dispatch(actions.setAgeGroup($event.value))"
+        [value]="(objectX$ | async)?.selectedObject?.ageGroup">
+        <md-button-toggle *ngFor="let ageGroup of (objectX$ | async)?.ageGroups" [value]="ageGroup">{{ ageGroup.toString() }}</md-button-toggle>
+      </md-button-toggle-group>
+      <hr>
+      <div>
+        <label>{{ (objectX$ | async)?.selectedObject?.guid }}</label>
+        Gender: {{ (objectX$ | async)?.selectedObject?.gender }} <br>
+        Age Group: {{ (objectX$ | async)?.selectedObject?.ageGroup }} <br>
+      </div>
+      <hr>
+      <md-slide-toggle [checked]="(objectX$ | async)?.isShowingOriginal"
+        (change)="store.dispatch(actions.setIsShowingOriginal($event.checked))">
+        {{ (objectX$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
+      </md-slide-toggle>
+      <hr>
     </div>
-    <hr>
-    <md-slide-toggle [checked]="(objectX$ | async)?.isShowingOriginal"
-      (change)="store.dispatch(actions.setIsShowingOriginal($event.checked))">
-      {{ (objectX$ | async)?.isShowingOriginal ? 'Original Visible' : 'Original Hidden' }}
-    </md-slide-toggle>
-    <hr>
-  </div>
+  </md-sidenav>
+
   <div class="col-xs-12 col-sm-9" [style.display]="(objectX$ | async)?.objects.length > 0 ? 'block' : 'none'">
     <div class="draw-view">
       <canvas #bgCanvas class="background" [style.display]="(objectX$ | async)?.isShowingOriginal ? 'block' : 'none'"></canvas>
       <canvas #drawCanvas></canvas>
     </div>
   </div>
-</div>
+
+  <md-toolbar color="accent">
+    <button md-icon-button (click)="nav.toggle()">
+      <md-icon fontSet="fontawesome" fontIcon="fa-sliders"></md-icon>
+    </button>
+    <span class="spacer"></span>
+    <!-- <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + '/' + (annotate$ | async)?.annotation?.id]">Cancel</button> -->
+    <button md-raised-button color="primary" (click)="handleNext()">Save and Continue</button>
+  </md-toolbar>
+
+</md-sidenav-container>

@@ -17,6 +17,16 @@ export class ObjectXActions {
     }
   }
 
+  static SET_ZOOM = '[ObjectX] Set Zoom';
+  setZoom(zoom: number): Action {
+    return {
+      type: ObjectXActions.SET_ZOOM,
+      payload: {
+        zoom
+      }
+    }
+  }
+
   static SELECT_OBJECT = '[ObjectX] Select Object';
   selectObject(object: ObjectX): Action {
     return {

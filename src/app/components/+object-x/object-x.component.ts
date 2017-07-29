@@ -1,4 +1,5 @@
 import { Component,
+  Inject,
   Input,
   ViewChild,
   ElementRef,
@@ -17,6 +18,7 @@ import {
 } from 'fabric';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { go } from '@ngrx/router-store';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
 import { ObjectXState } from '../../reducers/object-x.reducer';
@@ -40,6 +42,14 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('drawCanvas') drawCanvas: ElementRef;
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.canvas.setDimensions({
+      width: event.target.innerWidth,
+      height: event.target.innerHeight - 130});
+    this.canvas.renderAll();
+  }
+
   private canvas: Canvas;
   private context: CanvasRenderingContext2D;
   private subscriptions: any[] = [];
@@ -49,8 +59,10 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
   private drawX: number;
   private drawY: number;
   private fabricImage: any;
+  private params: any;
 
   constructor(
+    @Inject('Window') window: Window,
     public store: Store<AnnotateState>,
     public actions: AnnotateActions,
     public objectXStore: Store<ObjectXState>,
@@ -66,6 +78,7 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(this.route.params.subscribe(params => {
+      this.params = params;
       if (params.image_id) {
         this.store.dispatch(this.actions.requestImage(params.image_id));
       }
@@ -90,8 +103,9 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
           img.lockUniScaling = true;
           this.canvas.setBackgroundImage(img,
             this.canvas.renderAll.bind(this.canvas));
-          this.canvas.setWidth(img.width);
-          this.canvas.setHeight(img.height);
+          this.canvas.setDimensions({
+            width: window.innerWidth,
+            height: window.innerHeight - 130});
         });
         this.objectXStore.dispatch(this.objectXActions.setDrawMode(DrawMode.add));
       }
@@ -128,6 +142,7 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
       if (state.selectedObject) {
         this.canvas.setActiveObject(state.selectedObject.graphics);
       }
+      this.canvas.setZoom(state.zoom);
       this.canvas.renderAll();
 
       switch (state.drawMode) {
@@ -277,5 +292,12 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
 
   handleNext() {
     console.log('wip');
+    // this.service
+    //   .updateAnnotation(this.annotation, this.semanticChecks)
+    //   .subscribe(response => {
+    //     const result = response.json();
+    let url = `/annotate/${this.params.image_id}/${this.params.annotation_id}/attributes`;
+    this.store.dispatch(go([url]));
+      // });
   }
 }

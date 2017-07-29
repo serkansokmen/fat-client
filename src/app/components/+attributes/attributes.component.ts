@@ -131,4 +131,8 @@ export class AttributesComponent implements AfterViewInit, OnDestroy {
       subscription.unsubscribe();
     }
   }
+
+  handleNext() {
+    console.log('wip');
+  }
 }

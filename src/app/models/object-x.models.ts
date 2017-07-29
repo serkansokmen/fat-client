@@ -63,6 +63,7 @@ export class ObjectX {
     public ageGroup?: AgeGroup
   ) {
     this.guid = guid();
+    console.log(graphics);
   }
 }
 

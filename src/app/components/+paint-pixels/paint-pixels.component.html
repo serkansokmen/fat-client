@@ -6,7 +6,7 @@
     <p>Tools</p>
     <md-button-toggle-group name="currentTool" vertical="false"
       (change)="artboardStore.dispatch(artboardActions.selectArtboardTool($event.value))" [value]="(artboard$ | async)?.currentTool">
-      <md-button-toggle [value]="artboardTools[1]"><md-icon>mode_edit</md-icon> Lasso</md-button-toggle>
+      <md-button-toggle [value]="artboardTools[1]"><md-icon>gesture</md-icon> Lasso</md-button-toggle>
       <md-button-toggle [value]="artboardTools[2]"><md-icon>format_paint</md-icon> Brush</md-button-toggle>
     </md-button-toggle-group>
     <!-- <md-radio-group (change)="artboardStore.dispatch(artboardActions.selectArtboardTool($event.value))" [value]="(artboard$ | async)?.currentTool">
