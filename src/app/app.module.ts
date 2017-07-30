@@ -52,6 +52,7 @@ import { PaintPixelsComponent } from './components/+paint-pixels/paint-pixels.co
 import { NudityCheckComponent } from './components/+nudity-check/nudity-check.component';
 import { ObjectXComponent } from './components/+object-x/object-x.component';
 import { AttributesComponent } from './components/+attributes/attributes.component';
+import { AnnotationComplete } from './components/+annotation-complete/annotation-complete.component';
 
 import { CardListComponent } from './components/card-list/card-list.component';
 import { CardComponent } from './components/card/card.component';
@@ -71,12 +72,13 @@ export function instrumentOptions() {
     SearchComponent,
     SafeStylePipe,
     CardComponent,
+    AnnotateComponent,
     PaintPixelsComponent,
     PageNotFoundComponent,
     NudityCheckComponent,
     ObjectXComponent,
     AttributesComponent,
-    AnnotateComponent,
+    AnnotationComplete,
     CardListComponent,
   ],
   imports: [

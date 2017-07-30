@@ -13,7 +13,6 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import {
   fabric,
   Canvas,
-  StaticCanvas,
   Image
 } from 'fabric';
 import { Observable } from 'rxjs/Observable';
@@ -41,16 +40,6 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
   objects: ObjectX[];
   visibleObjectTypes: ObjectXType[];
 
-  @ViewChild('drawCanvas') drawCanvas: ElementRef;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.canvas.setDimensions({
-      width: event.target.innerWidth,
-      height: event.target.innerHeight - 130});
-    this.canvas.renderAll();
-  }
-
   private canvas: Canvas;
   private context: CanvasRenderingContext2D;
   private subscriptions: any[] = [];
@@ -62,6 +51,16 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
   private fabricImage: any;
   private params: any;
   private annotation: any;
+
+  @ViewChild('drawCanvas') drawCanvas: ElementRef;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.canvas.setDimensions({
+      width: event.target.innerWidth,
+      height: event.target.innerHeight - 130});
+    this.canvas.renderAll();
+  }
 
   constructor(
     @Inject('Window') window: Window,

@@ -42,16 +42,6 @@ export class PaintPixelsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   artboardTools = [ArtboardTool.polygon, ArtboardTool.lasso, ArtboardTool.brush];
 
-  @ViewChild('drawCanvas') drawCanvas: ElementRef;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.canvas.setDimensions({
-      width: event.target.innerWidth,
-      height: event.target.innerHeight - 130});
-    this.canvas.renderAll();
-  }
-
   private canvas: Canvas;
   private maskGroup: Group;
   private fabricImage: any;
@@ -61,6 +51,16 @@ export class PaintPixelsComponent implements OnInit, AfterViewInit, OnDestroy {
   private resultSubject = new Subject<any>();
   private undoItems: any[] = [];
   private repeatItems: any[] = [];
+
+  @ViewChild('drawCanvas') drawCanvas: ElementRef;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.canvas.setDimensions({
+      width: event.target.innerWidth,
+      height: event.target.innerHeight - 130});
+    this.canvas.renderAll();
+  }
 
   constructor(
     @Inject('Window') window: Window,

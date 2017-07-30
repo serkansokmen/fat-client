@@ -1,0 +1,50 @@
+:host {
+  .slider-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    md-slider {
+      width: 100%;
+    }
+  }
+  .draw-view {
+
+    .info {
+      position: absolute;
+      background: rgba(255,255,255,0.75);
+      padding: 25px;
+      border-radius: 12px;
+    }
+  }
+
+  .image-container {
+    position: relative;
+    min-width: 320px;
+    min-height: 320px;
+    width: 100%;
+    height: 100%;
+    max-width: 800px;
+    max-height: 800px;
+
+    .original,
+    .skin-pixels {
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center center;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+    .original {
+
+    }
+    .skin-pixels {
+      opacity: 0.5;
+    }
+  }
+}

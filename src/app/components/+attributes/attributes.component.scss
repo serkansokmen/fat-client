@@ -1,0 +1,12 @@
+:host {
+  .draw-view.no-faces {
+    .canvas-container,
+    .lower-canvas,
+    .upper-canvas {
+      opacity: 0.5 !important;
+    }
+    .warning {
+      position: absolute;
+    }
+  }
+}

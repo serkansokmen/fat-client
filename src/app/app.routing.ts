@@ -6,6 +6,7 @@ import { PaintPixelsComponent } from './components/+paint-pixels/paint-pixels.co
 import { NudityCheckComponent } from './components/+nudity-check/nudity-check.component';
 import { ObjectXComponent } from './components/+object-x/object-x.component';
 import { AttributesComponent } from './components/+attributes/attributes.component';
+import { AnnotationComplete } from './components/+annotation-complete/annotation-complete.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { AuthGuard } from './guards/auth.guard';
 
@@ -17,8 +18,9 @@ const appRoutes: Routes = [
     { path: 'annotate/:image_id/new', component: PaintPixelsComponent, canActivate: [ AuthGuard ] },
     { path: 'annotate/:image_id/:annotation_id', component: PaintPixelsComponent, canActivate: [ AuthGuard ] },
     { path: 'annotate/:image_id/:annotation_id/nudity-check', component: NudityCheckComponent },
-    { path: 'annotate/:image_id/:annotation_id/object-x', component: ObjectXComponent },
+    { path: 'annotate/:image_id/:annotation_id/objects', component: ObjectXComponent },
     { path: 'annotate/:image_id/:annotation_id/attributes', component: AttributesComponent },
+    { path: 'annotate/:image_id/:annotation_id/complete', component: AnnotationComplete },
     { path: '404', component: PageNotFoundComponent },
     { path: '', pathMatch: 'full', redirectTo: '/search' },
     { path: '**', pathMatch: 'full', redirectTo: '/404' },
