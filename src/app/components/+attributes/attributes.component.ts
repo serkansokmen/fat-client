@@ -130,7 +130,6 @@ export class AttributesComponent implements OnInit, AfterViewInit, OnDestroy {
         graphics.lockScalingY = true;
         graphics.lockScalingY = true;
         graphics.lockUniScaling = true;
-        graphics.selectable = false;
         if (face == state.selectedObject) {
           this.canvas.setActiveObject(face.graphics);
         }
