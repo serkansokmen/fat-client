@@ -43,20 +43,19 @@ import { annotateReducer } from './reducers/annotate.reducer';
 import { cardLayoutReducer } from './reducers/card-layout.reducer';
 import { artboardReducer } from './reducers/artboard.reducer';
 import { objectXReducer } from './reducers/object-x.reducer';
-import { nudityCheckReducer } from './reducers/nudity-check.reducer';
 
 // Components
 import { LoginComponent } from './components/+login/login.component';
 import { SearchComponent } from './components/+search/search.component';
 import { AnnotateComponent } from './components/+annotate/annotate.component';
-import { SkinPixelsComponent } from './components/+skin-pixels/skin-pixels.component';
+import { PaintPixelsComponent } from './components/+paint-pixels/paint-pixels.component';
 import { NudityCheckComponent } from './components/+nudity-check/nudity-check.component';
 import { ObjectXComponent } from './components/+object-x/object-x.component';
 import { AttributesComponent } from './components/+attributes/attributes.component';
+import { AnnotationComplete } from './components/+annotation-complete/annotation-complete.component';
 
 import { CardListComponent } from './components/card-list/card-list.component';
 import { CardComponent } from './components/card/card.component';
-import { AnnotateStepsComponent } from './components/annotate-steps/annotate-steps.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
 
@@ -73,13 +72,13 @@ export function instrumentOptions() {
     SearchComponent,
     SafeStylePipe,
     CardComponent,
-    SkinPixelsComponent,
+    AnnotateComponent,
+    PaintPixelsComponent,
     PageNotFoundComponent,
     NudityCheckComponent,
     ObjectXComponent,
     AttributesComponent,
-    AnnotateStepsComponent,
-    AnnotateComponent,
+    AnnotationComplete,
     CardListComponent,
   ],
   imports: [
@@ -99,7 +98,6 @@ export function instrumentOptions() {
       router: routerReducer,
       artboard: artboardReducer,
       objectX: objectXReducer,
-      nudityCheck: nudityCheckReducer,
     }),
     RouterStoreModule.connectRouter(),
     EffectsModule.runAfterBootstrap(AuthEffects),

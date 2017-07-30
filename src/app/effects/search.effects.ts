@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, toPayload } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import { Image, License, ImageState } from '../models/search.models';
+import { Image, License } from '../models/search.models';
 import { SearchActions } from '../actions/search.actions';
 import { FlickrService } from '../services/flickr.service';
 import { SearchState } from '../reducers/search.reducer';
@@ -28,22 +28,10 @@ export class SearchEffects {
     private router: Router,
   ) { }
 
-  @Effect() errorStatus401$ = this.actions$
-    .map(action => action.payload)
-    .filter(payload => payload && payload.errorStatus === 401)
-    .switchMap(payload => {
-        this.router.navigate(['/login']);
-        return Observable.empty();
-    });
-
   @Effect() searchPage$ = this.actions$
     .ofType(SearchActions.REQUEST_SEARCH)
     .map(toPayload)
-    .switchMap(payload => this.service.search(
-      payload.search,
-      payload.licenses,
-      payload.perpage,
-      payload.page))
+    .switchMap(payload => this.service.search(payload))
     .switchMap(result => Observable.of({
         type: SearchActions.REQUEST_SEARCH_COMPLETE,
         payload: {

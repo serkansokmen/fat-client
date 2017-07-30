@@ -22,9 +22,11 @@ export class FlickrService {
     this.endpoint = environment.apiURL;
   }
 
-  search(search: any, licenses: License[], perpage: number, page: number): Observable<any> {
+  search(payload: any): Observable<any> {
 
-    let url = `${this.endpoint}flickr/` +
+    const { search, licenses, perpage, page } = payload;
+
+    let url = `${this.endpoint}flickr` +
       `?licenses=${licenses.map(license => license.id).sort().join(',')}` +
       `${search.userID ? '&user_id=' + search.userID : ''}` +
       `&tags=${search.tags.split(',').map(str => str.trim()).join(',')}` +
@@ -61,20 +63,20 @@ export class FlickrService {
         return {
           ...image,
           license: image.license.id,
-          state: image.state ? image.state.value : ImageState.indeterminate.value
+          state: image.state ? image.state.value : ImageState.selected.value
         }
       })
     });
 
     if (search.id == null) {
-      return this.http.post(`${this.endpoint}flickr/`, body, this.jwt())
+      return this.http.post(`${this.endpoint}flickr`, body, this.jwt())
         .catch(error => {
           console.error('Error at search', error);
           return Observable.empty();
         })
         .map((response: Response) => response.json())
     } else {
-      return this.http.put(`${this.endpoint}flickr/`, body, this.jwt())
+      return this.http.put(`${this.endpoint}flickr`, body, this.jwt())
         .catch(error => {
           console.error('Error at search', error);
           return Observable.empty();
@@ -106,8 +108,8 @@ export class FlickrService {
       .switchMap(result => Observable.of(result.results.map(search => ({ id: search.id, tags: search.tags }))));
   }
 
-  getImages(state: ImageState) {
-    let url = `${this.endpoint}images/?state=${state.value}`;
+  getImages(annotatedOnly: boolean) {
+    let url = annotatedOnly ? `${this.endpoint}images?annotated_only=true` : `${this.endpoint}images`;
     return this.http.get(url, this.jwt())
       .map(res => res.json())
       .map((result: any) => {
@@ -124,17 +126,49 @@ export class FlickrService {
       });
   }
 
-  getImage(id: number) {
-    let url = `${this.endpoint}images/${id}/`;
+  getImage(id: number, annotatedOnly: boolean) {
+    let url = `${this.endpoint}images/${id}`;
     return this.http.get(url, this.jwt());
   }
 
-  saveSkinPixels(image: FlickrImage, base64: string) {
+  getAnnotation(id: number) {
+    let url = `${this.endpoint}annotations/${id}`;
+    return this.http.get(url, this.jwt());
+  }
+
+  createAnnotation(image: FlickrImage, base64: string, semanticChecks: any[] = []) {
     let body = JSON.stringify({
       image: image.id,
-      skin_pixels_image: base64,
+      paint_image: base64,
+      semantic_checks: semanticChecks,
     });
-    return this.http.post(`${this.endpoint}annotations/`, body, this.jwt());
+    return this.http.post(`${this.endpoint}annotations`, body, this.jwt());
+  }
+
+  getDefaultSemanticChecks() {
+    return this.http.get(`${this.endpoint}semantic-checks`, this.jwt());
+  }
+
+  updateAnnotation(annotation: any, semanticChecks: any[], markedObjects: any[]) {
+    const data: any = JSON.stringify({
+      semantic_checks: semanticChecks.map(c => ({
+        semantic_check: c.id,
+        annotation: annotation.id,
+        value: c.value,
+      })),
+      marked_objects: markedObjects.map(o => {
+        return ({
+          gender: null,
+          age_group: null,
+          object_type: o.type.id,
+          x: o.graphics.left,
+          y: o.graphics.top,
+          width: o.graphics.width,
+          height: o.graphics.height,
+        })
+      }),
+    });
+    return this.http.patch(`${this.endpoint}annotations/${annotation.id}`, data, this.jwt());
   }
 
   private jwt() {

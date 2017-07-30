@@ -11,6 +11,7 @@ const ObjectXRect = fabric.util.createClass(fabric.Rect, {
     this.callSuper('initialize', options);
     this.set('label', options.label || '');
     this.set('rectangle', options.rectangle || null);
+    console.log(options);
   },
 
   toObject: function() {

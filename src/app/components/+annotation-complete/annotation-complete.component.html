@@ -1,0 +1,17 @@
+<md-sidenav-container>
+
+  <md-sidenav #nav mode="side" opened="false"></md-sidenav>
+
+  <div class="draw-view">
+    <div class="image-container">
+      <div class="original" [style.background-image]="'url(' + (annotate$ | async)?.annotation?.image_url + ')'"></div>
+      <div class="skin-pixels" [style.background-image]="'url(' + (annotate$ | async)?.annotation?.paint_image + ')'"></div>
+    </div>
+    <div class="info">
+      <h3>Annotation completed</h3>
+      <p>You can continue annotating other images</p>
+      <button md-raised-button [routerLink]="['/annotate']">Done</button>
+    </div>
+  </div>
+
+</md-sidenav-container>

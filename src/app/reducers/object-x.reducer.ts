@@ -15,6 +15,7 @@ export interface ObjectXState {
   genders: Gender[],
   ageGroups: AgeGroup[],
   drawMode: DrawMode,
+  zoom: number,
   isShowingOriginal: boolean
 };
 
@@ -38,6 +39,7 @@ const initialState: ObjectXState = {
   genders: [Gender.male, Gender.female],
   ageGroups: [AgeGroup.child, AgeGroup.teen, AgeGroup.adult, AgeGroup.elder],
   drawMode: DrawMode.add,
+  zoom: 1.0,
   isShowingOriginal: true
 };
 
@@ -48,6 +50,12 @@ export function objectXReducer(state: ObjectXState = initialState, action: Actio
       return {
         ...state,
         backgroundImage: action.payload.image || null
+      }
+
+    case ObjectXActions.SET_ZOOM:
+      return {
+        ...state,
+        zoom: action.payload.zoom
       }
 
     case ObjectXActions.SELECT_OBJECT:

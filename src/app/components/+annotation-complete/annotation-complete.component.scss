@@ -8,6 +8,15 @@
       width: 100%;
     }
   }
+  .draw-view {
+
+    .info {
+      position: absolute;
+      background: rgba(255,255,255,0.75);
+      padding: 25px;
+      border-radius: 12px;
+    }
+  }
 
   .image-container {
     position: relative;
@@ -17,6 +26,7 @@
     height: 100%;
     max-width: 800px;
     max-height: 800px;
+
     .original,
     .skin-pixels {
       background-size: contain;

@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Image, ImageState } from '../models/search.models';
+import { Image } from '../models/search.models';
 
 
 @Injectable()
 export class AnnotateActions {
 
   static REQUEST_IMAGES = '[Annotate] Request Images';
-  requestImages(state: ImageState): Action {
+  requestImages(): Action {
     return {
       type: AnnotateActions.REQUEST_IMAGES,
       payload: {
-        state
       }
     }
   }
@@ -47,16 +46,6 @@ export class AnnotateActions {
     }
   }
 
-  static SELECT_IMAGE = '[Annotate] Select Image';
-  selectImage(image: Image): Action {
-    return {
-      type: AnnotateActions.SELECT_IMAGE,
-      payload: {
-        image
-      }
-    }
-  }
-
   static DESELECT_IMAGE = '[Annotate] Deselect Image';
   deselectImage(): Action {
     return {
@@ -65,30 +54,51 @@ export class AnnotateActions {
     }
   }
 
-  static SELECT_STEP = '[Annotate] Select Step';
-  selectStep(step: any): Action {
+  static CREATE_ANNOTATION = '[Annotate] Create Annotation';
+  createAnnotation(base64: string, semanticChecks: any[] = []): Action {
     return {
-      type: AnnotateActions.SELECT_STEP,
+      type: AnnotateActions.CREATE_ANNOTATION,
       payload: {
-        step
+        base64,
+        semanticChecks
       }
     }
   }
 
-  static SAVE_SKIN_PIXELS = '[Annotate] Save Skin Pixels';
-  saveSkinPixels(base64: string): Action {
+  static CREATE_ANNOTATION_COMPLETE = '[Annotate] Create Annotation Complete';
+  createAnnotationComplete(annotation: any): Action {
     return {
-      type: AnnotateActions.SAVE_SKIN_PIXELS,
+      type: AnnotateActions.CREATE_ANNOTATION_COMPLETE,
       payload: {
-        base64
+        annotation
       }
     }
   }
 
-  static SAVE_SKIN_PIXELS_COMPLETE = '[Annotate] Save Skin Pixels Complete';
-  saveSkinPixelsComplete(annotation: any): Action {
+  static REQUEST_ANNOTATION = '[Annotate] Request Annotation';
+  requestAnnotation(id: number): Action {
     return {
-      type: AnnotateActions.SAVE_SKIN_PIXELS_COMPLETE,
+      type: AnnotateActions.REQUEST_ANNOTATION,
+      payload: {
+        id
+      }
+    }
+  }
+
+  static REQUEST_ANNOTATION_COMPLETE = '[Annotate] Request Annotation Complete';
+  requestAnnotationComplete(annotation: any): Action {
+    return {
+      type: AnnotateActions.REQUEST_ANNOTATION_COMPLETE,
+      payload: {
+        annotation
+      }
+    }
+  }
+
+  static UPDATE_ANNOTATION_COMPLETE = '[Annotate] Update Annotation Complete';
+  updateAnnotationComplete(annotation: any): Action {
+    return {
+      type: AnnotateActions.UPDATE_ANNOTATION_COMPLETE,
       payload: {
         annotation
       }

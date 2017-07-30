@@ -1,38 +1,34 @@
 <md-sidenav-container>
   <md-sidenav #nav mode="side" opened="true">
-    <h2 [innerHTML]="(annotate$ | async)?.selectedStep?.title"></h2>
-    <p [innerHTML]="(annotate$ | async)?.selectedStep?.description"></p>
+    <h2>Semantics</h2>
+    <p></p>
     <hr>
-    <div class="slider-row" *ngFor="let type of (nudityCheck$ | async).checkTypes">
-      <md-checkbox [checked]="type?.isActive" (change)="store.dispatch(actions.toggleTypeActive(type))">
-        <span>{{ type?.label }}</span>
+    <div class="slider-row" *ngFor="let semanticCheck of semanticChecks">
+      <md-checkbox color="primary" [checked]="semanticCheck.isActive" (change)="semanticCheck.isActive = $event.checked">
+        <span>{{ semanticCheck.label }}</span>
       </md-checkbox>
       <md-slider thumbLabel
-        (change)="store.dispatch(actions.setWeight(type, $event.value))"
-        [disabled]="!type?.isActive"
-        [value]="type?.weight" min="0" max="100"></md-slider>
-      <hr>
+        (change)="semanticCheck.value = $event.value"
+        [disabled]="!semanticCheck?.isActive"
+        [value]="semanticCheck?.value" min="0" max="100"></md-slider>
     </div>
+    <hr>
   </md-sidenav>
 
   <div class="draw-view">
-    <img [src]="(annotate$ | async)?.selectedImage?.image"/>
+    <div class="image-container">
+      <div class="original" [style.background-image]="'url(' + (annotate$ | async)?.annotation?.image_url + ')'"></div>
+      <div class="skin-pixels" [style.background-image]="'url(' + (annotate$ | async)?.annotation?.paint_image + ')'"></div>
+    </div>
   </div>
 
-  <md-toolbar>
+  <md-toolbar color="accent">
     <button md-icon-button (click)="nav.toggle()">
       <md-icon fontSet="fontawesome" fontIcon="fa-sliders"></md-icon>
     </button>
     <span class="spacer"></span>
-    <button md-button [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + (annotate$ | async)?.steps[0]?.routePath]" color="accent">
-      <md-icon fontSet="fontawesome" fontIcon="fa-chevron-left"></md-icon> Back
-    </button>
-    <button md-button [routerLink]="['/annotate']" color="warn">
-      <md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon> Cancel
-    </button>
-    <button md-button color="primary" (click)="handleNext()">
-      <md-icon fontSet="fontawesome" fontIcon="fa-chevron-right"></md-icon> Next
-    </button>
+    <!-- <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + '/' + (annotate$ | async)?.annotation?.id]">Cancel</button> -->
+    <button md-raised-button color="primary" (click)="handleNext()">Save and Continue</button>
   </md-toolbar>
 
 </md-sidenav-container>
