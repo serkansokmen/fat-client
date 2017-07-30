@@ -6,7 +6,8 @@
     "ng": "ng",
     "start": "ng serve",
     "start:hmr": "ng serve --hmr -e=hmr",
-    "build": "ng build -prod",
+    "build:staging": "ng build --prod --e=staging --op=dist-staging",
+    "build:prod": "ng build --prod --e=prod --op=dist-prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
