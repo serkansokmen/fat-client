@@ -110,12 +110,14 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         isRequesting: true
       };
 
-    case SearchActions.SAVE_SEARCH_COMPLETE:
-      return {
-        ...state,
-        isRequesting: false,
-        images: action.payload.newImages
-      };
+    // case SearchActions.SAVE_SEARCH_COMPLETE:
+    //   return {
+    //     ...state,
+    //     isRequesting: false,
+    //     images: action.payload.newImages,
+    //     total: action.payload.total,
+    //     left: action.payload.left,
+    //   };
 
     default: {
       return state;

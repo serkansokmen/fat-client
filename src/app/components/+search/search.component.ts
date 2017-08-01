@@ -75,6 +75,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.selectedLicenses = state.selectedLicenses;
       this.images = state.images;
       this.currentPerPage = state.perpage;
+      this.currentPage = state.page;
 
     });
 
@@ -157,14 +158,18 @@ export class SearchComponent implements OnInit, OnDestroy {
         ...image,
         state: ImageState.discarded
       })),
-      this.selectedLicenses));
+      this.selectedLicenses,
+      this.currentPerPage,
+      this.currentPage));
   }
 
   handleSave(event) {
     this.store.dispatch(this.searchActions.saveSearch(
       this.form.value,
       this.images,
-      this.selectedLicenses));
+      this.selectedLicenses,
+      this.currentPerPage,
+      this.currentPage));
   }
 
 }
