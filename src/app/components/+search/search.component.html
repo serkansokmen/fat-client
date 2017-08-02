@@ -43,7 +43,7 @@
         <md-list-item><md-icon fontSet="fontawesome" fontIcon="fa-check"></md-icon><button md-button (click)="handleSelectAll()" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0 || (state$ | async)?.allSelected">Select All</button></md-list-item>
         <md-list-item><md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon><button md-button (click)="handleDeselectAll()" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0 || (state$ | async)?.allDiscarded">Deselect All</button></md-list-item>
         <md-list-item><md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon><button md-button color="primary" type="submit" [disabled]="(state$ | async)?.isRequesting">Search</button></md-list-item>
-        <md-list-item><md-icon fontSet="fontawesome" fontIcon="fa-minus-circle"></md-icon><button md-button color="warn" (click)="handleDiscardAll()" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0">Discard all</button></md-list-item>
+        <!-- <md-list-item><md-icon fontSet="fontawesome" fontIcon="fa-minus-circle"></md-icon><button md-button color="warn" (click)="handleDiscardAll()" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0">Discard all</button></md-list-item> -->
       </md-list>
       <hr>
       <p><button md-raised-button color="primary" type="button" (click)="handleSave()" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Save & Next</button></p>
