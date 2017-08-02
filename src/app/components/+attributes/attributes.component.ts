@@ -89,6 +89,8 @@ export class AttributesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.context = this.canvas.getContext('2d');
 
     const annotateSubscription = this.annotate$.subscribe(state => {
+      this.canvas.clear();
+      this.canvas.renderAll();
       this.annotation = state.annotation;
       if (state.selectedImage && !this.fabricImage) {
         fabric.Image.fromURL(state.selectedImage.flickr_url, (img) => {

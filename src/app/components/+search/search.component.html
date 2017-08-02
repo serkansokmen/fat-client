@@ -90,6 +90,6 @@
   <fat-card-list *ngIf="!(state$ | async)?.isRequesting"
       [images]="images"
       [cardOptions]="(cardLayout$ | async)?.cardLayoutOptions"
-      (onCardClick)="handleImageDiscarded($event)"></fat-card-list>
+      (onCardClick)="handleToggleImageSelected($event)"></fat-card-list>
 
 </md-sidenav-container>

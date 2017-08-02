@@ -89,10 +89,10 @@ export class SearchActions {
     }
   }
 
-  static TOGGLE_IMAGE_DISCARDED = '[Search] Toggle Image Discarded';
-  toggleImageDiscarded(image: Image): Action {
+  static TOGGLE_IMAGE_SELECTED = '[Search] Toggle Image Selected';
+  toggleImageSelected(image: Image): Action {
     return {
-      type: SearchActions.TOGGLE_IMAGE_DISCARDED,
+      type: SearchActions.TOGGLE_IMAGE_SELECTED,
       payload: {
         image,
       }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
@@ -106,8 +106,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  handleImageDiscarded(image) {
-    this.store.dispatch(this.searchActions.toggleImageDiscarded(image));
+  handleToggleImageSelected(image: Image) {
+    this.store.dispatch(this.searchActions.toggleImageSelected(image));
   }
 
   handleSearch() {
