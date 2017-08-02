@@ -110,12 +110,12 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         allDiscarded: true,
       }
 
-    case SearchActions.TOGGLE_IMAGE_DISCARDED:
-      let newImages = state.images.map(image => image.id != action.payload.image.id ?
-        image : new Image({
+    case SearchActions.TOGGLE_IMAGE_SELECTED:
+      var newImages = state.images.map(image => image.id == action.payload.image.id ?
+        new Image({
           ...image,
-          state: image.state == ImageState.discarded ? ImageState.selected : ImageState.discarded
-        }));
+          state: image.state && image.state.value == ImageState.discarded.value ? ImageState.selected : ImageState.discarded
+        }) : image);
       return {
         ...state,
         isRequesting: false,

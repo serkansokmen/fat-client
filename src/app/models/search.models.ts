@@ -82,7 +82,7 @@ export class Image {
     this.isPublic = data.isPublic;
     this.isFriend = data.isFriend;
     this.isFamily = data.isFamily;
-    this.state = data.state;
+    this.state = data.state || ImageState.selected;
     this.image = data.image;
     this.flickr_thumbnail = data.flickr_thumbnail;
     this.flickr_url = data.flickr_url;
