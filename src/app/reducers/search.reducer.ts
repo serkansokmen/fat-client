@@ -37,7 +37,7 @@ const initialState: SearchState = {
   images: [],
   tagModes: ['all', 'any'],
   licenses: License.availableLicenses,
-  perpage: 10,
+  perpage: 25,
   page: 1,
   left: 0,
   total: 0,

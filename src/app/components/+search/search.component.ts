@@ -61,7 +61,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       tags: ['train,-child', Validators.required],
       userID: [''],
       tagMode: ['all', Validators.required],
-      perpage: [10, Validators.required],
+      perpage: [25, Validators.required],
       page: [1, Validators.required],
     });
     this.store.dispatch(this.cardLayoutActions.setActionsVisible(true));
@@ -92,7 +92,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       if (params.slug) {
         // console.log(params.slug);
       }
-      this.handleSearch(null);
+      this.handleSearch();
       this.store.dispatch(this.cardLayoutActions.selectViewMode(CardLayoutOptions.thumbs));
     });
 
@@ -110,7 +110,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.searchActions.toggleImageDiscarded(image));
   }
 
-  handleSearch(event) {
+  handleSearch() {
     if (!this.form.value) {
       return;
     }
@@ -159,7 +159,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.searchActions.deselectAllImages());
   }
 
-  handleDiscardAll(event) {
+  handleDiscardAll() {
     this.store.dispatch(this.searchActions.saveSearch(
       this.form.value,
       this.images.map(image => new Image({
@@ -171,7 +171,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.currentPage));
   }
 
-  handleSave(event) {
+  handleSave() {
     this.store.dispatch(this.searchActions.saveSearch(
       this.form.value,
       this.images,
