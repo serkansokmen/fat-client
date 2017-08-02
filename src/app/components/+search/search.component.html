@@ -1,6 +1,6 @@
 <md-sidenav-container [class.is-loading]="(state$ | async)?.isRequesting">
   <md-sidenav #sidenav mode="side" opened="true">
-    <form [formGroup]="form" (ngSubmit)="licensesPanel.close(); handleSearch($event)" novalidate>
+    <form [formGroup]="form" (ngSubmit)="licensesPanel.close(); handleSearch()" novalidate>
       <md-input-container>
         <input [autocomplete]="'off'" mdInput formControlName="tags" type="text" placeholder="Tags"/>
       </md-input-container>
@@ -30,18 +30,23 @@
             <mat-panel-title>Licenses</mat-panel-title>
           </md-expansion-panel-header>
           <div class="licenses" *ngFor="let license of (state$ | async)?.licenses">
-            <md-checkbox [checked]="isLicenseSelected(license)" (change)="handleToggleLicense(license, $event?.checked)">
+            <md-checkbox color="primary" [checked]="isLicenseSelected(license)" (change)="handleToggleLicense(license, $event?.checked)">
               {{ license?.name }}
             </md-checkbox>
           </div>
         </md-expansion-panel>
       </div>
-      <div class="form-controls">
-        <p><button md-button color="accent" type="submit" [disabled]="(state$ | async)?.isRequesting"><md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon> Search</button></p>
-        <!-- <p><button md-button color="accent" type="button" (click)="handleToggleSelectAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-check"></md-icon> Select All</button></p> -->
-        <p><button md-button color="warn" type="button" (click)="handleDiscardAll($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-minus-circle"></md-icon> Discard all</button></p>
-        <p><button md-raised-button color="primary" type="button" (click)="handleSave($event)" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Save & Next</button></p>
-      </div>
+      <hr>
+      <md-list [ngStyle]="{
+        'opacity': (state$ | async)?.isRequesting || (state$ | async)?.images.length == 0 ? 0.5 : 1.0
+      }">
+        <md-list-item><md-icon fontSet="fontawesome" fontIcon="fa-check"></md-icon><button md-button (click)="handleSelectAll()" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0 || (state$ | async)?.allSelected">Select All</button></md-list-item>
+        <md-list-item><md-icon fontSet="fontawesome" fontIcon="fa-close"></md-icon><button md-button (click)="handleDeselectAll()" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0 || (state$ | async)?.allDiscarded">Deselect All</button></md-list-item>
+        <md-list-item><md-icon fontSet="fontawesome" fontIcon="fa-search"></md-icon><button md-button color="primary" type="submit" [disabled]="(state$ | async)?.isRequesting">Search</button></md-list-item>
+        <md-list-item><md-icon fontSet="fontawesome" fontIcon="fa-minus-circle"></md-icon><button md-button color="warn" (click)="handleDiscardAll()" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0">Discard all</button></md-list-item>
+      </md-list>
+      <hr>
+      <p><button md-raised-button color="primary" type="button" (click)="handleSave()" [disabled]="(state$ | async)?.isRequesting || (state$ | async)?.images.length == 0"><md-icon fontSet="fontawesome" fontIcon="fa-save"></md-icon> Save & Next</button></p>
     </form>
   </md-sidenav>
 
@@ -64,7 +69,7 @@
     </button>
     <md-button-toggle-group #viewMode="mdButtonToggleGroup" (change)="handleViewMode($event)">
       <md-button-toggle *ngFor="let viewMode of (cardLayout$ | async)?.viewModes" [value]="viewMode"
-        [checked]="(cardLayout$ | async)?.currentViewMode.id == viewMode?.id">
+        [checked]="(cardLayout$ | async)?.cardLayoutOptions.id == viewMode?.id">
         <md-icon fontSet="fontawesome" fontIcon="fa-{{ viewMode?.iconName }}"></md-icon>
       </md-button-toggle>
     </md-button-toggle-group>
@@ -76,7 +81,7 @@
       [min]="20"
       [step]="10"
       [thumb-label]="false"
-      [value]="(cardLayout$ | async)?.currentViewMode.cardScale"
+      [value]="(cardLayout$ | async)?.cardLayoutOptions.cardScale"
       [vertical]="false"
       [invert]="true"
       (input)="handleThumbnailScale($event)"></md-slider>
@@ -84,7 +89,7 @@
 
   <fat-card-list *ngIf="!(state$ | async)?.isRequesting"
       [images]="images"
-      [cardOptions]="(cardLayout$ | async)?.currentViewMode"
+      [cardOptions]="(cardLayout$ | async)?.cardLayoutOptions"
       (onCardClick)="handleImageDiscarded($event)"></fat-card-list>
 
 </md-sidenav-container>

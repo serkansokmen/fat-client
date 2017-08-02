@@ -6,13 +6,13 @@ import { union, without } from 'underscore';
 
 export interface CardLayoutState {
   viewModes: CardLayoutOptions[],
-  currentViewMode: CardLayoutOptions,
+  cardLayoutOptions: CardLayoutOptions,
   isScaleSliderVisible: boolean,
 };
 
 const initialState: CardLayoutState = {
   viewModes: [CardLayoutOptions.list, CardLayoutOptions.thumbs],
-  currentViewMode: CardLayoutOptions.list,
+  cardLayoutOptions: CardLayoutOptions.list,
   isScaleSliderVisible: false,
 };
 
@@ -23,15 +23,15 @@ export function cardLayoutReducer(state: CardLayoutState = initialState, action:
     case CardLayoutActions.SELECT_VIEW_MODE:
       return {
         ...state,
-        currentViewMode: action.payload.viewMode,
+        cardLayoutOptions: action.payload.viewMode,
         isScaleSliderVisible: action.payload.viewMode.id == state.viewModes[1].id
       };
 
     case CardLayoutActions.SET_THUMBNAIL_SCALE:
       return {
         ...state,
-        currentViewMode: {
-          ...state.currentViewMode,
+        cardLayoutOptions: {
+          ...state.cardLayoutOptions,
           cardScale: action.payload.scale
         }
       };
@@ -39,8 +39,8 @@ export function cardLayoutReducer(state: CardLayoutState = initialState, action:
     case CardLayoutActions.SET_ACTIONS_VISIBLE:
       return {
         ...state,
-        currentViewMode: {
-          ...state.currentViewMode,
+        cardLayoutOptions: {
+          ...state.cardLayoutOptions,
           isActionsVisible: action.payload.isActionsVisible
         }
       };

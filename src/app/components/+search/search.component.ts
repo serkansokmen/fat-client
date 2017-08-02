@@ -61,7 +61,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       tags: ['train,-child', Validators.required],
       userID: [''],
       tagMode: ['all', Validators.required],
-      perpage: [10, Validators.required],
+      perpage: [25, Validators.required],
       page: [1, Validators.required],
     });
     this.store.dispatch(this.cardLayoutActions.setActionsVisible(true));
@@ -75,6 +75,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.selectedLicenses = state.selectedLicenses;
       this.images = state.images;
       this.currentPerPage = state.perpage;
+      this.currentPage = state.page;
 
     });
 
@@ -91,7 +92,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       if (params.slug) {
         // console.log(params.slug);
       }
-      this.handleSearch(null);
+      this.handleSearch();
       this.store.dispatch(this.cardLayoutActions.selectViewMode(CardLayoutOptions.thumbs));
     });
 
@@ -109,7 +110,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.searchActions.toggleImageDiscarded(image));
   }
 
-  handleSearch(event) {
+  handleSearch() {
     if (!this.form.value) {
       return;
     }
@@ -150,21 +151,33 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.searchActions.setPerpage(perpage));
   }
 
-  handleDiscardAll(event) {
+  handleSelectAll() {
+    this.store.dispatch(this.searchActions.selectAllImages());
+  }
+
+  handleDeselectAll() {
+    this.store.dispatch(this.searchActions.deselectAllImages());
+  }
+
+  handleDiscardAll() {
     this.store.dispatch(this.searchActions.saveSearch(
       this.form.value,
       this.images.map(image => new Image({
         ...image,
         state: ImageState.discarded
       })),
-      this.selectedLicenses));
+      this.selectedLicenses,
+      this.currentPerPage,
+      this.currentPage));
   }
 
-  handleSave(event) {
+  handleSave() {
     this.store.dispatch(this.searchActions.saveSearch(
       this.form.value,
       this.images,
-      this.selectedLicenses));
+      this.selectedLicenses,
+      this.currentPerPage,
+      this.currentPage));
   }
 
 }

@@ -47,14 +47,19 @@ export class SearchEffects {
   @Effect() save$ = this.actions$
     .ofType(SearchActions.SAVE_SEARCH)
     .map(toPayload)
-    .switchMap(payload => this.service.saveSearch(payload.search, payload.images, payload.licenses))
+    .switchMap(payload => this.service.saveSearch(
+      payload.search,
+      payload.images,
+      payload.licenses,
+      payload.perpage,
+      payload.page,))
     .switchMap(result => Observable.of({
-        type: SearchActions.SAVE_SEARCH_COMPLETE,
+        type: SearchActions.REQUEST_SEARCH,
         payload: {
           search: result.search,
-          left: result.left,
-          total: result.total,
-          newImages: result.images
+          licenses: result.licenses,
+          perpage: result.perpage,
+          page: result.page,
         }
       }));
 

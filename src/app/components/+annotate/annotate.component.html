@@ -1,17 +1,14 @@
 <md-progress-spinner *ngIf="(annotate$ | async)?.isRequesting" color="primary" mode="indeterminate"></md-progress-spinner>
-<md-card *ngIf="!(annotate$ | async)?.isRequesting">
-  <md-card-content>
-    <div class="jumbotron" *ngIf="!(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
-      <div class="container">
-        <h2>No images yet.</h2>
-        <p>You can add more images using <a [routerLink]="['/search']">search</a>.</p>
-      </div>
-    </div>
-    <div class="content" *ngIf="(annotate$ | async)?.images[0]">
-      <fat-card-list
-        [images]="(annotate$ | async)?.images"
-        [cardOptions]="viewMode"
-        (onCardClick)="handleCardSelect($event)"></fat-card-list>
-    </div>
-  </md-card-content>
-</md-card>
+
+<div class="jumbotron" *ngIf="!(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
+  <div class="container">
+    <h2>No images yet.</h2>
+    <p>You can add more images using <a [routerLink]="['/search']">search</a>.</p>
+  </div>
+</div>
+<div class="content" *ngIf="(annotate$ | async)?.images[0] && !(annotate$ | async)?.isRequesting">
+  <fat-card-list
+    [images]="(annotate$ | async)?.images"
+    [cardOptions]="(cardLayout$ | async)?.cardLayoutOptions"
+    (onCardClick)="handleCardSelect($event)"></fat-card-list>
+</div>

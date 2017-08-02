@@ -10,10 +10,12 @@
       <strong>Tags:</strong> {{ image.tags }} <br>
       <strong>License:</strong> <a [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
     </div>
-    <button md-button (click)="handleImageClick(image)" *ngSwitchCase="0">
-      <md-icon color="primary" [style.color]="image.state?.value == 1 ? 'red' : 'green'"
-        [innerHTML]="image.state?.value == 1 ? 'close' : 'check'"></md-icon>
-    </button>
+    <div *ngIf="cardOptions.isActionsVisible">
+      <button md-button (click)="handleImageClick(image)" *ngSwitchCase="0">
+        <md-icon color="primary" [style.color]="image.state?.value == 1 ? 'red' : 'green'"
+          [innerHTML]="image.state?.value == 1 ? 'close' : 'check'"></md-icon>
+      </button>
+    </div>
 
     <md-icon class="state-icon" [style.color]="image.state?.value == 1 ? 'red' : 'white'"
       *ngSwitchCase="1"
@@ -26,7 +28,7 @@
     <div *ngSwitchCase="1">
       <div class="meta" *ngIf="cardOptions.cardScale >= 50">
         <strong>Tags:</strong> {{ image.tags }} <br>
-        <strong>License:</strong> <a [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
+        <strong>License:</strong> <span *ngIf="!image.license">-</span> <a *ngIf="image.license" [href]="image.license?.url" target="_blank">{{ image.license?.name }}</a>
       </div>
     </div>
 

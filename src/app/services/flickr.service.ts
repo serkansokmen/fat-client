@@ -53,7 +53,7 @@ export class FlickrService {
       });
   };
 
-  saveSearch(search: any, images: FlickrImage[], licenses: License[]) {
+  saveSearch(search: any, images: FlickrImage[], licenses: License[], perpage: number, page: number) {
     let body = JSON.stringify({
       tags: search.tags.split(',').map(str => str.trim()).join(','),
       tag_mode: search.tagMode,
@@ -84,9 +84,9 @@ export class FlickrService {
         .map((response: Response) => response.json())
         .switchMap(result => Observable.of({
           search: result.search,
-          images: result.images.map(image => new FlickrImage(image)),
-          left: result.left,
-          total: result.total,
+          licenses,
+          perpage,
+          page,
         }));
     }
   }

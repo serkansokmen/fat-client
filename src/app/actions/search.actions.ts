@@ -73,6 +73,22 @@ export class SearchActions {
     }
   }
 
+  static SELECT_ALL_IMAGES = '[Search] Select All Images';
+  selectAllImages(): Action {
+    return {
+      type: SearchActions.SELECT_ALL_IMAGES,
+      payload: { }
+    }
+  }
+
+  static DESELECT_ALL_IMAGES = '[Search] Deselect All Images';
+  deselectAllImages(): Action {
+    return {
+      type: SearchActions.DESELECT_ALL_IMAGES,
+      payload: { }
+    }
+  }
+
   static TOGGLE_IMAGE_DISCARDED = '[Search] Toggle Image Discarded';
   toggleImageDiscarded(image: Image): Action {
     return {
@@ -84,13 +100,15 @@ export class SearchActions {
   }
 
   static SAVE_SEARCH = '[Search] Save Search';
-  saveSearch(search: any, images: Image[], licenses: License[]): Action {
+  saveSearch(search: any, images: Image[], licenses: License[], perpage: number, page: number): Action {
     return {
       type: SearchActions.SAVE_SEARCH,
       payload: {
         search,
         images,
         licenses,
+        perpage,
+        page,
       }
     }
   }
