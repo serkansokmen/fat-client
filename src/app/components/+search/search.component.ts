@@ -151,6 +151,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.store.dispatch(this.searchActions.setPerpage(perpage));
   }
 
+  handleSelectAll() {
+    this.store.dispatch(this.searchActions.selectAllImages());
+  }
+
+  handleDeselectAll() {
+    this.store.dispatch(this.searchActions.deselectAllImages());
+  }
+
   handleDiscardAll(event) {
     this.store.dispatch(this.searchActions.saveSearch(
       this.form.value,

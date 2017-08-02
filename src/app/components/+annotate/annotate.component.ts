@@ -10,6 +10,7 @@ import { AnnotateActions } from '../../actions/annotate.actions';
 import { Image } from '../../models/search.models';
 import { CardLayoutOptions } from '../../models/card-layout.models';
 import { CardLayoutActions } from '../../actions/card-layout.actions';
+import { CardLayoutState } from '../../reducers/card-layout.reducer';
 
 
 @Component({
@@ -21,20 +22,23 @@ import { CardLayoutActions } from '../../actions/card-layout.actions';
 export class AnnotateComponent implements OnInit {
 
   annotate$: Observable<AnnotateState>;
-  viewMode = CardLayoutOptions.thumbs;
+  cardLayout$: Observable<CardLayoutState>;
 
   constructor(
     public store: Store<AnnotateState>,
     private actions: AnnotateActions,
+    private cardLayoutStore: Store<CardLayoutState>,
     private cardLayoutActions: CardLayoutActions,
     private route: ActivatedRoute,
   ) {
     this.annotate$ = store.select('annotate');
+    this.cardLayout$ = cardLayoutStore.select('cardLayout');
   }
 
   ngOnInit() {
-    this.store.dispatch(this.cardLayoutActions.setActionsVisible(false));
     this.store.dispatch(this.actions.requestImages());
+    this.cardLayoutStore.dispatch(this.cardLayoutActions.setActionsVisible(false));
+    this.cardLayoutStore.dispatch(this.cardLayoutActions.selectViewMode(CardLayoutOptions.list));
   }
 
   handleCardSelect(image: Image) {

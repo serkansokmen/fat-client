@@ -73,6 +73,22 @@ export class SearchActions {
     }
   }
 
+  static SELECT_ALL_IMAGES = '[Search] Select All Images';
+  selectAllImages(): Action {
+    return {
+      type: SearchActions.SELECT_ALL_IMAGES,
+      payload: { }
+    }
+  }
+
+  static DESELECT_ALL_IMAGES = '[Search] Deselect All Images';
+  deselectAllImages(): Action {
+    return {
+      type: SearchActions.DESELECT_ALL_IMAGES,
+      payload: { }
+    }
+  }
+
   static TOGGLE_IMAGE_DISCARDED = '[Search] Toggle Image Discarded';
   toggleImageDiscarded(image: Image): Action {
     return {

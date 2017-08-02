@@ -10,6 +10,8 @@ export interface SearchState {
   tagModes: string[],
   selectedLicenses: License[],
   imageStates: number[],
+  allSelected: boolean,
+  allDiscarded: boolean,
   licenses: License[],
   perpage: number,
   page: number,
@@ -30,6 +32,8 @@ const initialState: SearchState = {
     License.getLicense('7'),
   ],
   imageStates: [0, 1, 2, 3],
+  allSelected: true,
+  allDiscarded: false,
   images: [],
   tagModes: ['all', 'any'],
   licenses: License.availableLicenses,
@@ -71,6 +75,8 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         left: action.payload.left,
         total: action.payload.total,
         error: null,
+        allSelected: true,
+        allDiscarded: false,
       };
 
     case SearchActions.REQUEST_SEARCH_ERROR:
@@ -80,16 +86,42 @@ export function searchReducer(state: SearchState = initialState, action: Action)
         error: action.payload.message,
       };
 
-    case SearchActions.TOGGLE_IMAGE_DISCARDED:
+    case SearchActions.SELECT_ALL_IMAGES:
 
       return {
         ...state,
+        images: state.images.map(image => ({
+          ...image,
+          state: ImageState.selected,
+        })),
+        allSelected: true,
+        allDiscarded: false,
+      }
+
+    case SearchActions.DESELECT_ALL_IMAGES:
+
+      return {
+        ...state,
+        images: state.images.map(image => ({
+          ...image,
+          state: ImageState.discarded,
+        })),
+        allSelected: false,
+        allDiscarded: true,
+      }
+
+    case SearchActions.TOGGLE_IMAGE_DISCARDED:
+      let newImages = state.images.map(image => image.id != action.payload.image.id ?
+        image : new Image({
+          ...image,
+          state: image.state == ImageState.discarded ? ImageState.selected : ImageState.discarded
+        }));
+      return {
+        ...state,
         isRequesting: false,
-        images: state.images.map(image => image.id != action.payload.image.id ?
-          image : new Image({
-            ...image,
-            state: image.state == ImageState.discarded ? ImageState.selected : ImageState.discarded
-          }))
+        images: newImages,
+        allSelected: newImages.filter(image => image.state.value == ImageState.selected.value).length == newImages.length,
+        allDiscarded: newImages.filter(image => image.state.value == ImageState.discarded.value).length == newImages.length,
       }
 
     case SearchActions.SELECT_LICENCE:

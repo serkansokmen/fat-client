@@ -30,6 +30,11 @@ body {
   align-items: center;
   justify-content: center;
 }
+.mat-list {
+  .mat-list-item {
+    width: 100%;
+  }
+}
 
 md-sidenav-container {
   height: 100%;
@@ -89,6 +94,7 @@ md-card .content {
   flex-direction: row;
   flex-wrap: wrap;
   button {
-    flex: 1 0 auto;
+    flex: 1 0 100%;
+    width: 100%;
   }
 }
