@@ -95,13 +95,23 @@ export class AnnotateActions {
     }
   }
 
-  static UPDATE_ANNOTATION = '[Annotate] Update Annotation';
-  updateAnnotation(annotation: any, semanticChecks: any[], markedObjects: any[]): Action {
+  static UPDATE_ANNOTATION_SEMANTIC_CHECKS = '[Annotate] Update Annotation Semantic Checks';
+  updateAnnotationSemanticChecks(annotation: any, semanticChecks: any[]): Action {
     return {
-      type: AnnotateActions.UPDATE_ANNOTATION,
+      type: AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS,
       payload: {
         annotation,
         semanticChecks,
+      }
+    }
+  }
+
+  static UPDATE_ANNOTATION_MARKED_OBJECTS = '[Annotate] Update Annotation Marked Objects';
+  updateAnnotationMarkedObjects(annotation: any, markedObjects: any[]): Action {
+    return {
+      type: AnnotateActions.UPDATE_ANNOTATION_MARKED_OBJECTS,
+      payload: {
+        annotation,
         markedObjects,
       }
     }

@@ -70,8 +70,9 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
   }
 
   handleNext() {
-    // dispatch udpate annotation action
-    this.store.dispatch(this.actions.updateAnnotation(this.annotation, this.semanticChecks.filter(c => c.isActive), []));
+    this.store.dispatch(
+      this.actions.updateAnnotationSemanticChecks(
+        this.annotation, this.semanticChecks.filter(c => c.isActive)));
     // this.service
     //   .updateAnnotation()
     //   .subscribe(response => {

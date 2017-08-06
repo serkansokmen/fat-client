@@ -294,12 +294,15 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   handleNext() {
-    this.service
-      .updateAnnotation(this.annotation, [], this.objects)
-      .subscribe(response => {
-        const result = response.json();
-        let url = `/annotate/${this.params.image_id}/${this.params.annotation_id}/attributes`;
-        this.store.dispatch(go([url]));
-      });
+    this.store.dispatch(
+      this.actions.updateAnnotationMarkedObjects(
+        this.annotation, this.objects));
+    // this.service
+    //   .updateAnnotation(this.annotation, [], this.objects)
+    //   .subscribe(response => {
+    //     const result = response.json();
+    //     let url = `/annotate/${this.params.image_id}/${this.params.annotation_id}/attributes`;
+    //     this.store.dispatch(go([url]));
+    //   });
   }
 }

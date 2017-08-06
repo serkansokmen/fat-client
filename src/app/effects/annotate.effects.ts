@@ -91,16 +91,18 @@ export class AnnotateEffects {
       }));
 
   @Effect() updateSemanticChecks$ = this.actions$
-    .ofType(AnnotateActions.UPDATE_ANNOTATION)
+    .ofType(AnnotateActions.UPDATE_ANNOTATION_SEMANTIC_CHECKS)
     .map(toPayload)
     .switchMap(payload => this.service
-      .updateAnnotation(payload.annotation, payload.semanticChecks, payload.markedObjects))
-    .switchMap(result => Observable.of({
-      type: AnnotateActions.UPDATE_ANNOTATION_COMPLETE,
-      payload: {
-        annotation: result.json()
-      }
-    }))
+      .updateAnnotation(payload.annotation, payload.semanticChecks, []))
+    .map(result => go([`annotate/${result.json().image}/${result.json().id}/objects`]))
+
+  @Effect() updateMarkedObjects$ = this.actions$
+    .ofType(AnnotateActions.UPDATE_ANNOTATION_MARKED_OBJECTS)
+    .map(toPayload)
+    .switchMap(payload => this.service
+      .updateAnnotation(payload.annotation, [], payload.markedObjects))
+    .map(result => go([`annotate/${result.json().image}/${result.json().id}/attributes`]))
 
   // @Effect() updateAnnotation$ = this.actions$
   //   .ofType(AnnotateActions.UPDATE_ANNOTATION)
