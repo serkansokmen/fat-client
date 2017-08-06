@@ -90,6 +90,18 @@ export class AnnotateEffects {
         }
       }));
 
+  @Effect() updateSemanticChecks$ = this.actions$
+    .ofType(AnnotateActions.UPDATE_ANNOTATION)
+    .map(toPayload)
+    .switchMap(payload => this.service
+      .updateAnnotation(payload.annotation, payload.semanticChecks, payload.markedObjects))
+    .switchMap(result => Observable.of({
+      type: AnnotateActions.UPDATE_ANNOTATION_COMPLETE,
+      payload: {
+        annotation: result.json()
+      }
+    }))
+
   // @Effect() updateAnnotation$ = this.actions$
   //   .ofType(AnnotateActions.UPDATE_ANNOTATION)
   //   .withLatestFrom(this.store$, (action, state: any) => ({

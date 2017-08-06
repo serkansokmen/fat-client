@@ -95,6 +95,18 @@ export class AnnotateActions {
     }
   }
 
+  static UPDATE_ANNOTATION = '[Annotate] Update Annotation';
+  updateAnnotation(annotation: any, semanticChecks: any[], markedObjects: any[]): Action {
+    return {
+      type: AnnotateActions.UPDATE_ANNOTATION,
+      payload: {
+        annotation,
+        semanticChecks,
+        markedObjects,
+      }
+    }
+  }
+
   static UPDATE_ANNOTATION_COMPLETE = '[Annotate] Update Annotation Complete';
   updateAnnotationComplete(annotation: any): Action {
     return {
