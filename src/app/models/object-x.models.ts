@@ -49,7 +49,7 @@ export class ObjectXType {
   static breast = new ObjectXType(3, 'Breast', 'Breasts', 'blue');
   static foot = new ObjectXType(4, 'Foot', 'Feet', 'cyan');
   static hand = new ObjectXType(5, 'Hand', 'Hands', 'magenta');
-  static arm = new ObjectXType(6, 'Arm', 'Arms', 'gray');
+  static arm = new ObjectXType(6, 'Arm', 'Arms', 'pink');
 }
 
 export class ObjectX {
