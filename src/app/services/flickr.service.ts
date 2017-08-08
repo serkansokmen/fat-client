@@ -158,8 +158,8 @@ export class FlickrService {
       })),
       marked_objects: markedObjects.map(o => {
         return ({
-          gender: null,
-          age_group: null,
+          gender: o.gender ? o.gender.value : null,
+          age_group: o.ageGroup ? o.ageGroup.value : null,
           object_type: o.type.id,
           x: o.graphics.left,
           y: o.graphics.top,

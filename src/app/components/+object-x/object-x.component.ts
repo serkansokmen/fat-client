@@ -7,7 +7,9 @@ import { Component,
   AfterViewInit,
   OnDestroy,
   HostListener,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  NgZone
 } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {
@@ -20,31 +22,38 @@ import { Store } from '@ngrx/store';
 import { go } from '@ngrx/router-store';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
-import { ObjectXState } from '../../reducers/object-x.reducer';
-import { ObjectXActions } from '../../actions/object-x.actions';
-import { ObjectX, ObjectXType, DrawMode } from '../../models/object-x.models';
+import { ObjectX, ObjectXType, DrawMode, Gender, AgeGroup, objectTypes, genders, ageGroups } from '../../models/object-x.models';
 import { Image as FlickrImage } from '../../models/search.models';
 import { FlickrService } from '../../services/flickr.service';
+import { without } from 'underscore';
+
 
 @Component({
   selector: 'fat-object-x',
   templateUrl: './object-x.component.html',
   styleUrls: ['./object-x.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ObjectXActions]
 })
 export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
-  objectX$: Observable<ObjectXState>;
-  objects: ObjectX[];
-  visibleObjectTypes: ObjectXType[];
 
-  private canvas: Canvas;
+  objects: ObjectX[] = [];
+  objectTypes: ObjectXType[] = objectTypes;
+  visibleTypes: ObjectXType[] = objectTypes;
+  genders: Gender[];
+  ageGroups: AgeGroup[];
+
+  selectedObjectType = objectTypes[0];
+  drawMode: DrawMode = DrawMode.add;
+  drawModes: DrawMode[] = [DrawMode.add, DrawMode.remove, DrawMode.edit];
+  zoom: number = 1.0;
+  isShowingOriginal: boolean = true;
+
+  public canvas: Canvas;
   private context: CanvasRenderingContext2D;
   private subscriptions: any[] = [];
 
-  private selectedObjectType;
   private isStarted;
   private drawX: number;
   private drawY: number;
@@ -66,19 +75,64 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
     @Inject('Window') window: Window,
     public store: Store<AnnotateState>,
     public actions: AnnotateActions,
-    public objectXStore: Store<ObjectXState>,
-    public objectXActions: ObjectXActions,
     private route: ActivatedRoute,
     private service: FlickrService,
+    private zone: NgZone,
+    private ref: ChangeDetectorRef,
   )
   {
     this.annotate$ = store.select('annotate');
-    this.objectX$ = objectXStore.select('objectX');
-    this.objects = [];
-    this.visibleObjectTypes = [];
+    this.genders = genders;
+    this.ageGroups = ageGroups;
   }
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+
+    this.canvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
+      isDrawingMode: false,
+    });
+
+    this.context = this.canvas.getContext('2d');
+
+    this.canvas.off('mouse:down');
+    this.canvas.off('mouse:move');
+    this.canvas.off('mouse:up');
+    this.canvas.off('object:modified');
+    this.canvas.off('object:selected');
+
+    this.canvas.setZoom(this.zoom);
+    this.setDrawMode(DrawMode.add);
+    this.canvas.renderAll();
+
+    const annotateSubscription = this.annotate$.subscribe(state => {
+      this.annotation = state.annotation;
+      if (state.selectedImage && !this.fabricImage) {
+        fabric.Image.fromURL(state.selectedImage.flickr_url, (img) => {
+          this.fabricImage = img
+          img.lockRotation = true;
+          img.lockUniScaling = true;
+          this.canvas.setBackgroundImage(img, this.canvas.renderAll.bind(this.canvas));
+          this.canvas.setDimensions({
+            width: window.innerWidth,
+            height: window.innerHeight - 130});
+        });
+        if (state.annotation && state.annotation.marked_objects && state.annotation.marked_objects.length > 0) {
+          state.annotation.marked_objects
+            .map(data => new ObjectX(data))
+            .map(objectX => {
+              this.canvas.add(objectX.graphics);
+              this.objects.push(objectX);
+            });
+        } else {
+          this.objects = [];
+        }
+        this.canvas.renderAll();
+      }
+    });
+
     this.subscriptions.push(this.route.params.subscribe(params => {
       this.params = params;
       if (params.image_id) {
@@ -88,91 +142,8 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
         this.store.dispatch(this.actions.requestAnnotation(params.annotation_id));
       }
     }));
-  }
 
-  ngAfterViewInit() {
-
-    this.canvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
-      isDrawingMode: false,
-    });
-    this.context = this.canvas.getContext('2d');
-
-    const annotateSubscription = this.annotate$.subscribe(state => {
-      this.annotation = state.annotation;
-      if (state.selectedImage && !this.fabricImage) {
-        fabric.Image.fromURL(state.selectedImage.flickr_url, (img) => {
-          this.fabricImage = img
-          img.lockRotation = true;
-          img.lockUniScaling = true;
-          this.canvas.setBackgroundImage(img,
-            this.canvas.renderAll.bind(this.canvas));
-          this.canvas.setDimensions({
-            width: window.innerWidth,
-            height: window.innerHeight - 130});
-        });
-        this.objectXStore.dispatch(this.objectXActions.setDrawMode(DrawMode.add));
-      }
-    });
-
-    const objectXSubscription = this.objectX$.subscribe((state: ObjectXState) => {
-
-      this.selectedObjectType = state.selectedObjectType;
-      this.visibleObjectTypes = state.visibleObjectTypes;
-      this.objects = state.objects;
-
-      this.canvas.off('mouse:down');
-      this.canvas.off('mouse:move');
-      this.canvas.off('mouse:up');
-      this.canvas.off('object:modified');
-      this.canvas.off('object:selected');
-      this.canvas.clear();
-      this.canvas.setBackgroundImage(this.fabricImage,
-        this.canvas.renderAll.bind(this.canvas));
-
-      let objects = state.objects.filter(object => this.visibleObjectTypes.indexOf(object.type) > -1);
-      for (let object of objects) {
-        let graphics = object.graphics;
-        object.graphics.off('selected');
-        graphics.lockRotation = true;
-        graphics.lockMovementX = false;
-        graphics.lockMovementY = false;
-        graphics.lockScalingY = false;
-        graphics.lockScalingY = false;
-        graphics.lockUniScaling = false;
-        this.canvas.add(graphics);
-      }
-
-      if (state.selectedObject) {
-        this.canvas.setActiveObject(state.selectedObject.graphics);
-      }
-      this.canvas.setZoom(state.zoom);
-      this.canvas.renderAll();
-
-      switch (state.drawMode) {
-        case DrawMode.add:
-          this.canvas.on('mouse:down', (event) => { this.onAddCanvasMouseDown(event); });
-          this.canvas.on('mouse:move', (event) => { this.onAddCanvasMouseMove(event); });
-          this.canvas.on('mouse:up', (event) => { this.onAddCanvasMouseUp(event); });
-          break;
-        case DrawMode.remove:
-          // for (let object of this.canvas.getObjects()) {
-          //   object.set('selectable', true);
-          //   object.set('selected', false);
-          // }
-          this.canvas.on('object:selected', (event) => { this.onRemoveCanvasMouseDown(event); });
-          break;
-        case DrawMode.edit:
-          // for (let object of this.canvas.getObjects()) {
-          //   object.set('selectable', true);
-          //   object.set('selected', false);
-          // }
-          this.canvas.on('object:modified', (event) => { this.onEditCanvasMouseDown(event); });
-          break;
-        default: break;
-      }
-    });
-
-    this.subscriptions = [annotateSubscription, objectXSubscription];
+    this.subscriptions = [annotateSubscription];
   }
 
   ngOnDestroy() {
@@ -182,8 +153,34 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions = [];
   }
 
-  isTypeVisible(type?: ObjectXType) {
-    return this.visibleObjectTypes.indexOf(type) > -1;
+  setDrawMode(mode: DrawMode) {
+
+    this.drawMode = mode;
+    this.canvas.off('mouse:down');
+    this.canvas.off('mouse:move');
+    this.canvas.off('mouse:up');
+    this.canvas.off('object:selected');
+    this.canvas.off('object:modified');
+    switch (this.drawMode) {
+      case DrawMode.add:
+        this.canvas.on('mouse:down', (event) => { this.onAddCanvasMouseDown(event); });
+        this.canvas.on('mouse:move', (event) => { this.onAddCanvasMouseMove(event); });
+        this.canvas.on('mouse:up', (event) => { this.onAddCanvasMouseUp(event); });
+        break;
+      case DrawMode.remove:
+        this.canvas.on('object:selected', (event) => { this.onRemoveCanvasMouseDown(event); });
+        break;
+      case DrawMode.edit:
+        this.canvas.on('object:modified', (event) => { this.onEditCanvasMouseDown(event); });
+        break;
+      default: break;
+    }
+  }
+
+  toggleObjectTypeVisible(type, isVisible) {
+    this.objects.map(o => {
+      o.type == type ? o.graphics.set('visible', isVisible) : null;
+    });
   }
 
   getTypeCount(type: ObjectXType) {
@@ -192,11 +189,11 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onAddCanvasMouseDown(event) {
     this.isStarted = true;
-    var pointer = this.canvas.getPointer(event.e);
+    const pointer = this.canvas.getPointer(event.e);
     this.drawX = pointer.x;
     this.drawY = pointer.y;
 
-    var rect = new fabric.Rect({
+    let rect = new fabric.Rect({
       width: 0,
       height: 0,
       left: this.drawX,
@@ -241,68 +238,49 @@ export class ObjectXComponent implements OnInit, AfterViewInit, OnDestroy {
       this.canvas.remove(rect);
       return;
     }
-    let graphics = new fabric.Group();
-    graphics.addWithUpdate(new fabric.Rect({
-      left: graphics.getLeft(),
-      top: graphics.getTop(),
+    const objectX = new ObjectX({
+      object_type: this.selectedObjectType.id,
       width: rect.getWidth(),
       height: rect.getHeight(),
-      originX: 'center',
-      originY: 'center',
-      fill: this.selectedObjectType.color,
-      stroke: 'transparent',
-      opacity: 0.25
-    }));
-    graphics.addWithUpdate(new fabric.Text(this.selectedObjectType.name, {
-      fontFamily: 'Arial',
-      fontSize: (rect.getWidth() + rect.getHeight()) / 20,
-      fill: this.selectedObjectType.color,
-      textAlign: 'center',
-      originX: 'center',
-      originY: 'center'
-    }));
-    graphics.set('top', rect.getTop());
-    graphics.set('left', rect.getLeft());
+      x: rect.getLeft(),
+      y: rect.getTop(),
+      gender: null,
+      age_group: null,
+    });
 
     this.canvas.remove(rect);
-    this.canvas.add(graphics);
+    this.canvas.add(objectX.graphics);
+    this.canvas.setActiveObject(objectX.graphics);
     this.canvas.renderAll();
 
-    let object = new ObjectX(graphics, this.selectedObjectType);
-    object.graphics = graphics;
-    // graphics.off('selected');
-    // graphics.on('selected', (e) => {
-    //   this.store.dispatch(this.actions.selectObject(object));
-    // });
-    // this.canvas.setActiveObject(graphics);
-    this.objectXStore.dispatch(this.objectXActions.addObject(object));
-    this.objectXStore.dispatch(this.objectXActions.setVisibleObjectTypes(object.type, true));
+    this.objects.push(objectX);
+    this.ref.detectChanges();
   }
 
   onRemoveCanvasMouseDown(event) {
     let graphics = this.canvas.getActiveObject();
     this.canvas.remove(graphics);
-    this.objectXStore.dispatch(this.objectXActions.removeObject(graphics));
+    this.objects = this.objects.filter(o => {
+      return o.graphics != graphics;
+    });
+    this.ref.detectChanges();
   }
 
   onEditCanvasMouseDown(event) {
     let graphics = this.canvas.getActiveObject();
     if (graphics) {
-      let object = new ObjectX(graphics, this.selectedObjectType);
-      this.objectXStore.dispatch(this.objectXActions.updateObject(object, graphics));
+      this.objects.map(o => {
+        if (o.graphics == graphics) {
+          o.graphics = graphics;
+        }
+      });
     }
+    this.ref.detectChanges();
   }
 
   handleNext() {
     this.store.dispatch(
       this.actions.updateAnnotationMarkedObjects(
         this.annotation, this.objects));
-    // this.service
-    //   .updateAnnotation(this.annotation, [], this.objects)
-    //   .subscribe(response => {
-    //     const result = response.json();
-    //     let url = `/annotate/${this.params.image_id}/${this.params.annotation_id}/attributes`;
-    //     this.store.dispatch(go([url]));
-    //   });
   }
 }

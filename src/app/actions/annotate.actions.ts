@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Image } from '../models/search.models';
+import { Image as FlickrImage } from '../models/search.models';
+import { ObjectX, ObjectXType, Gender, AgeGroup } from '../models/object-x.models';
 
 
 @Injectable()
@@ -16,7 +17,7 @@ export class AnnotateActions {
   }
 
   static REQUEST_IMAGES_COMPLETE = '[Annotate] Request Images Complete';
-  requestImagesComplete(images: Image[], total: number): Action {
+  requestImagesComplete(images: FlickrImage[], total: number): Action {
     return {
       type: AnnotateActions.REQUEST_IMAGES_COMPLETE,
       payload: {
@@ -37,7 +38,7 @@ export class AnnotateActions {
   }
 
   static REQUEST_IMAGE_COMPLETE = '[Annotate] Request Image Complete';
-  requestImageComplete(image: Image): Action {
+  requestImageComplete(image: FlickrImage): Action {
     return {
       type: AnnotateActions.REQUEST_IMAGE_COMPLETE,
       payload: {
