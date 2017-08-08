@@ -20,8 +20,6 @@ import { Store } from '@ngrx/store';
 import { go } from '@ngrx/router-store';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
-import { ObjectXState } from '../../reducers/object-x.reducer';
-import { ObjectXActions } from '../../actions/object-x.actions';
 import { ObjectX, ObjectXType, DrawMode } from '../../models/object-x.models';
 import { Image as FlickrImage } from '../../models/search.models';
 import { FlickrService } from '../../services/flickr.service';
@@ -31,7 +29,6 @@ import { FlickrService } from '../../services/flickr.service';
   templateUrl: './annotation-complete.component.html',
   styleUrls: ['./annotation-complete.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ObjectXActions]
 })
 export class AnnotationComplete implements OnInit, OnDestroy {
 
@@ -59,8 +56,6 @@ export class AnnotationComplete implements OnInit, OnDestroy {
     @Inject('Window') window: Window,
     public store: Store<AnnotateState>,
     public actions: AnnotateActions,
-    public objectXStore: Store<ObjectXState>,
-    public objectXActions: ObjectXActions,
     private route: ActivatedRoute,
     private service: FlickrService,
   )

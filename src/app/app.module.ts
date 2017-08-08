@@ -42,7 +42,6 @@ import { searchReducer } from './reducers/search.reducer';
 import { annotateReducer } from './reducers/annotate.reducer';
 import { cardLayoutReducer } from './reducers/card-layout.reducer';
 import { artboardReducer } from './reducers/artboard.reducer';
-import { objectXReducer } from './reducers/object-x.reducer';
 
 // Components
 import { LoginComponent } from './components/+login/login.component';
@@ -97,7 +96,6 @@ export function instrumentOptions() {
       cardLayout: cardLayoutReducer,
       router: routerReducer,
       artboard: artboardReducer,
-      objectX: objectXReducer,
     }),
     RouterStoreModule.connectRouter(),
     EffectsModule.runAfterBootstrap(AuthEffects),

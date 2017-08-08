@@ -1,33 +1,32 @@
 <md-sidenav-container>
   <md-sidenav #nav mode="side" opened="true">
     <md-button-toggle-group
-      (change)="store.dispatch(actions.setGender($event.value))"
-      [value]="(annotate$ | async)?.selectedObject?.gender">
-      <md-button-toggle *ngFor="let gender of (objectX$ | async)?.genders" [value]="gender">{{ gender.label }}</md-button-toggle>
+      (change)="setGender($event.value)"
+      [value]="selectedObjectIndex ? objects[selectedObjectIndex]?.gender : null">
+      <md-button-toggle *ngFor="let gender of genders" [value]="gender">{{ gender.label }}</md-button-toggle>
     </md-button-toggle-group>
     <hr>
     <md-button-toggle-group
-      (change)="store.dispatch(actions.setAgeGroup($event.value))"
-      [value]="(annotate$ | async)?.selectedObject?.ageGroup">
-      <md-button-toggle *ngFor="let ageGroup of (objectX$ | async)?.ageGroups" [value]="ageGroup">{{ ageGroup.label }}</md-button-toggle>
+      (change)="setAgeGroup($event.value)"
+      [value]="selectedObjectIndex ? objects[selectedObjectIndex]?.ageGroup : null">
+      <md-button-toggle *ngFor="let ageGroup of ageGroups" [value]="ageGroup">{{ ageGroup.label }}</md-button-toggle>
     </md-button-toggle-group>
-    <hr *ngIf="(annotate$ | async)?.selectedObject">
-    <div *ngIf="(annotate$ | async)?.selectedObject">
-      Gender: {{ (annotate$ | async)?.selectedObject?.gender }} <br>
-      Age Group: {{ (annotate$ | async)?.selectedObject?.ageGroup }} <br>
+    <hr *ngIf="selectedObjectIndex">
+    <div *ngIf="selectedObjectIndex">
+      Gender: {{ objects[selectedObjectIndex]?.gender.label }} <br>
+      Age Group: {{ objects[selectedObjectIndex]?.ageGroup.label }} <br>
     </div>
     <hr>
     <div>
-      Zoom <md-slider color="primary" thumbLabel (change)="objectXStore.dispatch(objectXActions.setZoom($event.value))"
-      [value]="(objectX$ | async)?.zoom" step="0.1" min="1" max="4"></md-slider>
+      Zoom <md-slider color="primary" thumbLabel (change)="canvas.setZoom($event.value)"
+      [value]="zoom" step="0.1" min="1" max="4"></md-slider>
     </div>
     <hr>
   </md-sidenav>
 
-
-  <div class="draw-view" [class.no-faces]="!(annotate$ | async)?.selectedObject">
+  <div class="draw-view" [class.no-faces]="selectedObjectIndex === -1">
     <canvas #drawCanvas></canvas>
-    <div class="warning" *ngIf="!(annotate$ | async)?.selectedObject">
+    <div class="warning" *ngIf="selectedObject === -1">
       <p>Please <a [routerLink]="['/annotate/' + params.image_id + '/' + params.annotation_id + '/objects']">mark some faces</a> first</p>
     </div>
   </div>
