@@ -100,8 +100,10 @@ export class AnnotateEffects {
   @Effect() updateMarkedObjects$ = this.actions$
     .ofType(AnnotateActions.UPDATE_ANNOTATION_MARKED_OBJECTS)
     .map(toPayload)
-    .switchMap(payload => this.service
-      .updateAnnotation(payload.annotation, [], payload.markedObjects))
+    .switchMap(payload => {
+      return this.service
+          .updateAnnotation(payload.annotation, [], payload.markedObjects)
+     })
     .map(result => go([`annotate/${result.json().image}/${result.json().id}/attributes`]))
 
   // @Effect() updateAnnotation$ = this.actions$

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Image } from '../models/search.models';
+import { Image as FlickrImage } from '../models/search.models';
+import { ObjectX, ObjectXType, Gender, AgeGroup } from '../models/object-x.models';
 
 
 @Injectable()
@@ -16,7 +17,7 @@ export class AnnotateActions {
   }
 
   static REQUEST_IMAGES_COMPLETE = '[Annotate] Request Images Complete';
-  requestImagesComplete(images: Image[], total: number): Action {
+  requestImagesComplete(images: FlickrImage[], total: number): Action {
     return {
       type: AnnotateActions.REQUEST_IMAGES_COMPLETE,
       payload: {
@@ -37,7 +38,7 @@ export class AnnotateActions {
   }
 
   static REQUEST_IMAGE_COMPLETE = '[Annotate] Request Image Complete';
-  requestImageComplete(image: Image): Action {
+  requestImageComplete(image: FlickrImage): Action {
     return {
       type: AnnotateActions.REQUEST_IMAGE_COMPLETE,
       payload: {
@@ -123,6 +124,88 @@ export class AnnotateActions {
       type: AnnotateActions.UPDATE_ANNOTATION_COMPLETE,
       payload: {
         annotation
+      }
+    }
+  }
+
+  static SELECT_OBJECT = '[Annotate] Select Object';
+  selectObject(object: ObjectX): Action {
+    return {
+      type: AnnotateActions.SELECT_OBJECT,
+      payload: {
+        object
+      }
+    }
+  }
+
+  static SELECT_OBJECT_TYPE = '[Annotate] Select Object Type';
+  selectObjectType(objectType: ObjectXType): Action {
+    return {
+      type: AnnotateActions.SELECT_OBJECT_TYPE,
+      payload: {
+        objectType
+      }
+    }
+  }
+
+  static SET_VISIBLE_OBJECT_TYPES = '[Annotate] Set Visible Object Types';
+  setVisibleObjectTypes(type: ObjectXType, isVisible: boolean) {
+    return {
+      type: AnnotateActions.SET_VISIBLE_OBJECT_TYPES,
+      payload: {
+        type,
+        isVisible
+      }
+    }
+  }
+
+  static ADD_OBJECT = '[Annotate] Add Object';
+  addObject(object: ObjectX): Action {
+    return {
+      type: AnnotateActions.ADD_OBJECT,
+      payload: {
+        object
+      }
+    }
+  }
+
+  static UPDATE_OBJECT = '[Annotate] Update Object';
+  updateObject(object: ObjectX, newGraphics: any): Action {
+    return {
+      type: AnnotateActions.UPDATE_OBJECT,
+      payload: {
+        object,
+        newGraphics
+      }
+    }
+  }
+
+  static REMOVE_OBJECT = '[Annotate] Remove Object';
+  removeObject(graphics: any): Action {
+    return {
+      type: AnnotateActions.REMOVE_OBJECT,
+      payload: {
+        graphics
+      }
+    }
+  }
+
+  static SET_GENDER = '[Annotate] Set Gender';
+  setGender(gender: Gender): Action {
+    return {
+      type: AnnotateActions.SET_GENDER,
+      payload: {
+        gender
+      }
+    }
+  }
+
+  static SET_AGE_GROUP = '[Annotate] Set Age Group';
+  setAgeGroup(ageGroup: AgeGroup): Action {
+    return {
+      type: AnnotateActions.SET_AGE_GROUP,
+      payload: {
+        ageGroup
       }
     }
   }

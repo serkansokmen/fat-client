@@ -6,12 +6,12 @@
     <div>
       Object Type:
       <button md-raised-button color="accent" [mdMenuTriggerFor]="appMenu">
-        <span [style.color]="(objectX$ | async)?.selectedObjectType?.color">{{ (objectX$ | async)?.selectedObjectType?.pluralName }}</span>
+        <span [style.color]="selectedObjectType?.color">{{ selectedObjectType?.pluralName }}</span>
         <!-- <md-icon fontSet="fontawesome" fontIcon="fa-chevron-down"></md-icon> -->
       </button>
       <md-menu #appMenu="mdMenu">
-        <button md-menu-item *ngFor="let type of (objectX$ | async)?.objectTypes"
-          (click)="objectXStore.dispatch(objectXActions.selectObjectType(type))">
+        <button md-menu-item *ngFor="let type of objectTypes"
+          (click)="store.dispatch(actions.selectObjectType(type))">
           <span [style.color]="type.color">{{ type.name }}</span>
         </button>
       </md-menu>
@@ -34,16 +34,15 @@
       [value]="(objectX$ | async)?.zoom" step="0.1" min="1" max="4"></md-slider>
     </div>
     <hr>
-    <div *ngFor="let type of (objectX$ | async)?.objectTypes">
+    <div *ngFor="let type of objectTypes">
       <md-checkbox color="primary" *ngIf="getTypeCount(type) > 0"
         [checked]="getTypeCount(type) > 0"
-        (change)="objectXStore.dispatch(objectXActions.setVisibleObjectTypes(type, $event?.checked))">
+        (change)="store.dispatch(actions.setVisibleObjectTypes(type, $event?.checked))">
         <span>{{ type?.pluralName }} ({{ getTypeCount(type) }})</span>
       </md-checkbox>
     </div>
-    <hr *ngIf="(objectX$ | async)?.objects > 0">
-    <div *ngFor="let object of (objectX$ | async)?.objects">
-      <button md-button (click)="objectXStore.dispatch(objectXActions.selectObject(object))"><small><i>{{ object?.guid }}</i></small><br></button>
+    <div *ngFor="let object of objects">
+      <button md-button (click)="store.dispatch(actions.selectObject(object))"><small><i>{{ object?.uuid }}</i></small><br></button>
       <!-- <div>
         x: {{ object?.graphics.getLeft() }} <br>
         y: {{ object?.graphics.getTop() }} <br>
@@ -64,7 +63,7 @@
     </button>
     <span class="spacer"></span>
     <!-- <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + '/' + (annotate$ | async)?.annotation?.id]">Cancel</button> -->
-    <button md-raised-button color="primary" [disabled]="!(objectX$ | async)?.objects" (click)="handleNext()">Save and Continue</button>
+    <button md-raised-button color="primary" [disabled]="objects.length == 0" (click)="handleNext()">Save and Continue</button>
   </md-toolbar>
 
 </md-sidenav-container>

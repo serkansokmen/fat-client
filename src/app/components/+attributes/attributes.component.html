@@ -1,20 +1,20 @@
 <md-sidenav-container>
   <md-sidenav #nav mode="side" opened="true">
     <md-button-toggle-group
-      (change)="objectXStore.dispatch(objectXActions.setGender($event.value))"
-      [value]="(objectX$ | async)?.selectedObject?.gender">
-      <md-button-toggle *ngFor="let gender of (objectX$ | async)?.genders" [value]="gender">{{ gender.toString() }}</md-button-toggle>
+      (change)="store.dispatch(actions.setGender($event.value))"
+      [value]="(annotate$ | async)?.selectedObject?.gender">
+      <md-button-toggle *ngFor="let gender of (objectX$ | async)?.genders" [value]="gender">{{ gender.label }}</md-button-toggle>
     </md-button-toggle-group>
     <hr>
     <md-button-toggle-group
-      (change)="objectXStore.dispatch(objectXActions.setAgeGroup($event.value))"
-      [value]="(objectX$ | async)?.selectedObject?.ageGroup">
-      <md-button-toggle *ngFor="let ageGroup of (objectX$ | async)?.ageGroups" [value]="ageGroup">{{ ageGroup.toString() }}</md-button-toggle>
+      (change)="store.dispatch(actions.setAgeGroup($event.value))"
+      [value]="(annotate$ | async)?.selectedObject?.ageGroup">
+      <md-button-toggle *ngFor="let ageGroup of (objectX$ | async)?.ageGroups" [value]="ageGroup">{{ ageGroup.label }}</md-button-toggle>
     </md-button-toggle-group>
-    <hr *ngIf="(objectX$ | async)?.selectedObject">
-    <div *ngIf="(objectX$ | async)?.selectedObject">
-      Gender: {{ (objectX$ | async)?.selectedObject?.gender }} <br>
-      Age Group: {{ (objectX$ | async)?.selectedObject?.ageGroup }} <br>
+    <hr *ngIf="(annotate$ | async)?.selectedObject">
+    <div *ngIf="(annotate$ | async)?.selectedObject">
+      Gender: {{ (annotate$ | async)?.selectedObject?.gender }} <br>
+      Age Group: {{ (annotate$ | async)?.selectedObject?.ageGroup }} <br>
     </div>
     <hr>
     <div>
@@ -25,9 +25,9 @@
   </md-sidenav>
 
 
-  <div class="draw-view" [class.no-faces]="!(objectX$ | async)?.selectedObject">
+  <div class="draw-view" [class.no-faces]="!(annotate$ | async)?.selectedObject">
     <canvas #drawCanvas></canvas>
-    <div class="warning" *ngIf="!(objectX$ | async)?.selectedObject">
+    <div class="warning" *ngIf="!(annotate$ | async)?.selectedObject">
       <p>Please <a [routerLink]="['/annotate/' + params.image_id + '/' + params.annotation_id + '/objects']">mark some faces</a> first</p>
     </div>
   </div>

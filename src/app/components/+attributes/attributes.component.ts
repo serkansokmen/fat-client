@@ -19,9 +19,9 @@ import { go } from '@ngrx/router-store';
 import { union } from 'underscore';
 import { AnnotateState } from '../../reducers/annotate.reducer';
 import { AnnotateActions } from '../../actions/annotate.actions';
-import { ObjectXState } from '../../reducers/object-x.reducer';
+import { ObjectXState, createGraphicFromRectangle } from '../../reducers/object-x.reducer';
 import { ObjectXActions } from '../../actions/object-x.actions';
-import { ObjectX, Gender, DrawMode } from '../../models/object-x.models';
+import { ObjectX, ObjectXType, Gender, AgeGroup, DrawMode } from '../../models/object-x.models';
 import { Image as FlickrImage } from '../../models/search.models';
 import { FlickrService } from '../../services/flickr.service';
 
@@ -36,7 +36,8 @@ export class AttributesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   annotate$: Observable<AnnotateState>;
   objectX$: Observable<ObjectXState>;
-  objects: ObjectX[];
+  objects: ObjectX[] = [];
+  selectedObject: ObjectX = null;
 
   private context: CanvasRenderingContext2D;
   private subscriptions: any[] = [];
@@ -66,7 +67,6 @@ export class AttributesComponent implements OnInit, AfterViewInit, OnDestroy {
   {
     this.annotate$ = store.select('annotate');
     this.objectX$ = objectXStore.select('objectX');
-    this.objects = [];
   }
 
   ngOnInit() {
@@ -89,8 +89,7 @@ export class AttributesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.context = this.canvas.getContext('2d');
 
     const annotateSubscription = this.annotate$.subscribe(state => {
-      this.canvas.clear();
-      this.canvas.renderAll();
+
       this.annotation = state.annotation;
       if (state.selectedImage && !this.fabricImage) {
         fabric.Image.fromURL(state.selectedImage.flickr_url, (img) => {
@@ -104,25 +103,38 @@ export class AttributesComponent implements OnInit, AfterViewInit, OnDestroy {
             height: window.innerHeight - 130});
         });
       }
-    });
+      this.objects = state.objects;
+      this.selectedObject = state.selectedObject;
 
-    const objectXSubscription = this.objectX$.subscribe((state: ObjectXState) => {
-
-      this.objects = union(this.objects, state.objects);
-
-      // if (state.objects.length == 0) {
-      //   return;
-      // }
-
-      this.canvas.clear();
-      this.canvas.clear();
-      this.canvas.setBackgroundImage(this.fabricImage,
-        this.canvas.renderAll.bind(this.canvas));
-      this.canvas.off('object:selected');
-
-      let faces = state.objects.filter(object => {
-        return object.type.id == 0;
-      });
+      if (state.annotation && state.annotation.marked_objects && state.annotation.marked_objects.length > 0) {
+        state.annotation.marked_objects
+          .filter(object => object.type.id == ObjectXType.face.id)
+          .map(data => ({
+              object: data,
+              rect: new fabric.Rect({
+                width: data.width,
+                height: data.height,
+                left: data.x,
+                top: data.y,
+                fill: 'transparent',
+                stroke: ObjectXType.find(data.object_type).color,
+                selectable: true
+              }),
+          }))
+          .map(result => ({
+            object: result.object,
+            graphics: createGraphicFromRectangle(result.rect, ObjectXType.find(result.object.id)),
+          }))
+          .map(result => {
+            this.store.dispatch(this.actions.addObject(new ObjectX(
+              result.graphics,
+              ObjectXType.find(result.object.object_type),
+              new Gender(result.object.gender),
+              new AgeGroup(result.object.age_group))))
+            this.store.dispatch(this.actions.setVisibleObjectTypes(result.object.object_type, true));
+          });
+      }
+      let faces = state.objects;
       for (let face of faces) {
         face.graphics.off('selected');
         let graphics = face.graphics;
@@ -136,16 +148,27 @@ export class AttributesComponent implements OnInit, AfterViewInit, OnDestroy {
           this.canvas.setActiveObject(face.graphics);
         }
         graphics.on('selected', event => {
-          this.objectXStore.dispatch(this.objectXActions.selectObject(face));
+          this.store.dispatch(this.actions.selectObject(face));
         });
 
         this.canvas.add(graphics);
       }
+      this.canvas.renderAll();
+    });
+
+    const objectXSubscription = this.objectX$.subscribe((state: ObjectXState) => {
+
+      this.canvas.setBackgroundImage(this.fabricImage,
+        this.canvas.renderAll.bind(this.canvas));
+      this.canvas.off('object:selected');
 
       this.canvas.setZoom(state.zoom);
       this.canvas.renderAll();
     });
     this.subscriptions = [annotateSubscription, objectXSubscription];
+    if (this.selectedObject) {
+      this.store.dispatch(this.actions.selectObject(this.selectedObject));
+    }
   }
 
   ngOnDestroy() {
