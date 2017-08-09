@@ -45,7 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.sub = this.auth$.subscribe((state: AuthState) => {
       if (!state.token) {
-        this.store.dispatch(go(['/login']));
+        this.store.dispatch(go(['login']));
       }
       this.isAuthenticated = state.token && state.token.length > 0;
     });

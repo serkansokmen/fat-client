@@ -1,4 +1,3 @@
-# fat-client
 ### Flickr Annotation Tool Frontend
 
 Generated with [Angular CLI](https://github.com/angular/angular-cli).

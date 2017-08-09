@@ -108,7 +108,6 @@ export class PaintPixelsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-
     this.canvas = new fabric.Canvas(this.drawCanvas.nativeElement, {
       backgroundColor: 'white'
     });
@@ -119,7 +118,7 @@ export class PaintPixelsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.annotateStore.dispatch(this.annotateActions.requestImage(params.image_id));
         this.subscriptions.push(this.annotate$.subscribe((state: AnnotateState) => {
           if (state.selectedImage) {
-            this.handleAnnotate(state.selectedImage);
+            this.handleAnnotate(state);
           }
         }));
         this.subscriptions.push(this.artboard$.subscribe((state: ArtboardState) => {
@@ -131,7 +130,7 @@ export class PaintPixelsComponent implements OnInit, AfterViewInit, OnDestroy {
     }));
   }
 
-  handleAnnotate(image: FlickrImage) {
+  handleAnnotate(state: AnnotateState) {
 
     this.canvas.clear();
     this.canvas.isDrawingMode = true;
@@ -139,9 +138,8 @@ export class PaintPixelsComponent implements OnInit, AfterViewInit, OnDestroy {
       width: window.innerWidth,
       height: window.innerHeight - 130});
     this.canvas.renderAll();
-    this.fabricImage = null;
 
-    fabric.Image.fromURL(image.flickr_url, (img) => {
+    fabric.Image.fromURL(state.selectedImage.flickr_url, (img) => {
       img.lockRotation = true;
       img.lockUniScaling = true;
       img.selectable = false;

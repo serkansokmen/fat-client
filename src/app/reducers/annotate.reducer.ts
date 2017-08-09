@@ -1,11 +1,13 @@
 import { Action } from '@ngrx/store';
 import { AnnotateActions } from '../actions/annotate.actions';
-import { Image } from  '../models/search.models';
+import { Image as FlickrImage } from  '../models/search.models';
+import { ObjectXType, ObjectX, Gender, AgeGroup, DrawMode } from '../models/object-x.models';
+import { union, without } from 'underscore';
 
 
 export interface AnnotateState {
-  images: Image[],
-  selectedImage?: Image,
+  images: FlickrImage[],
+  selectedImage?: FlickrImage,
   annotation?: any,
   total: number,
   previous: string,

@@ -6,23 +6,24 @@
     <div>
       Object Type:
       <button md-raised-button color="accent" [mdMenuTriggerFor]="appMenu">
-        <span [style.color]="(objectX$ | async)?.selectedObjectType?.color">{{ (objectX$ | async)?.selectedObjectType?.pluralName }}</span>
+        <span [style.color]="selectedObjectType?.color">{{ selectedObjectType?.pluralName }}</span>
         <!-- <md-icon fontSet="fontawesome" fontIcon="fa-chevron-down"></md-icon> -->
       </button>
       <md-menu #appMenu="mdMenu">
-        <button md-menu-item *ngFor="let type of (objectX$ | async)?.objectTypes"
-          (click)="objectXStore.dispatch(objectXActions.selectObjectType(type))">
+        <button md-menu-item *ngFor="let type of objectTypes"
+          (click)="selectedObjectType = type">
           <span [style.color]="type.color">{{ type.name }}</span>
         </button>
       </md-menu>
     </div>
     <hr>
-    <md-button-toggle-group (change)="objectXStore.dispatch(objectXActions.setDrawMode($event.value))"
-      [value]="(objectX$ | async)?.drawMode">
-      <md-button-toggle color="primary" [value]="0"><md-icon>add_circle_outline</md-icon> Add</md-button-toggle>
-      <md-button-toggle color="primary" [value]="1"><md-icon>remove_circle_outline</md-icon> Remove</md-button-toggle>
-      <md-button-toggle color="primary" [value]="2"><md-icon>open_with</md-icon> Modify</md-button-toggle>
+    <md-button-toggle-group (change)="setDrawMode($event.value)"
+      [value]="drawMode">
+      <md-button-toggle color="primary" [value]="drawModes[0]"><md-icon>add_circle_outline</md-icon> Add</md-button-toggle>
+      <md-button-toggle color="primary" [value]="drawModes[1]"><md-icon>remove_circle_outline</md-icon> Remove</md-button-toggle>
+      <md-button-toggle color="primary" [value]="drawModes[2]"><md-icon>open_with</md-icon> Modify</md-button-toggle>
     </md-button-toggle-group>
+
     <!-- <hr>
     <md-slide-toggle [checked]="(objectX$ | async)?.isShowingOriginal"
       (change)="objectXStore.dispatch(objectXActions.setIsShowingOriginal($event.checked))">
@@ -30,27 +31,19 @@
     </md-slide-toggle> -->
     <hr>
     <div>
-      Zoom <md-slider color="primary" thumbLabel (change)="objectXStore.dispatch(objectXActions.setZoom($event.value))"
-      [value]="(objectX$ | async)?.zoom" step="0.1" min="1" max="4"></md-slider>
+      Zoom <md-slider color="primary" thumbLabel (change)="canvas.setZoom($event.value)"
+      [value]="zoom" step="0.1" min="1" max="4"></md-slider>
     </div>
     <hr>
-    <div *ngFor="let type of (objectX$ | async)?.objectTypes">
-      <md-checkbox color="primary" *ngIf="getTypeCount(type) > 0"
+    <div *ngFor="let type of objectTypes">
+      <!-- <md-checkbox color="primary" *ngIf="getTypeCount(type) > 0"
         [checked]="getTypeCount(type) > 0"
-        (change)="objectXStore.dispatch(objectXActions.setVisibleObjectTypes(type, $event?.checked))">
-        <span>{{ type?.pluralName }} ({{ getTypeCount(type) }})</span>
-      </md-checkbox>
-    </div>
-    <hr *ngIf="(objectX$ | async)?.objects > 0">
-    <div *ngFor="let object of (objectX$ | async)?.objects">
-      <button md-button (click)="objectXStore.dispatch(objectXActions.selectObject(object))"><small><i>{{ object?.guid }}</i></small><br></button>
-      <!-- <div>
-        x: {{ object?.graphics.getLeft() }} <br>
-        y: {{ object?.graphics.getTop() }} <br>
-        width: {{ object?.graphics.getWidth() }} <br>
-        height: {{ object?.graphics.getHeight() }} <br>
-      </div> -->
-      <!-- <hr> -->
+        (change)="toggleObjectTypeVisible(type, $event?.checked)">
+      </md-checkbox> -->
+      <span *ngIf="getTypeCount(type) > 0">{{ type?.pluralName }} ({{ getTypeCount(type) }})</span>
+      <div *ngFor="let object of objects">
+        <button md-button *ngIf="object.type == type"><small><i>{{ object?.uuid }}</i></small><br></button>
+      </div>
     </div>
   </md-sidenav>
 
@@ -64,7 +57,7 @@
     </button>
     <span class="spacer"></span>
     <!-- <button md-button color="warn" [routerLink]="['/annotate/' + (annotate$ | async)?.selectedImage?.id + '/' + (annotate$ | async)?.annotation?.id]">Cancel</button> -->
-    <button md-raised-button color="primary" [disabled]="!(objectX$ | async)?.objects" (click)="handleNext()">Save and Continue</button>
+    <button md-raised-button color="primary" [disabled]="objects.length == 0" (click)="handleNext()">Save and Continue</button>
   </md-toolbar>
 
 </md-sidenav-container>

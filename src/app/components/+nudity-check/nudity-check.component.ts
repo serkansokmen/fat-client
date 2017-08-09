@@ -70,14 +70,16 @@ export class NudityCheckComponent implements OnInit, OnDestroy {
   }
 
   handleNext() {
-    // dispatch udpate annotation action
-    this.service
-      .updateAnnotation(this.annotation, this.semanticChecks.filter(c => c.isActive), [])
-      .subscribe(response => {
-        const result = response.json();
-        let url = `/annotate/${result.image}/${result.id}/objects`;
-        this.store.dispatch(go([url]));
-      });
+    this.store.dispatch(
+      this.actions.updateAnnotationSemanticChecks(
+        this.annotation, this.semanticChecks.filter(c => c.isActive)));
+    // this.service
+    //   .updateAnnotation()
+    //   .subscribe(response => {
+    //     const result = response.json();
+    //     let url = `/annotate/${result.image}/${result.id}/objects`;
+    //     this.store.dispatch(go([url]));
+    //   });
     // .map(response => response.json())
     // .map(result => {
     //   let url = `/annotate/${result.image}/${result.annotation}/objects`;
