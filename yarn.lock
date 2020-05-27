@@ -190,10 +190,10 @@
   resolved "https://registry.yarnpkg.com/@ngrx/core/-/core-1.2.0.tgz#882b46abafa2e0e6d887cb71a1b2c2fa3e6d0dc6"
   integrity sha1-iCtGq6+i4ObYh8txobLC+j5tDcY=
 
-"@ngrx/effects@2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-2.0.4.tgz#418eee5e1032fa66de5bbf1855653bb1951f12a4"
-  integrity sha1-QY7uXhAy+mbeW78YVWU7sZUfEqQ=
+"@ngrx/effects@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-2.0.5.tgz#10986923b7193af9b08944e80c5a661ba93a7936"
+  integrity sha1-EJhpI7cZOvmwiUToDFpmG6k6eTY=
 
 "@ngrx/router-store@1.2.6":
   version "1.2.6"

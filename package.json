@@ -29,7 +29,7 @@
     "@angular/router": "4.3.1",
     "@angularclass/hmr": "1.2.2",
     "@ngrx/core": "1.2.0",
-    "@ngrx/effects": "2.0.4",
+    "@ngrx/effects": "2.0.5",
     "@ngrx/router-store": "1.2.6",
     "@ngrx/store": "2.2.3",
     "@ngrx/store-devtools": "3.2.4",
