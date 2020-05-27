@@ -2223,10 +2223,10 @@ extsprintf@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.0.2.tgz#e1080e0658e300b06294990cc70e1502235fd550"
 
-fabric@1.7.16:
-  version "1.7.16"
-  resolved "https://registry.yarnpkg.com/fabric/-/fabric-1.7.16.tgz#a59c5e103116c8556f35350d94c11caabc6c44f6"
-  integrity sha1-pZxeEDEWyFVvNTUNlMEcqrxsRPY=
+fabric@1.7.22:
+  version "1.7.22"
+  resolved "https://registry.yarnpkg.com/fabric/-/fabric-1.7.22.tgz#be4a9dfd280f4941fb580498266bc5677fb0d1db"
+  integrity sha1-vkqd/SgPSUH7WASYJmvFZ3+w0ds=
   optionalDependencies:
     canvas "1.6.x"
     jsdom "3.x.x"
