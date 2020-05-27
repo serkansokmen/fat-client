@@ -1258,10 +1258,10 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codelyzer@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/codelyzer/-/codelyzer-3.0.1.tgz#ba66b7b2aa564fe9f45d6004b4003ad2cf116828"
-  integrity sha1-uma3sqpWT+n0XWAEtAA60s8RaCg=
+codelyzer@3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/codelyzer/-/codelyzer-3.2.2.tgz#abbd4e5956c435677740846e5858c915f89679c3"
+  integrity sha512-VNvW9gRThsqRarEnLioiILd0Pdk0yCq/7cVgYvqHpC+3CHqfnrJfmXjoana7vzWfSis+9pODXofjCWX+nlU9Gw==
   dependencies:
     app-root-path "^2.0.1"
     css-selector-tokenizer "^0.7.0"
