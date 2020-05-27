@@ -3771,10 +3771,10 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-ngx-cookie@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-1.0.0.tgz#004fc653febd849b4dd3ee2c63c4cf171f464da9"
-  integrity sha1-AE/GU/69hJtN0+4sY8TPFx9GTak=
+ngx-cookie@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-1.0.1.tgz#87d9fa023fdab2c476d99f8a131d1b8a169c005e"
+  integrity sha512-zE0HTC0jU/C7+33/eO3qZJUtkbGY2mKuVLXR/jpH11rOD7u7BU+zy9i2D0vf8vaxZaW+TlfUD1jGOCuIYWvv+g==
 
 no-case@^2.2.0:
   version "2.3.1"
